@@ -138,7 +138,7 @@ struct stevd_impl {
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, minimal_workspace work ) {
+            VectorD& d, VectorE& e, MatrixZ& z, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( jobz,
                 n ) );
@@ -156,7 +156,7 @@ struct stevd_impl {
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, optimal_workspace work ) {
+            VectorD& d, VectorE& e, MatrixZ& z, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;

@@ -184,8 +184,7 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename MatrixB >
-    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -203,8 +202,7 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename MatrixB >
-    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -290,8 +288,7 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename MatrixB >
-    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -309,8 +306,7 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename MatrixB >
-    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;

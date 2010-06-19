@@ -161,7 +161,7 @@ struct latrz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_row(a) ) );
@@ -177,7 +177,7 @@ struct latrz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( a, tau, minimal_workspace() );
     }
@@ -241,7 +241,7 @@ struct latrz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_row(a) ) );
@@ -257,7 +257,7 @@ struct latrz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( a, tau, minimal_workspace() );
     }

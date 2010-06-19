@@ -200,7 +200,7 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -218,7 +218,7 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, direct, storev, v, t, c, minimal_workspace() );
     }
@@ -298,7 +298,7 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -316,7 +316,7 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, direct, storev, v, t, c, minimal_workspace() );
     }

@@ -254,8 +254,7 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const char jobvr, const char sense, MatrixA& a, VectorWR& wr,
             VectorWI& wi, MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            minimal_workspace work ) {
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( sense,
                 jobvl, jobvr, bindings::size_column(a) ) );
@@ -280,8 +279,7 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const char jobvr, const char sense, MatrixA& a, VectorWR& wr,
             VectorWI& wi, MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            optimal_workspace work ) {
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -434,8 +432,7 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char jobvr, const char sense, MatrixA& a, VectorW& w,
             MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            minimal_workspace work ) {
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( sense,
                 bindings::size_column(a) ) );
@@ -460,8 +457,7 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char jobvr, const char sense, MatrixA& a, VectorW& w,
             MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            optimal_workspace work ) {
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(

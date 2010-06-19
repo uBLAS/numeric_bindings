@@ -148,7 +148,7 @@ struct ormqr_impl {
     template< typename Side, typename MatrixA, typename VectorTAU,
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
-            const VectorTAU& tau, MatrixC& c, minimal_workspace work ) {
+            const VectorTAU& tau, MatrixC& c, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -167,7 +167,7 @@ struct ormqr_impl {
     template< typename Side, typename MatrixA, typename VectorTAU,
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
-            const VectorTAU& tau, MatrixC& c, optimal_workspace work ) {
+            const VectorTAU& tau, MatrixC& c, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;

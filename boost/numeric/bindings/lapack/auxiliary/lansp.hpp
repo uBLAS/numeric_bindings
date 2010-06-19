@@ -136,7 +136,7 @@ struct lansp_impl {
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
@@ -153,7 +153,7 @@ struct lansp_impl {
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         return invoke( norm, ap, minimal_workspace() );

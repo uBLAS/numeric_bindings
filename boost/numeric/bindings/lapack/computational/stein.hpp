@@ -202,7 +202,7 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
+            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -224,7 +224,7 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( n, d, e, m, w, iblock, isplit, z, ifail,
                 minimal_workspace() );
@@ -324,7 +324,7 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
+            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -346,7 +346,7 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( n, d, e, m, w, iblock, isplit, z, ifail,
                 minimal_workspace() );

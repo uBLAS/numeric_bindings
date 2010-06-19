@@ -228,7 +228,7 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
-            MatrixVR& vr, minimal_workspace work ) {
+            MatrixVR& vr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -249,7 +249,7 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
-            MatrixVR& vr, optimal_workspace work ) {
+            MatrixVR& vr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::gegv( jobvl, jobvr, bindings::size_column(a),
@@ -369,7 +369,7 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             typename VectorBETA, typename MatrixVL, typename MatrixVR >
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-            MatrixVL& vl, MatrixVR& vr, minimal_workspace work ) {
+            MatrixVL& vl, MatrixVR& vr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -390,7 +390,7 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             typename VectorBETA, typename MatrixVL, typename MatrixVR >
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-            MatrixVL& vl, MatrixVR& vr, optimal_workspace work ) {
+            MatrixVL& vl, MatrixVR& vr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(

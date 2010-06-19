@@ -262,7 +262,7 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
             const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -287,7 +287,7 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
             const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
                 berr, minimal_workspace() );
@@ -428,7 +428,7 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
             const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
@@ -452,7 +452,7 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
             const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
                 berr, minimal_workspace() );

@@ -191,7 +191,7 @@ struct hseqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char job, const char compz,
             const fortran_int_t ilo, const fortran_int_t ihi,
             MatrixH& h, VectorWR& wr, VectorWI& wi, MatrixZ& z,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(h) ) );
@@ -211,7 +211,7 @@ struct hseqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char job, const char compz,
             const fortran_int_t ilo, const fortran_int_t ihi,
             MatrixH& h, VectorWR& wr, VectorWI& wi, MatrixZ& z,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( job, compz, ilo, ihi, h, wr, wi, z,
                 minimal_workspace() );
@@ -286,7 +286,7 @@ struct hseqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixH, typename VectorW, typename MatrixZ >
     static std::ptrdiff_t invoke( const char job, const char compz,
             const fortran_int_t ilo, const fortran_int_t ihi,
-            MatrixH& h, VectorW& w, MatrixZ& z, minimal_workspace work ) {
+            MatrixH& h, VectorW& w, MatrixZ& z, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(h) ) );
@@ -303,7 +303,7 @@ struct hseqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixH, typename VectorW, typename MatrixZ >
     static std::ptrdiff_t invoke( const char job, const char compz,
             const fortran_int_t ilo, const fortran_int_t ihi,
-            MatrixH& h, VectorW& w, MatrixZ& z, optimal_workspace work ) {
+            MatrixH& h, VectorW& w, MatrixZ& z, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( job, compz, ilo, ihi, h, w, z, minimal_workspace() );
     }

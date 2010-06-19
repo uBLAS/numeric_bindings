@@ -156,7 +156,7 @@ struct gecon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            const real_type anorm, real_type& rcond, minimal_workspace work ) {
+            const real_type anorm, real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -175,7 +175,7 @@ struct gecon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            const real_type anorm, real_type& rcond, optimal_workspace work ) {
+            const real_type anorm, real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( norm, a, anorm, rcond, minimal_workspace() );
     }
@@ -242,7 +242,7 @@ struct gecon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            const real_type anorm, real_type& rcond, minimal_workspace work ) {
+            const real_type anorm, real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -261,7 +261,7 @@ struct gecon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            const real_type anorm, real_type& rcond, optimal_workspace work ) {
+            const real_type anorm, real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( norm, a, anorm, rcond, minimal_workspace() );
     }

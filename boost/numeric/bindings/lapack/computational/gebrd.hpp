@@ -190,7 +190,7 @@ struct gebrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
-            VectorTAUQ& tauq, VectorTAUP& taup, minimal_workspace work ) {
+            VectorTAUQ& tauq, VectorTAUP& taup, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a) ) );
@@ -207,7 +207,7 @@ struct gebrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
-            VectorTAUQ& tauq, VectorTAUP& taup, optimal_workspace work ) {
+            VectorTAUQ& tauq, VectorTAUP& taup, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::gebrd( bindings::size_row(a), bindings::size_column(a),
@@ -305,7 +305,7 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
-            VectorTAUQ& tauq, VectorTAUP& taup, minimal_workspace work ) {
+            VectorTAUQ& tauq, VectorTAUP& taup, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a) ) );
@@ -322,7 +322,7 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
-            VectorTAUQ& tauq, VectorTAUP& taup, optimal_workspace work ) {
+            VectorTAUQ& tauq, VectorTAUP& taup, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         detail::gebrd( bindings::size_row(a), bindings::size_column(a),

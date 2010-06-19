@@ -161,7 +161,7 @@ struct steqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
     static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
-            MatrixZ& z, minimal_workspace work ) {
+            MatrixZ& z, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size(d), compz ) );
@@ -177,7 +177,7 @@ struct steqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
     static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
-            MatrixZ& z, optimal_workspace work ) {
+            MatrixZ& z, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( compz, d, e, z, minimal_workspace() );
     }
@@ -245,7 +245,7 @@ struct steqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
     static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
-            MatrixZ& z, minimal_workspace work ) {
+            MatrixZ& z, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size(d), compz ) );
@@ -261,7 +261,7 @@ struct steqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
     static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
-            MatrixZ& z, optimal_workspace work ) {
+            MatrixZ& z, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( compz, d, e, z, minimal_workspace() );
     }

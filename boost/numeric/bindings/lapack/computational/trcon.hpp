@@ -167,7 +167,7 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            real_type& rcond, minimal_workspace work ) {
+            real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
@@ -187,7 +187,7 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            real_type& rcond, optimal_workspace work ) {
+            real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
@@ -257,7 +257,7 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            real_type& rcond, minimal_workspace work ) {
+            real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
@@ -277,7 +277,7 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            real_type& rcond, optimal_workspace work ) {
+            real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;

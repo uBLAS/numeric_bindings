@@ -171,7 +171,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, minimal_workspace work ) {
+            const MatrixAB& ab, real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
@@ -191,7 +191,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, optimal_workspace work ) {
+            const MatrixAB& ab, real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
@@ -262,7 +262,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, minimal_workspace work ) {
+            const MatrixAB& ab, real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
@@ -282,7 +282,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, optimal_workspace work ) {
+            const MatrixAB& ab, real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;

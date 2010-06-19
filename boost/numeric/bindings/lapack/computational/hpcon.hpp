@@ -116,7 +116,7 @@ struct hpcon_impl {
     //
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
-            const real_type anorm, real_type& rcond, minimal_workspace work ) {
+            const real_type anorm, real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
@@ -133,7 +133,7 @@ struct hpcon_impl {
     //
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
-            const real_type anorm, real_type& rcond, optimal_workspace work ) {
+            const real_type anorm, real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         return invoke( ap, ipiv, anorm, rcond, minimal_workspace() );

@@ -157,7 +157,7 @@ struct larrb_impl {
             const real_type rtol2, const fortran_int_t offset, VectorW& w,
             VectorWGAP& wgap, VectorWERR& werr, const real_type pivmin,
             const real_type spdiam, const fortran_int_t twist,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -182,7 +182,7 @@ struct larrb_impl {
             const real_type rtol2, const fortran_int_t offset, VectorW& w,
             VectorWGAP& wgap, VectorWERR& werr, const real_type pivmin,
             const real_type spdiam, const fortran_int_t twist,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( n, d, lld, ifirst, ilast, rtol1, rtol2, offset, w,
                 wgap, werr, pivmin, spdiam, twist, minimal_workspace() );

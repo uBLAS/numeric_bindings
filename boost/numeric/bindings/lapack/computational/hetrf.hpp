@@ -124,7 +124,7 @@ struct hetrf_impl {
     //
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work() );
@@ -140,7 +140,7 @@ struct hetrf_impl {
     //
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         return invoke( a, ipiv, minimal_workspace() );

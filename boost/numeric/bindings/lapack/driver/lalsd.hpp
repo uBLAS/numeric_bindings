@@ -187,7 +187,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char uplo,
             const fortran_int_t smlsiz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
-            fortran_int_t& rank, minimal_workspace work ) {
+            fortran_int_t& rank, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
@@ -213,7 +213,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char uplo,
             const fortran_int_t smlsiz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
-            fortran_int_t& rank, optimal_workspace work ) {
+            fortran_int_t& rank, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
                 minimal_workspace() );
@@ -309,7 +309,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char uplo,
             const fortran_int_t smlsiz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
-            fortran_int_t& rank, minimal_workspace work ) {
+            fortran_int_t& rank, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
@@ -338,7 +338,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char uplo,
             const fortran_int_t smlsiz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
-            fortran_int_t& rank, optimal_workspace work ) {
+            fortran_int_t& rank, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
                 minimal_workspace() );

@@ -180,7 +180,7 @@ struct herfs_impl {
             typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
@@ -203,7 +203,7 @@ struct herfs_impl {
             typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         return invoke( a, af, ipiv, b, x, ferr, berr, minimal_workspace() );

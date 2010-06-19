@@ -170,7 +170,7 @@ struct laebz_impl {
             const real_type abstol, const real_type reltol,
             const real_type pivmin, const VectorD& d, const VectorE& e,
             const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-            fortran_int_t& mout, MatrixNAB& nab, minimal_workspace work ) {
+            fortran_int_t& mout, MatrixNAB& nab, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::stride_major(ab) ) );
@@ -197,7 +197,7 @@ struct laebz_impl {
             const real_type abstol, const real_type reltol,
             const real_type pivmin, const VectorD& d, const VectorE& e,
             const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-            fortran_int_t& mout, MatrixNAB& nab, optimal_workspace work ) {
+            fortran_int_t& mout, MatrixNAB& nab, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( ijob, nitmax, n, minp, nbmin, abstol, reltol, pivmin,
                 d, e, e2, nval, ab, c, mout, nab, minimal_workspace() );

@@ -125,7 +125,7 @@ struct ungqr_impl {
     //
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, const VectorTAU& tau,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -141,7 +141,7 @@ struct ungqr_impl {
     //
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, const VectorTAU& tau,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         detail::ungqr( bindings::size_row(a), bindings::size_column(a),

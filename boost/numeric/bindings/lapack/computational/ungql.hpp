@@ -126,7 +126,7 @@ struct ungql_impl {
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( const fortran_int_t m,
             const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-            const VectorTAU& tau, minimal_workspace work ) {
+            const VectorTAU& tau, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         return invoke( m, n, k, a, tau, workspace( tmp_work ) );
@@ -142,7 +142,7 @@ struct ungql_impl {
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( const fortran_int_t m,
             const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-            const VectorTAU& tau, optimal_workspace work ) {
+            const VectorTAU& tau, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         detail::ungql( m, n, k, bindings::begin_value(a),

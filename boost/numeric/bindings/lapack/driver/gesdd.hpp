@@ -205,7 +205,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
-            MatrixU& u, MatrixVT& vt, minimal_workspace work ) {
+            MatrixU& u, MatrixVT& vt, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
@@ -227,7 +227,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
-            MatrixU& u, MatrixVT& vt, optimal_workspace work ) {
+            MatrixU& u, MatrixVT& vt, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( jobz, a, s, u, vt, minimal_workspace() );
     }
@@ -338,7 +338,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
-            MatrixU& u, MatrixVT& vt, minimal_workspace work ) {
+            MatrixU& u, MatrixVT& vt, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
@@ -363,7 +363,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
-            MatrixU& u, MatrixVT& vt, optimal_workspace work ) {
+            MatrixU& u, MatrixVT& vt, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );

@@ -200,7 +200,7 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
-            VectorX& x, VectorY& y, minimal_workspace work ) {
+            VectorX& x, VectorY& y, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a), bindings::size_row(a),
@@ -218,7 +218,7 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
-            VectorX& x, VectorY& y, optimal_workspace work ) {
+            VectorX& x, VectorY& y, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::ggglm( bindings::size_row(a), bindings::size_column(a),
@@ -320,7 +320,7 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
-            VectorX& x, VectorY& y, minimal_workspace work ) {
+            VectorX& x, VectorY& y, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a), bindings::size_row(a),
@@ -338,7 +338,7 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
-            VectorX& x, VectorY& y, optimal_workspace work ) {
+            VectorX& x, VectorY& y, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         detail::ggglm( bindings::size_row(a), bindings::size_column(a),

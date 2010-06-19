@@ -191,7 +191,7 @@ struct gelss_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename VectorS >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a),
@@ -209,7 +209,7 @@ struct gelss_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename VectorS >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::gelss( bindings::size_row(a), bindings::size_column(a),
@@ -305,7 +305,7 @@ struct gelss_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixB, typename VectorS >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
@@ -328,7 +328,7 @@ struct gelss_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixB, typename VectorS >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );

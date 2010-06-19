@@ -293,8 +293,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
             fortran_int_t& ihi, VectorLSCALE& lscale,
             VectorRSCALE& rscale, real_type& abnrm, real_type& bbnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            minimal_workspace work ) {
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( balanc,
                 jobvl, jobvr, sense, bindings::size_column(a) ) );
@@ -324,8 +323,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
             fortran_int_t& ihi, VectorLSCALE& lscale,
             VectorRSCALE& rscale, real_type& abnrm, real_type& bbnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            optimal_workspace work ) {
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -527,7 +525,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale, real_type& abnrm,
             real_type& bbnrm, VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( sense,
                 bindings::size_column(a) ) );
@@ -559,7 +557,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale, real_type& abnrm,
             real_type& bbnrm, VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(

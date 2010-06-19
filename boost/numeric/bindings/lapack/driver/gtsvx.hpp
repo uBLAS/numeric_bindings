@@ -264,7 +264,7 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -288,7 +288,7 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
                 rcond, ferr, berr, minimal_workspace() );
@@ -429,7 +429,7 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
@@ -452,7 +452,7 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
                 rcond, ferr, berr, minimal_workspace() );

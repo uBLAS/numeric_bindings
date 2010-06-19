@@ -156,7 +156,7 @@ struct bdsdc_impl {
             typename MatrixVT, typename VectorQ, typename VectorIQ >
     static std::ptrdiff_t invoke( const char uplo, const char compq,
             const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-            MatrixVT& vt, VectorQ& q, VectorIQ& iq, minimal_workspace work ) {
+            MatrixVT& vt, VectorQ& q, VectorIQ& iq, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( compq,
                 n ) );
@@ -177,7 +177,7 @@ struct bdsdc_impl {
             typename MatrixVT, typename VectorQ, typename VectorIQ >
     static std::ptrdiff_t invoke( const char uplo, const char compq,
             const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
-            MatrixVT& vt, VectorQ& q, VectorIQ& iq, optimal_workspace work ) {
+            MatrixVT& vt, VectorQ& q, VectorIQ& iq, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, compq, n, d, e, u, vt, q, iq,
                 minimal_workspace() );

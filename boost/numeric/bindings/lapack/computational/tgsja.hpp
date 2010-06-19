@@ -251,7 +251,7 @@ struct tgsja_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t l, MatrixA& a, MatrixB& b,
             const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-            fortran_int_t& ncycle, minimal_workspace work ) {
+            fortran_int_t& ncycle, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -274,7 +274,7 @@ struct tgsja_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t l, MatrixA& a, MatrixB& b,
             const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-            fortran_int_t& ncycle, optimal_workspace work ) {
+            fortran_int_t& ncycle, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta,
                 u, v, q, ncycle, minimal_workspace() );
@@ -395,7 +395,7 @@ struct tgsja_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t l, MatrixA& a, MatrixB& b,
             const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-            fortran_int_t& ncycle, minimal_workspace work ) {
+            fortran_int_t& ncycle, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -418,7 +418,7 @@ struct tgsja_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t l, MatrixA& a, MatrixB& b,
             const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-            fortran_int_t& ncycle, optimal_workspace work ) {
+            fortran_int_t& ncycle, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta,
                 u, v, q, ncycle, minimal_workspace() );

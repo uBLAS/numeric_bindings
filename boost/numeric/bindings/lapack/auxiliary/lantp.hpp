@@ -137,7 +137,7 @@ struct lantp_impl {
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const MatrixAP& ap, minimal_workspace work ) {
+            const MatrixAP& ap, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
@@ -154,7 +154,7 @@ struct lantp_impl {
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const MatrixAP& ap, optimal_workspace work ) {
+            const MatrixAP& ap, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
         return invoke( norm, uplo, ap, minimal_workspace() );

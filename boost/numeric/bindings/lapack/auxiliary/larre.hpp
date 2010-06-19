@@ -200,7 +200,7 @@ struct larre_impl {
             VectorISPLIT& isplit, fortran_int_t& m, VectorW& w,
             VectorWERR& werr, VectorWGAP& wgap, VectorIBLOCK& iblock,
             VectorINDEXW& indexw, VectorGERS& gers, real_type& pivmin,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -229,7 +229,7 @@ struct larre_impl {
             VectorISPLIT& isplit, fortran_int_t& m, VectorW& w,
             VectorWERR& werr, VectorWGAP& wgap, VectorIBLOCK& iblock,
             VectorINDEXW& indexw, VectorGERS& gers, real_type& pivmin,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( range, n, vl, vu, il, iu, d, e, e2, rtol1, rtol2,
                 spltol, nsplit, isplit, m, w, werr, wgap, iblock, indexw,

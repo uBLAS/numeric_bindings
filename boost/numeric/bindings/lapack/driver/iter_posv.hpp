@@ -163,7 +163,7 @@ struct iter_posv_impl< Value, typename boost::enable_if< is_real< Value > >::typ
     //
     template< typename MatrixA, typename MatrixB, typename MatrixX >
     static std::ptrdiff_t invoke( MatrixA& a, const MatrixB& b, MatrixX& x,
-            fortran_int_t& iter, minimal_workspace work ) {
+            fortran_int_t& iter, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
@@ -182,7 +182,7 @@ struct iter_posv_impl< Value, typename boost::enable_if< is_real< Value > >::typ
     //
     template< typename MatrixA, typename MatrixB, typename MatrixX >
     static std::ptrdiff_t invoke( MatrixA& a, const MatrixB& b, MatrixX& x,
-            fortran_int_t& iter, optimal_workspace work ) {
+            fortran_int_t& iter, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         return invoke( a, b, x, iter, minimal_workspace() );
@@ -281,7 +281,7 @@ struct iter_posv_impl< Value, typename boost::enable_if< is_complex< Value > >::
     //
     template< typename MatrixA, typename MatrixB, typename MatrixX >
     static std::ptrdiff_t invoke( MatrixA& a, const MatrixB& b, MatrixX& x,
-            fortran_int_t& iter, minimal_workspace work ) {
+            fortran_int_t& iter, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
@@ -303,7 +303,7 @@ struct iter_posv_impl< Value, typename boost::enable_if< is_complex< Value > >::
     //
     template< typename MatrixA, typename MatrixB, typename MatrixX >
     static std::ptrdiff_t invoke( MatrixA& a, const MatrixB& b, MatrixX& x,
-            fortran_int_t& iter, optimal_workspace work ) {
+            fortran_int_t& iter, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         return invoke( a, b, x, iter, minimal_workspace() );

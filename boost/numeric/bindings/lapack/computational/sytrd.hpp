@@ -144,7 +144,7 @@ struct sytrd_impl {
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
-            VectorTAU& tau, minimal_workspace work ) {
+            VectorTAU& tau, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work() );
@@ -161,7 +161,7 @@ struct sytrd_impl {
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
-            VectorTAU& tau, optimal_workspace work ) {
+            VectorTAU& tau, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         real_type opt_size_work;

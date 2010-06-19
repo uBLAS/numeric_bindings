@@ -212,7 +212,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, minimal_workspace work ) {
+            logical_t& tryrac, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
@@ -237,7 +237,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, optimal_workspace work ) {
+            logical_t& tryrac, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
@@ -357,7 +357,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, minimal_workspace work ) {
+            logical_t& tryrac, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
@@ -382,7 +382,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, optimal_workspace work ) {
+            logical_t& tryrac, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;

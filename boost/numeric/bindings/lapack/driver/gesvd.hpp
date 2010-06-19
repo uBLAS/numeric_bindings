@@ -203,7 +203,7 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobu, const char jobvt,
             MatrixA& a, VectorS& s, MatrixU& u, MatrixVT& vt,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a) ) );
@@ -221,7 +221,7 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobu, const char jobvt,
             MatrixA& a, VectorS& s, MatrixU& u, MatrixVT& vt,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::gesvd( jobu, jobvt, bindings::size_row(a),
@@ -328,7 +328,7 @@ struct gesvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobu, const char jobvt,
             MatrixA& a, VectorS& s, MatrixU& u, MatrixVT& vt,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
@@ -351,7 +351,7 @@ struct gesvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobu, const char jobvt,
             MatrixA& a, VectorS& s, MatrixU& u, MatrixVT& vt,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );

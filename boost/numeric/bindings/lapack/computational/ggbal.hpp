@@ -186,8 +186,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorRSCALE >
     static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
             fortran_int_t& ilo, fortran_int_t& ihi,
-            VectorLSCALE& lscale, VectorRSCALE& rscale,
-            minimal_workspace work ) {
+            VectorLSCALE& lscale, VectorRSCALE& rscale, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -206,8 +205,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorRSCALE >
     static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
             fortran_int_t& ilo, fortran_int_t& ihi,
-            VectorLSCALE& lscale, VectorRSCALE& rscale,
-            optimal_workspace work ) {
+            VectorLSCALE& lscale, VectorRSCALE& rscale, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 minimal_workspace() );
@@ -288,8 +286,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorRSCALE >
     static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
             fortran_int_t& ilo, fortran_int_t& ihi,
-            VectorLSCALE& lscale, VectorRSCALE& rscale,
-            minimal_workspace work ) {
+            VectorLSCALE& lscale, VectorRSCALE& rscale, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -308,8 +305,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorRSCALE >
     static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
             fortran_int_t& ilo, fortran_int_t& ihi,
-            VectorLSCALE& lscale, VectorRSCALE& rscale,
-            optimal_workspace work ) {
+            VectorLSCALE& lscale, VectorRSCALE& rscale, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 minimal_workspace() );

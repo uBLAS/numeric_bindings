@@ -240,7 +240,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char jobu, const char jobv,
             const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace work ) {
+            MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( bindings::size_column(a) ) );
@@ -265,7 +265,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char jobu, const char jobv,
             const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, optimal_workspace work ) {
+            MatrixU& u, MatrixV& v, MatrixQ& q, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 minimal_workspace() );
@@ -401,7 +401,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char jobu, const char jobv,
             const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace work ) {
+            MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( bindings::size_column(a) ) );
@@ -428,7 +428,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char jobu, const char jobv,
             const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, optimal_workspace work ) {
+            MatrixU& u, MatrixV& v, MatrixQ& q, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 minimal_workspace() );

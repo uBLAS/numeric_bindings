@@ -266,7 +266,7 @@ struct tgexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const logical_t wantq, const logical_t wantz,
             MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             const fortran_int_t ifst, fortran_int_t& ilst,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
 $SETUP_MIN_WORKARRAYS_POST
         return invoke( wantq, wantz, a, b, q, z, ifst, ilst,
@@ -285,7 +285,7 @@ $SETUP_MIN_WORKARRAYS_POST
     static std::ptrdiff_t invoke( const logical_t wantq, const logical_t wantz,
             MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             const fortran_int_t ifst, fortran_int_t& ilst,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
 $OPT_WORKSPACE_FUNC
     }

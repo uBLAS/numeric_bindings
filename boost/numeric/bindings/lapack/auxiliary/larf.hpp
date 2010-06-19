@@ -170,7 +170,7 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //
     template< typename Side, typename VectorViewV, typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const VectorViewV& v,
-            const real_type tau, MatrixC& c, minimal_workspace work ) {
+            const real_type tau, MatrixC& c, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
                 bindings::size_column(c), bindings::size_row(c) ) );
@@ -186,7 +186,7 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //
     template< typename Side, typename VectorViewV, typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const VectorViewV& v,
-            const real_type tau, MatrixC& c, optimal_workspace work ) {
+            const real_type tau, MatrixC& c, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, v, tau, c, minimal_workspace() );
     }
@@ -251,7 +251,7 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //
     template< typename Side, typename VectorViewV, typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const VectorViewV& v,
-            const value_type tau, MatrixC& c, minimal_workspace work ) {
+            const value_type tau, MatrixC& c, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( side,
                 bindings::size_column(c), bindings::size_row(c) ) );
@@ -267,7 +267,7 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //
     template< typename Side, typename VectorViewV, typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const VectorViewV& v,
-            const value_type tau, MatrixC& c, optimal_workspace work ) {
+            const value_type tau, MatrixC& c, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, v, tau, c, minimal_workspace() );
     }

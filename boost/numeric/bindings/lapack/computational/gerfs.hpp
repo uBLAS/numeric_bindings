@@ -230,7 +230,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -254,7 +254,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -371,7 +371,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -395,7 +395,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAF >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;

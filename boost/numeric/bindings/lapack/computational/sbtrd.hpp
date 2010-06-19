@@ -150,7 +150,7 @@ struct sbtrd_impl {
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
-            VectorE& e, MatrixQ& q, minimal_workspace work ) {
+            VectorE& e, MatrixQ& q, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
@@ -168,7 +168,7 @@ struct sbtrd_impl {
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
-            VectorE& e, MatrixQ& q, optimal_workspace work ) {
+            VectorE& e, MatrixQ& q, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         return invoke( vect, ab, d, e, q, minimal_workspace() );

@@ -271,7 +271,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a), sense ) );
@@ -299,7 +299,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -483,8 +483,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char sort, logical_t* selctg, const char sense, MatrixA& a,
             MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
             VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            minimal_workspace work ) {
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a), sense ) );
@@ -513,8 +512,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char sort, logical_t* selctg, const char sense, MatrixA& a,
             MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
             VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            optimal_workspace work ) {
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(

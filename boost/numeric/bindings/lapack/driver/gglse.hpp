@@ -199,7 +199,7 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
-            VectorD& d, VectorX& x, minimal_workspace work ) {
+            VectorD& d, VectorX& x, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a),
@@ -217,7 +217,7 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
-            VectorD& d, VectorX& x, optimal_workspace work ) {
+            VectorD& d, VectorX& x, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::gglse( bindings::size_row(a), bindings::size_column(a),
@@ -318,7 +318,7 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
-            VectorD& d, VectorX& x, minimal_workspace work ) {
+            VectorD& d, VectorX& x, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a),
@@ -336,7 +336,7 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
-            VectorD& d, VectorX& x, optimal_workspace work ) {
+            VectorD& d, VectorX& x, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         detail::gglse( bindings::size_row(a), bindings::size_column(a),

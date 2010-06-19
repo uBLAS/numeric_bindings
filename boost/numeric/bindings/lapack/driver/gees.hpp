@@ -198,8 +198,7 @@ struct gees_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             typename MatrixVS >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
-            VectorWR& wr, VectorWI& wi, MatrixVS& vs,
-            minimal_workspace work ) {
+            VectorWR& wr, VectorWI& wi, MatrixVS& vs, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -220,8 +219,7 @@ struct gees_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             typename MatrixVS >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
-            VectorWR& wr, VectorWI& wi, MatrixVS& vs,
-            optimal_workspace work ) {
+            VectorWR& wr, VectorWI& wi, MatrixVS& vs, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
@@ -328,7 +326,7 @@ struct gees_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename MatrixA, typename VectorW, typename MatrixVS >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
-            VectorW& w, MatrixVS& vs, minimal_workspace work ) {
+            VectorW& w, MatrixVS& vs, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -350,7 +348,7 @@ struct gees_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename MatrixA, typename VectorW, typename MatrixVS >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
-            VectorW& w, MatrixVS& vs, optimal_workspace work ) {
+            VectorW& w, MatrixVS& vs, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(

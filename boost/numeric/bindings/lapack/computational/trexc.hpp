@@ -211,7 +211,7 @@ struct trexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixT, typename MatrixQ >
     static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
             const fortran_int_t ifst, const fortran_int_t ilst,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
 $SETUP_MIN_WORKARRAYS_POST
         return invoke( compq, t, q, ifst, ilst, workspace( $TMP_WORKARRAYS ) );
@@ -227,7 +227,7 @@ $SETUP_MIN_WORKARRAYS_POST
     template< typename MatrixT, typename MatrixQ >
     static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
             const fortran_int_t ifst, const fortran_int_t ilst,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
 $OPT_WORKSPACE_FUNC
     }

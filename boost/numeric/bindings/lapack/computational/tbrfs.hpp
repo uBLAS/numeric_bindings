@@ -223,7 +223,7 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorFERR, typename VectorBERR >
     static std::ptrdiff_t invoke( const fortran_int_t kd,
             const MatrixAB& ab, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
@@ -246,7 +246,7 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorFERR, typename VectorBERR >
     static std::ptrdiff_t invoke( const fortran_int_t kd,
             const MatrixAB& ab, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
@@ -351,7 +351,7 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorFERR, typename VectorBERR >
     static std::ptrdiff_t invoke( const fortran_int_t kd,
             const MatrixAB& ab, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
@@ -374,7 +374,7 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorFERR, typename VectorBERR >
     static std::ptrdiff_t invoke( const fortran_int_t kd,
             const MatrixAB& ab, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;

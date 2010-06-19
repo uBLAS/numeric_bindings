@@ -130,7 +130,7 @@ struct opgtr_impl {
     //
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
     static std::ptrdiff_t invoke( const char uplo, const VectorAP& ap,
-            const VectorTAU& tau, MatrixQ& q, minimal_workspace work ) {
+            const VectorTAU& tau, MatrixQ& q, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(q) ) );
@@ -146,7 +146,7 @@ struct opgtr_impl {
     //
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
     static std::ptrdiff_t invoke( const char uplo, const VectorAP& ap,
-            const VectorTAU& tau, MatrixQ& q, optimal_workspace work ) {
+            const VectorTAU& tau, MatrixQ& q, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, ap, tau, q, minimal_workspace() );
     }

@@ -210,7 +210,7 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -233,7 +233,7 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
                 minimal_workspace() );
@@ -336,7 +336,7 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -359,7 +359,7 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
                 minimal_workspace() );

@@ -213,7 +213,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
-            real_type& rconde, real_type& rcondv, minimal_workspace work ) {
+            real_type& rconde, real_type& rcondv, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a), sense ) );
@@ -237,7 +237,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
-            real_type& rconde, real_type& rcondv, optimal_workspace work ) {
+            real_type& rconde, real_type& rcondv, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
@@ -368,7 +368,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
-            real_type& rconde, real_type& rcondv, minimal_workspace work ) {
+            real_type& rconde, real_type& rcondv, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a), sense ) );
@@ -391,7 +391,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
-            real_type& rconde, real_type& rcondv, optimal_workspace work ) {
+            real_type& rconde, real_type& rcondv, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(

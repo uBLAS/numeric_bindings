@@ -127,7 +127,7 @@ struct unghr_impl {
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( const fortran_int_t n,
             const fortran_int_t ilo, const fortran_int_t ihi,
-            MatrixA& a, const VectorTAU& tau, minimal_workspace work ) {
+            MatrixA& a, const VectorTAU& tau, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( ihi,
                 ilo ) );
@@ -144,7 +144,7 @@ struct unghr_impl {
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( const fortran_int_t n,
             const fortran_int_t ilo, const fortran_int_t ihi,
-            MatrixA& a, const VectorTAU& tau, optimal_workspace work ) {
+            MatrixA& a, const VectorTAU& tau, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         detail::unghr( n, ilo, ihi, bindings::begin_value(a),

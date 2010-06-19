@@ -160,7 +160,7 @@ struct gejsv_impl {
     static std::ptrdiff_t invoke( const char joba, const char jobu,
             const char jobv, const char jobr, const char jobt,
             const char jobp, MatrixA& a, VectorSVA& sva, MatrixU& u,
-            MatrixV& v, minimal_workspace work ) {
+            MatrixV& v, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( joba,
                 jobu, jobv, bindings::size_row(a),
@@ -184,7 +184,7 @@ struct gejsv_impl {
     static std::ptrdiff_t invoke( const char joba, const char jobu,
             const char jobv, const char jobr, const char jobt,
             const char jobp, MatrixA& a, VectorSVA& sva, MatrixU& u,
-            MatrixV& v, optimal_workspace work ) {
+            MatrixV& v, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( joba, jobu, jobv, jobr, jobt, jobp, a, sva, u, v,
                 minimal_workspace() );

@@ -150,7 +150,7 @@ struct sbgst_impl {
     //
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
-            const MatrixBB& bb, MatrixX& x, minimal_workspace work ) {
+            const MatrixBB& bb, MatrixX& x, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
@@ -167,7 +167,7 @@ struct sbgst_impl {
     //
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
-            const MatrixBB& bb, MatrixX& x, optimal_workspace work ) {
+            const MatrixBB& bb, MatrixX& x, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         return invoke( vect, ab, bb, x, minimal_workspace() );

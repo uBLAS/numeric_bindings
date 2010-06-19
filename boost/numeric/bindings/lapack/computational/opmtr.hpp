@@ -138,7 +138,7 @@ struct opmtr_impl {
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char uplo,
             const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
                 bindings::size_row(c), bindings::size_column(c) ) );
@@ -156,7 +156,7 @@ struct opmtr_impl {
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char uplo,
             const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, uplo, ap, tau, c, minimal_workspace() );
     }

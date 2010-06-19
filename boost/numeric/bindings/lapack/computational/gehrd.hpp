@@ -163,7 +163,7 @@ struct gehrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( const fortran_int_t ilo,
             const fortran_int_t ihi, MatrixA& a, VectorTAU& tau,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -180,7 +180,7 @@ struct gehrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( const fortran_int_t ilo,
             const fortran_int_t ihi, MatrixA& a, VectorTAU& tau,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::gehrd( bindings::size_column(a), ilo, ihi,
@@ -251,7 +251,7 @@ struct gehrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( const fortran_int_t ilo,
             const fortran_int_t ihi, MatrixA& a, VectorTAU& tau,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -268,7 +268,7 @@ struct gehrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( const fortran_int_t ilo,
             const fortran_int_t ihi, MatrixA& a, VectorTAU& tau,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         detail::gehrd( bindings::size_column(a), ilo, ihi,

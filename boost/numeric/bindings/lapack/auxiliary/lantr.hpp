@@ -155,7 +155,7 @@ struct lantr_impl {
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
@@ -173,7 +173,7 @@ struct lantr_impl {
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;

@@ -230,8 +230,7 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char job, const char compq,
             const char compz, const fortran_int_t ilo, MatrixH& h,
             MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-            VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-            minimal_workspace work ) {
+            VectorBETA& beta, MatrixQ& q, MatrixZ& z, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(h) ) );
@@ -252,8 +251,7 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char job, const char compq,
             const char compz, const fortran_int_t ilo, MatrixH& h,
             MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
-            VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-            optimal_workspace work ) {
+            VectorBETA& beta, MatrixQ& q, MatrixZ& z, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::hgeqz( job, compq, compz, bindings::size_column(h), ilo,
@@ -373,7 +371,7 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char job, const char compq,
             const char compz, const fortran_int_t ilo, MatrixH& h,
             MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-            MatrixZ& z, minimal_workspace work ) {
+            MatrixZ& z, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(h) ) );
@@ -395,7 +393,7 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char job, const char compq,
             const char compz, const fortran_int_t ilo, MatrixH& h,
             MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-            MatrixZ& z, optimal_workspace work ) {
+            MatrixZ& z, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(

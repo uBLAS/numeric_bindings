@@ -230,7 +230,7 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixQ, typename MatrixPT, typename MatrixC >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_row(ab), bindings::size_column(ab) ) );
@@ -248,7 +248,7 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixQ, typename MatrixPT, typename MatrixC >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( vect, ab, d, e, q, pt, c, minimal_workspace() );
     }
@@ -363,7 +363,7 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixQ, typename MatrixPT, typename MatrixC >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_row(ab), bindings::size_column(ab) ) );
@@ -384,7 +384,7 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixQ, typename MatrixPT, typename MatrixC >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( vect, ab, d, e, q, pt, c, minimal_workspace() );
     }

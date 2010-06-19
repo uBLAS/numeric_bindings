@@ -228,7 +228,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixX, typename VectorFERR, typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
@@ -250,7 +250,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixX, typename VectorFERR, typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         return invoke( ab, afb, b, x, ferr, berr, minimal_workspace() );
@@ -364,7 +364,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixX, typename VectorFERR, typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
@@ -386,7 +386,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixX, typename VectorFERR, typename VectorBERR >
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         return invoke( ab, afb, b, x, ferr, berr, minimal_workspace() );

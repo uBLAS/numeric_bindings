@@ -148,7 +148,7 @@ struct ptcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE >
     static std::ptrdiff_t invoke( const VectorD& d, const VectorE& e,
-            const real_type anorm, real_type& rcond, minimal_workspace work ) {
+            const real_type anorm, real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size(d) ) );
@@ -164,7 +164,7 @@ struct ptcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE >
     static std::ptrdiff_t invoke( const VectorD& d, const VectorE& e,
-            const real_type anorm, real_type& rcond, optimal_workspace work ) {
+            const real_type anorm, real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( d, e, anorm, rcond, minimal_workspace() );
     }
@@ -216,7 +216,7 @@ struct ptcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE >
     static std::ptrdiff_t invoke( const VectorD& d, const VectorE& e,
-            const real_type anorm, real_type& rcond, minimal_workspace work ) {
+            const real_type anorm, real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 bindings::size(d) ) );
@@ -232,7 +232,7 @@ struct ptcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE >
     static std::ptrdiff_t invoke( const VectorD& d, const VectorE& e,
-            const real_type anorm, real_type& rcond, optimal_workspace work ) {
+            const real_type anorm, real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( d, e, anorm, rcond, minimal_workspace() );
     }

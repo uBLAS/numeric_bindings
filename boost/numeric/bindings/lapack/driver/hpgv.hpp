@@ -142,7 +142,7 @@ struct hpgv_impl {
             typename MatrixZ >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixAP& ap, MatrixBP& bp, VectorW& w,
-            MatrixZ& z, minimal_workspace work ) {
+            MatrixZ& z, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
@@ -164,7 +164,7 @@ struct hpgv_impl {
             typename MatrixZ >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixAP& ap, MatrixBP& bp, VectorW& w,
-            MatrixZ& z, optimal_workspace work ) {
+            MatrixZ& z, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         return invoke( itype, jobz, ap, bp, w, z, minimal_workspace() );

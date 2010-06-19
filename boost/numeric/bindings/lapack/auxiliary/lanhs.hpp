@@ -137,7 +137,7 @@ struct lanhs_impl {
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -153,7 +153,7 @@ struct lanhs_impl {
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( norm, a, minimal_workspace() );
     }

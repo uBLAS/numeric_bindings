@@ -181,7 +181,7 @@ struct hbevx_impl {
             MatrixAB& ab, MatrixQ& q, const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
+            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
@@ -207,7 +207,7 @@ struct hbevx_impl {
             MatrixAB& ab, MatrixQ& q, const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         return invoke( jobz, range, ab, q, vl, vu, il, iu, abstol, m, w, z,

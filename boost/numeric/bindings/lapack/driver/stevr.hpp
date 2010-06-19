@@ -164,7 +164,7 @@ struct stevr_impl {
             const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, minimal_workspace work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -187,7 +187,7 @@ struct stevr_impl {
             const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, optimal_workspace work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;

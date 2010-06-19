@@ -154,8 +154,7 @@ struct stebz_impl {
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, const VectorD& d, const VectorE& e,
             fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
-            VectorIBLOCK& iblock, VectorISPLIT& isplit,
-            minimal_workspace work ) {
+            VectorIBLOCK& iblock, VectorISPLIT& isplit, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -178,8 +177,7 @@ struct stebz_impl {
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, const VectorD& d, const VectorE& e,
             fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
-            VectorIBLOCK& iblock, VectorISPLIT& isplit,
-            optimal_workspace work ) {
+            VectorIBLOCK& iblock, VectorISPLIT& isplit, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( range, order, n, vl, vu, il, iu, abstol, d, e, m,
                 nsplit, w, iblock, isplit, minimal_workspace() );

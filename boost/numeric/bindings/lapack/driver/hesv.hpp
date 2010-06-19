@@ -142,7 +142,7 @@ struct hesv_impl {
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work() );
@@ -158,7 +158,7 @@ struct hesv_impl {
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         value_type opt_size_work;

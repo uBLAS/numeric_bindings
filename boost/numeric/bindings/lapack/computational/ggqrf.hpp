@@ -198,7 +198,7 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, minimal_workspace work ) {
+            VectorTAUB& taub, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a),
@@ -216,7 +216,7 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, optimal_workspace work ) {
+            VectorTAUB& taub, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::ggqrf( bindings::size_row(a), bindings::size_column(a),
@@ -316,7 +316,7 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, minimal_workspace work ) {
+            VectorTAUB& taub, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a),
@@ -334,7 +334,7 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, optimal_workspace work ) {
+            VectorTAUB& taub, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         detail::ggqrf( bindings::size_row(a), bindings::size_column(a),

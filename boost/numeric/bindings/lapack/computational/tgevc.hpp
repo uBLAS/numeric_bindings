@@ -210,7 +210,7 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-            fortran_int_t& m, minimal_workspace work ) {
+            fortran_int_t& m, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(s) ) );
@@ -230,7 +230,7 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-            fortran_int_t& m, optimal_workspace work ) {
+            fortran_int_t& m, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, howmny, select, s, p, vl, vr, mm, m,
                 minimal_workspace() );
@@ -325,7 +325,7 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-            fortran_int_t& m, minimal_workspace work ) {
+            fortran_int_t& m, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(s) ) );
@@ -347,7 +347,7 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const Side side, const char howmny,
             const VectorSELECT& select, const MatrixS& s, const MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-            fortran_int_t& m, optimal_workspace work ) {
+            fortran_int_t& m, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, howmny, select, s, p, vl, vr, mm, m,
                 minimal_workspace() );

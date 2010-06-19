@@ -258,7 +258,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
-            real_type& pr, VectorDIF& dif, minimal_workspace work ) {
+            real_type& pr, VectorDIF& dif, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -283,7 +283,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
-            real_type& pr, VectorDIF& dif, optimal_workspace work ) {
+            real_type& pr, VectorDIF& dif, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
@@ -427,7 +427,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             fortran_int_t& m, real_type& pl, real_type& pr,
-            VectorDIF& dif, minimal_workspace work ) {
+            VectorDIF& dif, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -452,7 +452,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             fortran_int_t& m, real_type& pl, real_type& pr,
-            VectorDIF& dif, optimal_workspace work ) {
+            VectorDIF& dif, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         fortran_int_t opt_size_iwork;

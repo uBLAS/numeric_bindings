@@ -203,7 +203,7 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixU, typename MatrixC >
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 bindings::size_column(vt), bindings::size_row(u),
@@ -222,7 +222,7 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixU, typename MatrixC >
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, n, d, e, vt, u, c, minimal_workspace() );
     }
@@ -316,7 +316,7 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixU, typename MatrixC >
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n,
                 bindings::size_column(vt), bindings::size_row(u),
@@ -335,7 +335,7 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixU, typename MatrixC >
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, n, d, e, vt, u, c, minimal_workspace() );
     }

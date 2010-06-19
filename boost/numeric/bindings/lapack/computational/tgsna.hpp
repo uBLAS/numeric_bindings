@@ -229,7 +229,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -254,7 +254,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -382,7 +382,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -407,7 +407,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m,
                 minimal_workspace() );

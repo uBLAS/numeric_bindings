@@ -132,7 +132,7 @@ struct heev_impl {
     //
     template< typename MatrixA, typename VectorW >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorW& w,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
@@ -151,7 +151,7 @@ struct heev_impl {
     //
     template< typename MatrixA, typename VectorW >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorW& w,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         value_type opt_size_work;

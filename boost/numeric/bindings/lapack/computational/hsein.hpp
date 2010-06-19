@@ -231,8 +231,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const char initv, VectorSELECT& select, const MatrixH& h,
             VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            VectorIFAILL& ifaill, VectorIFAILR& ifailr,
-            minimal_workspace work ) {
+            VectorIFAILL& ifaill, VectorIFAILR& ifailr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(h), ?2 ) );
@@ -254,8 +253,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const char initv, VectorSELECT& select, const MatrixH& h,
             VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            VectorIFAILL& ifaill, VectorIFAILR& ifailr,
-            optimal_workspace work ) {
+            VectorIFAILL& ifaill, VectorIFAILR& ifailr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, eigsrc, initv, select, h, wr, wi, vl, vr, mm, m,
                 ifaill, ifailr, minimal_workspace() );
@@ -361,8 +359,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char initv, const VectorSELECT& select, const MatrixH& h,
             VectorW& w, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            VectorIFAILL& ifaill, VectorIFAILR& ifailr,
-            minimal_workspace work ) {
+            VectorIFAILL& ifaill, VectorIFAILR& ifailr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(h) ) );
@@ -386,8 +383,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char initv, const VectorSELECT& select, const MatrixH& h,
             VectorW& w, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            VectorIFAILL& ifaill, VectorIFAILR& ifailr,
-            optimal_workspace work ) {
+            VectorIFAILL& ifaill, VectorIFAILR& ifailr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( side, eigsrc, initv, select, h, w, vl, vr, mm, m,
                 ifaill, ifailr, minimal_workspace() );

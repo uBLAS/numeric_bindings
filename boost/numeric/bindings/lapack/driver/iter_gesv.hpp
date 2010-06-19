@@ -165,7 +165,7 @@ struct iter_gesv_impl< Value, typename boost::enable_if< is_real< Value > >::typ
             typename MatrixX >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             const MatrixB& b, MatrixX& x, fortran_int_t& iter,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a), bindings::size_column(b) ) );
@@ -185,7 +185,7 @@ struct iter_gesv_impl< Value, typename boost::enable_if< is_real< Value > >::typ
             typename MatrixX >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             const MatrixB& b, MatrixX& x, fortran_int_t& iter,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( a, ipiv, b, x, iter, minimal_workspace() );
     }
@@ -286,7 +286,7 @@ struct iter_gesv_impl< Value, typename boost::enable_if< is_complex< Value > >::
             typename MatrixX >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             const MatrixB& b, MatrixX& x, fortran_int_t& iter,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a), bindings::size_column(b) ) );
@@ -309,7 +309,7 @@ struct iter_gesv_impl< Value, typename boost::enable_if< is_complex< Value > >::
             typename MatrixX >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             const MatrixB& b, MatrixX& x, fortran_int_t& iter,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( a, ipiv, b, x, iter, minimal_workspace() );
     }

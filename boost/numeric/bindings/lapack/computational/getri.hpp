@@ -221,7 +221,7 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         bindings::detail::array< real_type > tmp_work( min_size_work(
@@ -238,7 +238,7 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         real_type opt_size_work;
@@ -303,7 +303,7 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         bindings::detail::array< value_type > tmp_work( min_size_work(
@@ -320,7 +320,7 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         value_type opt_size_work;

@@ -202,7 +202,7 @@ struct geev_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             typename MatrixVL, typename MatrixVR >
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-            MatrixVR& vr, minimal_workspace work ) {
+            MatrixVR& vr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( jobvl,
                 jobvr, bindings::size_column(a) ) );
@@ -221,7 +221,7 @@ struct geev_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             typename MatrixVL, typename MatrixVR >
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
-            MatrixVR& vr, optimal_workspace work ) {
+            MatrixVR& vr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         detail::geev( jobvl, jobvr, bindings::size_column(a),
@@ -325,7 +325,7 @@ struct geev_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             typename MatrixVR >
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorW& w, MatrixVL& vl, MatrixVR& vr,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
@@ -346,7 +346,7 @@ struct geev_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             typename MatrixVR >
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorW& w, MatrixVL& vl, MatrixVR& vr,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(

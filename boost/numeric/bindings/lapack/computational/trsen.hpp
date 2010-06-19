@@ -150,7 +150,7 @@ struct trsen_impl {
     static std::ptrdiff_t invoke( const char job, const char compq,
             const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             fortran_int_t& m, real_type& s, real_type& sep,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -170,7 +170,7 @@ struct trsen_impl {
     static std::ptrdiff_t invoke( const char job, const char compq,
             const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             fortran_int_t& m, real_type& s, real_type& sep,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         detail::trsen( job, compq, bindings::begin_value(select),

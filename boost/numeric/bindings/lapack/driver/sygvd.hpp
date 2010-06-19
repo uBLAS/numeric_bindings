@@ -152,7 +152,7 @@ struct sygvd_impl {
     template< typename MatrixA, typename MatrixB, typename VectorW >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixA& a, MatrixB& b, VectorW& w,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work( jobz,
@@ -173,7 +173,7 @@ struct sygvd_impl {
     template< typename MatrixA, typename MatrixB, typename VectorW >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixA& a, MatrixB& b, VectorW& w,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         real_type opt_size_work;

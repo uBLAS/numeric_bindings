@@ -145,7 +145,7 @@ struct lacon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorX >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
-            real_type& est, fortran_int_t& kase, minimal_workspace work ) {
+            real_type& est, fortran_int_t& kase, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_v( min_size_v( n ) );
         bindings::detail::array<
@@ -162,7 +162,7 @@ struct lacon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorX >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
-            real_type& est, fortran_int_t& kase, optimal_workspace work ) {
+            real_type& est, fortran_int_t& kase, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( n, x, est, kase, minimal_workspace() );
     }
@@ -221,7 +221,7 @@ struct lacon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorX >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
-            real_type& est, fortran_int_t& kase, minimal_workspace work ) {
+            real_type& est, fortran_int_t& kase, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_v( min_size_v( n ) );
         return invoke( n, x, est, kase, workspace( tmp_v ) );
@@ -236,7 +236,7 @@ struct lacon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorX >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
-            real_type& est, fortran_int_t& kase, optimal_workspace work ) {
+            real_type& est, fortran_int_t& kase, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         return invoke( n, x, est, kase, minimal_workspace() );
     }

@@ -239,7 +239,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -265,7 +265,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -400,7 +400,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
-            minimal_workspace work ) {
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -426,7 +426,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
-            optimal_workspace work ) {
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;

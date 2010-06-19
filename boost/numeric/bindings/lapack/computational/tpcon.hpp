@@ -159,7 +159,7 @@ struct tpcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
-            real_type& rcond, minimal_workspace work ) {
+            real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
@@ -179,7 +179,7 @@ struct tpcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
-            real_type& rcond, optimal_workspace work ) {
+            real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
@@ -244,7 +244,7 @@ struct tpcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
-            real_type& rcond, minimal_workspace work ) {
+            real_type& rcond, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
@@ -264,7 +264,7 @@ struct tpcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
-            real_type& rcond, optimal_workspace work ) {
+            real_type& rcond, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;

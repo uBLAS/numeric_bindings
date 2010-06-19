@@ -103,7 +103,7 @@ struct orghr_impl {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(tau) >= n-1 );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( ihi, ilo ));
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
@@ -127,8 +127,8 @@ struct orghr_impl {
             const fortran_int_t ilo, const fortran_int_t ihi,
             MatrixA& a, const VectorTAU& tau, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( ihi,
+                ilo ) );
         return invoke( n, ilo, ihi, a, tau, workspace( tmp_work ) );
     }
 
@@ -157,9 +157,9 @@ struct orghr_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t ihi,
+            const std::ptrdiff_t ilo ) {
+        return ihi-ilo;
     }
 };
 

@@ -200,7 +200,8 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 min_size_iwork( bindings::size_column_op(a, trans()),
                 bindings::size_column(b) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ));
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
@@ -243,7 +244,8 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( bindings::size_column_op(a, trans()),
                 bindings::size_column(b) ) );
@@ -290,9 +292,9 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >(1,2*m*n);
     }
 
     //
@@ -359,7 +361,8 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 min_size_iwork( bindings::size_column_op(a, trans()),
                 bindings::size_column(b) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ));
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
@@ -402,7 +405,8 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( bindings::size_column_op(a, trans()),
                 bindings::size_column(b) ) );
@@ -449,9 +453,9 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >(1,2*m*n);
     }
 
     //

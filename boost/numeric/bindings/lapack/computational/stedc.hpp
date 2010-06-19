@@ -136,9 +136,8 @@ struct stedc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK, typename IWORK >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, detail::workspace2< WORK,
-            IWORK > work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -152,18 +151,18 @@ struct stedc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(d) >= 0 );
+        BOOST_ASSERT( bindings::size(e) >= bindings::size(d)-1 );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( compz, n ));
+                min_size_iwork( compz, bindings::size(d) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( compz, bindings::size(d) ));
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
-        BOOST_ASSERT( n >= 0 );
-        return detail::stedc( compz, n, bindings::begin_value(d),
-                bindings::begin_value(e), bindings::begin_value(z),
-                bindings::stride_major(z),
+        return detail::stedc( compz, bindings::size(d),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(z), bindings::stride_major(z),
                 bindings::begin_value(work.select(real_type())),
                 bindings::size(work.select(real_type())),
                 bindings::begin_value(work.select(fortran_int_t())),
@@ -178,14 +177,14 @@ struct stedc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( compz,
+                bindings::size(d) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( compz, n ) );
-        return invoke( compz, n, d, e, z, workspace( tmp_work, tmp_iwork ) );
+                min_size_iwork( compz, bindings::size(d) ) );
+        return invoke( compz, d, e, z, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -196,29 +195,36 @@ struct stedc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
-        detail::stedc( compz, n, bindings::begin_value(d),
-                bindings::begin_value(e), bindings::begin_value(z),
-                bindings::stride_major(z), &opt_size_work, -1,
-                &opt_size_iwork, -1 );
+        detail::stedc( compz, bindings::size(d),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(z), bindings::stride_major(z),
+                &opt_size_work, -1, &opt_size_iwork, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        return invoke( compz, n, d, e, z, workspace( tmp_work, tmp_iwork ) );
+        return invoke( compz, d, e, z, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char compz,
+            const std::ptrdiff_t n ) {
+        if ( compz == 'N' || n <= 1 ) {
+            return 1;
+        } else if ( compz == 'V' ) {
+           return 1 + 3*n + 2*n*static_cast<std::ptrdiff_t>(std::ceil(std::log(
+                   n)/std::log(2))) + 3*n*n;
+        } else { // compz == 'I'
+           return 1 + 4*n + n*n;
+        }
     }
 
     //
@@ -227,7 +233,14 @@ struct stedc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     static std::ptrdiff_t min_size_iwork( const char compz,
             const std::ptrdiff_t n ) {
-        // some formula
+        if ( compz == 'N' || n <= 1 ) {
+            return 1;
+        } else if ( compz == 'V' ) {
+           return 6 + 6*n + 5*n*static_cast<std::ptrdiff_t>(std::ceil(std::log(
+                   n)/std::log(2)));
+        } else { // compz == 'I'
+           return 3 + 5*n;
+        }
     }
 };
 
@@ -247,9 +260,8 @@ struct stedc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK, typename RWORK, typename IWORK >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, detail::workspace3< WORK,
-            RWORK, IWORK > work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, detail::workspace3< WORK, RWORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -259,20 +271,20 @@ struct stedc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(d) >= 0 );
+        BOOST_ASSERT( bindings::size(e) >= bindings::size(d)-1 );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( compz, n ));
+                min_size_iwork( compz, bindings::size(d) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_rwork( $CALL_MIN_SIZE ));
+                min_size_rwork( compz, bindings::size(d) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( compz, bindings::size(d) ));
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
-        BOOST_ASSERT( n >= 0 );
-        return detail::stedc( compz, n, bindings::begin_value(d),
-                bindings::begin_value(e), bindings::begin_value(z),
-                bindings::stride_major(z),
+        return detail::stedc( compz, bindings::size(d),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(z), bindings::stride_major(z),
                 bindings::begin_value(work.select(value_type())),
                 bindings::size(work.select(value_type())),
                 bindings::begin_value(work.select(real_type())),
@@ -289,16 +301,16 @@ struct stedc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
-        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work( compz,
+                bindings::size(d) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( compz,
+                bindings::size(d) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( compz, n ) );
-        return invoke( compz, n, d, e, z, workspace( tmp_work, tmp_rwork,
+                min_size_iwork( compz, bindings::size(d) ) );
+        return invoke( compz, d, e, z, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
@@ -310,23 +322,23 @@ struct stedc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char compz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char compz, VectorD& d, VectorE& e,
+            MatrixZ& z, optimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         real_type opt_size_rwork;
         fortran_int_t opt_size_iwork;
-        detail::stedc( compz, n, bindings::begin_value(d),
-                bindings::begin_value(e), bindings::begin_value(z),
-                bindings::stride_major(z), &opt_size_work, -1,
-                &opt_size_rwork, -1, &opt_size_iwork, -1 );
+        detail::stedc( compz, bindings::size(d),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(z), bindings::stride_major(z),
+                &opt_size_work, -1, &opt_size_rwork, -1, &opt_size_iwork, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< real_type > tmp_rwork(
                 traits::detail::to_int( opt_size_rwork ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        return invoke( compz, n, d, e, z, workspace( tmp_work, tmp_rwork,
+        return invoke( compz, d, e, z, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
@@ -334,18 +346,29 @@ struct stedc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char compz,
+            const std::ptrdiff_t n ) {
+        if ( compz == 'N' || compz == 'I' || n <= 1 ) {
+            return 1;
+        } else { // compz == 'V'
+           return n*n;
+        }
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array rwork.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_rwork( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_rwork( const char compz,
+            const std::ptrdiff_t n ) {
+        if ( compz == 'N' || n <= 1 ) {
+            return 1;
+        } else if ( compz == 'V' ) {
+           return 1 + 3*n + 2*n*static_cast<std::ptrdiff_t>(std::ceil(std::log(
+                   n)/std::log(2))) + 3*n*n;
+        } else { // compz == 'I'
+           return 1 + 4*n + 2*n*n;
+        }
     }
 
     //
@@ -354,7 +377,14 @@ struct stedc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     static std::ptrdiff_t min_size_iwork( const char compz,
             const std::ptrdiff_t n ) {
-        // some formula
+        if ( compz == 'N' || n <= 1 ) {
+            return 1;
+        } else if ( compz == 'V' ) {
+           return 6 + 6*n + 5*n*static_cast<std::ptrdiff_t>(std::ceil(std::log(
+                   n)/std::log(2)));
+        } else { // compz == 'I'
+           return 3 + 5*n;
+        }
     }
 };
 
@@ -379,10 +409,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, VectorD& d,
-        VectorE& e, MatrixZ& z, Workspace work ) {
+stedc( const char compz, VectorD& d, VectorE& e, MatrixZ& z,
+        Workspace work ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z, work );
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -395,11 +425,9 @@ stedc( const char compz, const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, VectorD& d,
-        VectorE& e, MatrixZ& z ) {
+stedc( const char compz, VectorD& d, VectorE& e, MatrixZ& z ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z,
-            optimal_workspace() );
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -413,10 +441,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, MatrixZ& z, Workspace work ) {
+stedc( const char compz, const VectorD& d, VectorE& e, MatrixZ& z,
+        Workspace work ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z, work );
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -429,11 +457,9 @@ stedc( const char compz, const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, MatrixZ& z ) {
+stedc( const char compz, const VectorD& d, VectorE& e, MatrixZ& z ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z,
-            optimal_workspace() );
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -447,10 +473,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, MatrixZ& z, Workspace work ) {
+stedc( const char compz, VectorD& d, const VectorE& e, MatrixZ& z,
+        Workspace work ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z, work );
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -463,11 +489,9 @@ stedc( const char compz, const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, MatrixZ& z ) {
+stedc( const char compz, VectorD& d, const VectorE& e, MatrixZ& z ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z,
-            optimal_workspace() );
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -481,10 +505,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, MatrixZ& z, Workspace work ) {
+stedc( const char compz, const VectorD& d, const VectorE& e, MatrixZ& z,
+        Workspace work ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z, work );
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -497,11 +521,10 @@ stedc( const char compz, const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, MatrixZ& z ) {
+stedc( const char compz, const VectorD& d, const VectorE& e,
+        MatrixZ& z ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z,
-            optimal_workspace() );
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -515,10 +538,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, VectorD& d,
-        VectorE& e, const MatrixZ& z, Workspace work ) {
+stedc( const char compz, VectorD& d, VectorE& e, const MatrixZ& z,
+        Workspace work ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z, work );
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -531,11 +554,9 @@ stedc( const char compz, const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, VectorD& d,
-        VectorE& e, const MatrixZ& z ) {
+stedc( const char compz, VectorD& d, VectorE& e, const MatrixZ& z ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z,
-            optimal_workspace() );
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -549,10 +570,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, const MatrixZ& z, Workspace work ) {
+stedc( const char compz, const VectorD& d, VectorE& e, const MatrixZ& z,
+        Workspace work ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z, work );
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -565,11 +586,10 @@ stedc( const char compz, const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, const VectorD& d,
-        VectorE& e, const MatrixZ& z ) {
+stedc( const char compz, const VectorD& d, VectorE& e,
+        const MatrixZ& z ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z,
-            optimal_workspace() );
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -583,10 +603,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, const MatrixZ& z, Workspace work ) {
+stedc( const char compz, VectorD& d, const VectorE& e, const MatrixZ& z,
+        Workspace work ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z, work );
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -599,11 +619,10 @@ stedc( const char compz, const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, VectorD& d,
-        const VectorE& e, const MatrixZ& z ) {
+stedc( const char compz, VectorD& d, const VectorE& e,
+        const MatrixZ& z ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z,
-            optimal_workspace() );
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 //
@@ -617,10 +636,10 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const MatrixZ& z, Workspace work ) {
+stedc( const char compz, const VectorD& d, const VectorE& e,
+        const MatrixZ& z, Workspace work ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z, work );
+            MatrixZ >::type >::invoke( compz, d, e, z, work );
 }
 
 //
@@ -633,11 +652,10 @@ stedc( const char compz, const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-stedc( const char compz, const fortran_int_t n, const VectorD& d,
-        const VectorE& e, const MatrixZ& z ) {
+stedc( const char compz, const VectorD& d, const VectorE& e,
+        const MatrixZ& z ) {
     return stedc_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( compz, n, d, e, z,
-            optimal_workspace() );
+            MatrixZ >::type >::invoke( compz, d, e, z, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -166,7 +166,8 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 std::ptrdiff_t >(bindings::size_row(b),
                 bindings::size_column(a)) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( bindings::size_column(a),
+                bindings::size_row(a), bindings::size_row(b) ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -200,7 +201,8 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorTAUB& taub, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                bindings::size_column(a), bindings::size_row(a),
+                bindings::size_row(b) ) );
         return invoke( a, taua, b, taub, workspace( tmp_work ) );
     }
 
@@ -231,9 +233,10 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n,
+            const std::ptrdiff_t m, const std::ptrdiff_t p ) {
+        return std::max< std::ptrdiff_t >(1,std::max< std::ptrdiff_t >(n,
+                std::max< std::ptrdiff_t >(m,p)));
     }
 };
 
@@ -281,7 +284,8 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 std::ptrdiff_t >(bindings::size_row(b),
                 bindings::size_column(a)) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( bindings::size_column(a),
+                bindings::size_row(a), bindings::size_row(b) ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -315,7 +319,8 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorTAUB& taub, minimal_workspace work ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                bindings::size_column(a), bindings::size_row(a),
+                bindings::size_row(b) ) );
         return invoke( a, taua, b, taub, workspace( tmp_work ) );
     }
 
@@ -346,9 +351,10 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n,
+            const std::ptrdiff_t m, const std::ptrdiff_t p ) {
+        return std::max< std::ptrdiff_t >(1,std::max< std::ptrdiff_t >(n,
+                std::max< std::ptrdiff_t >(m,p)));
     }
 };
 

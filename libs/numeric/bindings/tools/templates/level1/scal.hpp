@@ -9,8 +9,6 @@ $TEMPLATE[scal.all.arguments]
  A         (input) DATATYPE
 $TEMPLATE[scal.all.cblas_alias]
 A,ALPHA
-$TEMPLATE[scal.all.first_typename]
-VectorX
 $TEMPLATE[scal.complex.A.code.level_1]
 const ScalarA a
 $TEMPLATE[scal.complex.A.code.level_1_type]

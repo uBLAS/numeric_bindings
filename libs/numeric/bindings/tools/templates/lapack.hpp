@@ -173,7 +173,7 @@ $TEMPLATE[level1_workspace]
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< $TYPES >
-    static $INTEGER_TYPE invoke( $LEVEL1, minimal_workspace work ) {
+    static $INTEGER_TYPE invoke( $LEVEL1, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         $TYPEDEFS
         $INIT_USER_DEFINED_VARIABLES
@@ -189,7 +189,7 @@ $SETUP_MIN_WORKARRAYS_POST
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< $TYPES >
-    static $INTEGER_TYPE invoke( $LEVEL1, optimal_workspace work ) {
+    static $INTEGER_TYPE invoke( $LEVEL1, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         $TYPEDEFS
 $OPT_WORKSPACE_FUNC

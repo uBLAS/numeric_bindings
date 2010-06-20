@@ -35,5 +35,15 @@
 #include <boost/numeric/bindings/lapack/auxiliary/lantb.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/lantp.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/lantr.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/labrd.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/lacgv.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/lacon.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/laebz.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/lalsd.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/largv.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/larz.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/latrd.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/latrs.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/latrz.hpp>
 
 #endif

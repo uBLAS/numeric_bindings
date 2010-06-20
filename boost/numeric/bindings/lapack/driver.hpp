@@ -29,8 +29,6 @@
 #include <boost/numeric/bindings/lapack/driver/hpgv.hpp>
 #include <boost/numeric/bindings/lapack/driver/hpgvd.hpp>
 #include <boost/numeric/bindings/lapack/driver/hpgvx.hpp>
-#include <boost/numeric/bindings/lapack/driver/lacgv.hpp>
-#include <boost/numeric/bindings/lapack/driver/largv.hpp>
 #include <boost/numeric/bindings/lapack/driver/sbgv.hpp>
 #include <boost/numeric/bindings/lapack/driver/sbgvd.hpp>
 #include <boost/numeric/bindings/lapack/driver/sbgvx.hpp>
@@ -101,6 +99,5 @@
 #include <boost/numeric/bindings/lapack/driver/gelsd.hpp>
 #include <boost/numeric/bindings/lapack/driver/gelss.hpp>
 #include <boost/numeric/bindings/lapack/driver/gelsy.hpp>
-#include <boost/numeric/bindings/lapack/driver/lalsd.hpp>
 
 #endif

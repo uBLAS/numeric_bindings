@@ -26,8 +26,6 @@
 #include <boost/numeric/bindings/lapack/computational/geqp3.hpp>
 #include <boost/numeric/bindings/lapack/computational/geqrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/gerqf.hpp>
-#include <boost/numeric/bindings/lapack/computational/larz.hpp>
-#include <boost/numeric/bindings/lapack/computational/latrz.hpp>
 #include <boost/numeric/bindings/lapack/computational/orglq.hpp>
 #include <boost/numeric/bindings/lapack/computational/orgql.hpp>
 #include <boost/numeric/bindings/lapack/computational/orgqr.hpp>
@@ -51,7 +49,6 @@
 #include <boost/numeric/bindings/lapack/computational/bdsqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/gbbrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/gebrd.hpp>
-#include <boost/numeric/bindings/lapack/computational/labrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/orgbr.hpp>
 #include <boost/numeric/bindings/lapack/computational/ormbr.hpp>
 #include <boost/numeric/bindings/lapack/computational/ungbr.hpp>
@@ -93,8 +90,6 @@
 #include <boost/numeric/bindings/lapack/computational/hptrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/hptri.hpp>
 #include <boost/numeric/bindings/lapack/computational/hptrs.hpp>
-#include <boost/numeric/bindings/lapack/computational/lacon.hpp>
-#include <boost/numeric/bindings/lapack/computational/latrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pbcon.hpp>
 #include <boost/numeric/bindings/lapack/computational/pbequ.hpp>
 #include <boost/numeric/bindings/lapack/computational/pbrfs.hpp>
@@ -141,8 +136,6 @@
 #include <boost/numeric/bindings/lapack/computational/hbtrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/hetrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/hptrd.hpp>
-#include <boost/numeric/bindings/lapack/computational/laebz.hpp>
-#include <boost/numeric/bindings/lapack/computational/latrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/opgtr.hpp>
 #include <boost/numeric/bindings/lapack/computational/opmtr.hpp>
 #include <boost/numeric/bindings/lapack/computational/orgtr.hpp>

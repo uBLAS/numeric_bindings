@@ -16,7 +16,7 @@ lacon( const int_t n, VectorX& x, Scalar >,
 
 [heading Description]
 
-`lacon` (short for $FRIENDLY_NAME) provides a C++
+`lacon` (short for LAPACK auxiliary routine, TODO) provides a C++
 interface to LAPACK routines SLACON, DLACON, CLACON, and ZLACON. 
 `lacon` estimates the 1-norm of a square, complex matrix A.
 Reverse communication is used for evaluating matrix-vector products.

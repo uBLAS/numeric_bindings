@@ -16,7 +16,7 @@ latrd( const int_t nb, MatrixA& a, VectorE& e,
 
 [heading Description]
 
-`latrd` (short for $FRIENDLY_NAME) provides a C++
+`latrd` (short for LAPACK auxiliary routine, TODO) provides a C++
 interface to LAPACK routines SLATRD, DLATRD, CLATRD, and ZLATRD. 
 `latrd` reduces NB rows and columns of a complex Hermitian matrix A to
 Hermitian tridiagonal form by a unitary similarity

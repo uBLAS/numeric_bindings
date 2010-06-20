@@ -16,7 +16,7 @@ lacgv( const int_t n, VectorX& x,
 
 [heading Description]
 
-`lacgv` (short for $FRIENDLY_NAME) provides a C++
+`lacgv` (short for LAPACK auxiliary routine, TODO) provides a C++
 interface to LAPACK routines CLACGV and ZLACGV. 
 `lacgv` conjugates a complex vector of length N.
 

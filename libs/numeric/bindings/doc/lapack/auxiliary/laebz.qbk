@@ -20,7 +20,7 @@ laebz( const int_t ijob, const int_t nitmax,
 
 [heading Description]
 
-`laebz` (short for $FRIENDLY_NAME) provides a C++
+`laebz` (short for LAPACK auxiliary routine, TODO) provides a C++
 interface to LAPACK routines SLAEBZ and DLAEBZ. 
 `laebz` contains the iteration loops which compute and use the
 function N(w), which is the count of eigenvalues of a symmetric

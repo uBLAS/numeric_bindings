@@ -15,7 +15,7 @@ latrz( MatrixA& a, VectorTAU& tau );
 
 [heading Description]
 
-`latrz` (short for $FRIENDLY_NAME) provides a C++
+`latrz` (short for LAPACK auxiliary routine, TODO) provides a C++
 interface to LAPACK routines SLATRZ, DLATRZ, CLATRZ, and ZLATRZ. 
 `latrz` factors the M-by-(M+L) complex upper trapezoidal matrix
 [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R 0 ) * Z by means

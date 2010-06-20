@@ -16,7 +16,7 @@ latrs( const char uplo, const char normin, const MatrixA& a, VectorX& x,
 
 [heading Description]
 
-`latrs` (short for $FRIENDLY_NAME) provides a C++
+`latrs` (short for LAPACK auxiliary routine, TODO) provides a C++
 interface to LAPACK routines SLATRS, DLATRS, CLATRS, and ZLATRS. 
 `latrs` solves one of the triangular systems
 

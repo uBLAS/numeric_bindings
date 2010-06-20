@@ -21,7 +21,7 @@ larz( const Side side, const int_t l, const VectorViewV& v,
 
 [heading Description]
 
-`larz` (short for $FRIENDLY_NAME) provides a C++
+`larz` (short for LAPACK auxiliary routine, TODO) provides a C++
 interface to LAPACK routines SLARZ, DLARZ, CLARZ, and ZLARZ. 
 `larz` applies a complex elementary reflector H to a complex
 M-by-N matrix C, from either the left or the right. H is represented

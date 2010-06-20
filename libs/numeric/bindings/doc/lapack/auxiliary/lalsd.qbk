@@ -17,7 +17,7 @@ lalsd( const char uplo, const int_t smlsiz,
 
 [heading Description]
 
-`lalsd` (short for $FRIENDLY_NAME) provides a C++
+`lalsd` (short for LAPACK auxiliary routine, linear least squares, using d&c SVD) provides a C++
 interface to LAPACK routines SLALSD, DLALSD, CLALSD, and ZLALSD. 
 `lalsd` uses the singular value decomposition of A to solve the least
 squares problem of finding X to minimize the Euclidean norm of each

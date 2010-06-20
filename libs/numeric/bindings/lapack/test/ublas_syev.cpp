@@ -9,6 +9,7 @@
 #include "ublas_heev.hpp"
 
 #include <boost/numeric/bindings/lapack/driver/syev.hpp>
+#include <boost/numeric/bindings/noop.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
@@ -55,7 +56,7 @@ int do_memory_uplo(int n, W& workspace ) {
 
    // Compute eigen decomposition.
    symmetric_type s_a( a );
-   lapack::syev( 'V', s_a, e1, workspace ) ;
+   lapack::syev( 'V', bindings::noop(s_a), e1, workspace ) ;
 
    if (check_residual( a2, e1, a )) return 255 ;
 

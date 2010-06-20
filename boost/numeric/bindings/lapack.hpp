@@ -9,6 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HPP
 
+#include <boost/numeric/bindings/lapack/auxiliary.hpp>
 #include <boost/numeric/bindings/lapack/computational.hpp>
 #include <boost/numeric/bindings/lapack/driver.hpp>
 

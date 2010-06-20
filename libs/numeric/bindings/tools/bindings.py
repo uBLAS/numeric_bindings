@@ -258,6 +258,7 @@ def write_include_hierarchy( global_info_map, routines, template_map, dest_path 
     result = template_map[ parsermode + '_include_hierarchy' ]
     result = result.replace( "$CONTENT", content )
     result = result.replace( "$LEVEL", level.upper() )
+    result = result.replace( "$CAPITALIZED_LEVEL", level.capitalize() )
 
     open( dest_file, 'w' ).write( result )
 

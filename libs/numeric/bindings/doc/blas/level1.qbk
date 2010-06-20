@@ -1,3 +1,4 @@
+[section Level 1 BLAS]
 
 [include level1/asum.qbk]
 [include level1/axpy.qbk]
@@ -16,3 +17,4 @@
 [/include level1/set.qbk]
 [include level1/swap.qbk]
 
+[endsect]

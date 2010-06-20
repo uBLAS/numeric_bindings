@@ -1,3 +1,4 @@
+[section Level 2 BLAS]
 
 [include level2/gbmv.qbk]
 [include level2/gemv.qbk]
@@ -25,3 +26,4 @@
 [include level2/trmv.qbk]
 [include level2/trsv.qbk]
 
+[endsect]

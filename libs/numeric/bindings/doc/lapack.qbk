@@ -32,8 +32,9 @@ Like with lapack, the bindings focus on the first two levels of routines: driver
 
 `lapack::solve( a, b );`
 
-[include lapack/computational.qbk]
 [include lapack/driver.qbk]
+[include lapack/computational.qbk]
+[include lapack/auxiliary.qbk]
 
 [endsect]
 

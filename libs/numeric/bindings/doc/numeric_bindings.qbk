@@ -3,7 +3,7 @@
     [copyright 2002-2009 Rutger ter Borg, Krešimir Fresl, Thomas Klimpel, Toon Knapen, Karl Meerbergen]
     [purpose C++ bindings to widely used numeric libraries.]
     [id numeric_bindings]
-    [dirname numeric/bindings/]
+    [dirname numeric_bindings]
     [authors [Authors, Various]]
     [license
         Distributed under the Boost Software License, Version 1.0.
@@ -114,15 +114,15 @@ Example
 
 If you would like to include the whole of BLAS, just do a 
 
-``#include <boost/numeric/bindings/blas.hpp``
+``#include <boost/numeric/bindings/blas.hpp>``
 
 or, if you desire BLAS level2 only, doing a 
 
-``#include <boost/numeric/bindings/blas/level2.hpp``
+``#include <boost/numeric/bindings/blas/level2.hpp>``
 
 or, if you only want include per-operation, doing a 
 
-``#include <boost/numeric/bindings/blas/level3/gemm.hpp``
+``#include <boost/numeric/bindings/blas/level3/gemm.hpp>``
 
 will be the most granular level. 
 

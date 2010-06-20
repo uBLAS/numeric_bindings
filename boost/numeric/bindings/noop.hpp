@@ -45,12 +45,12 @@ struct noop {
 } // namespace result_of
 
 template< typename T >
-detail::noop_wrapper<T> noop( T& underlying ) {
+detail::noop_wrapper<T> const noop( T& underlying ) {
     return detail::noop_wrapper<T>( underlying );
 }
 
 template< typename T >
-detail::noop_wrapper<const T> noop( const T& underlying ) {
+detail::noop_wrapper<const T> const noop( const T& underlying ) {
     return detail::noop_wrapper<const T>( underlying );
 }
 

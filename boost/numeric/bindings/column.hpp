@@ -79,12 +79,12 @@ struct column {
 }
 
 template< typename T >
-detail::column_wrapper<T> column( T& underlying, std::size_t index ) {
+detail::column_wrapper<T> const column( T& underlying, std::size_t index ) {
     return detail::column_wrapper<T>( underlying, index );
 }
 
 template< typename T >
-detail::column_wrapper<const T> column( const T& underlying, std::size_t index ) {
+detail::column_wrapper<const T> const column( const T& underlying, std::size_t index ) {
     return detail::column_wrapper<const T>( underlying, index );
 }
 

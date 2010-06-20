@@ -78,12 +78,12 @@ struct row {
 } // namespace result_of
 
 template< typename T >
-detail::row_wrapper<T> row( T& underlying, std::size_t index ) {
+detail::row_wrapper<T> const row( T& underlying, std::size_t index ) {
     return detail::row_wrapper<T>( underlying, index );
 }
 
 template< typename T >
-detail::row_wrapper<const T> row( const T& underlying, std::size_t index ) {
+detail::row_wrapper<const T> const row( const T& underlying, std::size_t index ) {
     return detail::row_wrapper<const T>( underlying, index );
 }
 

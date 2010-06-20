@@ -32,12 +32,12 @@ struct conj {
 }
 
 template< typename T >
-typename result_of::conj< T >::type conj( T& t ) {
+typename result_of::conj< T >::type const conj( T& t ) {
     return typename result_of::conj< T >::type( t );
 }
 
 template< typename T >
-typename result_of::conj< const T >::type conj( const T& t ) {
+typename result_of::conj< const T >::type const conj( const T& t ) {
     return typename result_of::conj< const T >::type( t );
 }
 

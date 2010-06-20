@@ -134,12 +134,12 @@ struct trans {
 }
 
 template< typename T >
-typename result_of::trans<T>::type trans( T& underlying ) {
+typename result_of::trans<T>::type const trans( T& underlying ) {
     return detail::trans_wrapper<T, mpl::void_>( underlying );
 }
 
 template< typename T >
-typename result_of::trans<const T>::type trans( const T& underlying ) {
+typename result_of::trans<const T>::type const trans( const T& underlying ) {
     return detail::trans_wrapper<const T, mpl::void_>( underlying );
 }
 

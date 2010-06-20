@@ -29,12 +29,12 @@ struct upper {
 } // namespace result_of
 
 template< typename T >
-typename result_of::upper< T >::type upper( T& underlying ) {
+typename result_of::upper< T >::type const upper( T& underlying ) {
     return typename result_of::upper< T >::type( underlying );
 }
 
 template< typename T >
-typename result_of::upper< const T >::type upper( const T& underlying ) {
+typename result_of::upper< const T >::type const upper( const T& underlying ) {
     return typename result_of::upper< const T >::type( underlying );
 }
 

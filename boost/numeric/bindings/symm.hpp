@@ -28,12 +28,12 @@ struct symm {
 } // namespace result_of
 
 template< typename T >
-typename result_of::symm< T >::type symm( T& underlying ) {
+typename result_of::symm< T >::type const symm( T& underlying ) {
     return typename result_of::symm< T >::type( underlying );
 }
 
 template< typename T >
-typename result_of::symm< const T >::type symm( const T& underlying ) {
+typename result_of::symm< const T >::type const symm( const T& underlying ) {
     return typename result_of::symm< const T >::type( underlying );
 }
 

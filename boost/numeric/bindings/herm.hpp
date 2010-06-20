@@ -28,12 +28,12 @@ struct herm {
 } // namespace result_of
 
 template< typename T >
-typename result_of::herm< T >::type herm( T& underlying ) {
+typename result_of::herm< T >::type const herm( T& underlying ) {
     return typename result_of::herm< T >::type( underlying );
 }
 
 template< typename T >
-typename result_of::herm< const T >::type herm( const T& underlying ) {
+typename result_of::herm< const T >::type const herm( const T& underlying ) {
     return typename result_of::herm< const T >::type( underlying );
 }
 

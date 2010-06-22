@@ -15,7 +15,7 @@ latrz( MatrixA& a, VectorTAU& tau );
 
 [heading Description]
 
-`latrz` (short for LAPACK auxiliary routine, TODO) provides a C++
+`latrz` (short for $FRIENDLY_NAME) provides a C++
 interface to LAPACK routines SLATRZ, DLATRZ, CLATRZ, and ZLATRZ. 
 `latrz` factors the M-by-(M+L) complex upper trapezoidal matrix
 [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R 0 ) * Z by means
@@ -40,7 +40,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/computational/latrz.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/latrz.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -61,7 +61,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/computational/latrz.h
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/computational/latrz.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/latrz.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::latrz( x, y, z );

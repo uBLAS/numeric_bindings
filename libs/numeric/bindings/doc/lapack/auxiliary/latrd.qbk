@@ -16,7 +16,7 @@ latrd( const int_t nb, MatrixA& a, VectorE& e,
 
 [heading Description]
 
-`latrd` (short for LAPACK auxiliary routine, TODO) provides a C++
+`latrd` (short for $FRIENDLY_NAME) provides a C++
 interface to LAPACK routines SLATRD, DLATRD, CLATRD, and ZLATRD. 
 `latrd` reduces NB rows and columns of a complex Hermitian matrix A to
 Hermitian tridiagonal form by a unitary similarity
@@ -48,7 +48,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/computational/latrd.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/latrd.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -69,7 +69,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/computational/latrd.h
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/computational/latrd.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/latrd.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::latrd( x, y, z );

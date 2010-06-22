@@ -16,7 +16,7 @@ labrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
 
 [heading Description]
 
-`labrd` (short for LAPACK auxiliary routine, TODO) provides a C++
+`labrd` (short for $FRIENDLY_NAME) provides a C++
 interface to LAPACK routines SLABRD, DLABRD, CLABRD, and ZLABRD. 
 `labrd` reduces the first NB rows and columns of a complex general
 m by n matrix A to upper or lower real bidiagonal form by a unitary
@@ -46,7 +46,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/computational/labrd.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/labrd.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -67,7 +67,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/computational/labrd.h
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/computational/labrd.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/labrd.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::labrd( x, y, z );

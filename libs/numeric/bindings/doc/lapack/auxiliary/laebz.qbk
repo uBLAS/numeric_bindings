@@ -20,7 +20,7 @@ laebz( const int_t ijob, const int_t nitmax,
 
 [heading Description]
 
-`laebz` (short for LAPACK auxiliary routine, TODO) provides a C++
+`laebz` (short for $FRIENDLY_NAME) provides a C++
 interface to LAPACK routines SLAEBZ and DLAEBZ. 
 `laebz` contains the iteration loops which compute and use the
 function N(w), which is the count of eigenvalues of a symmetric
@@ -76,7 +76,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/computational/laebz.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/laebz.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -97,7 +97,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/computational/laebz.h
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/computational/laebz.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/laebz.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::laebz( x, y, z );

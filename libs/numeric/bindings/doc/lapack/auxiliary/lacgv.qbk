@@ -16,7 +16,7 @@ lacgv( const int_t n, VectorX& x,
 
 [heading Description]
 
-`lacgv` (short for LAPACK auxiliary routine, TODO) provides a C++
+`lacgv` (short for $FRIENDLY_NAME) provides a C++
 interface to LAPACK routines CLACGV and ZLACGV. 
 `lacgv` conjugates a complex vector of length N.
 
@@ -36,7 +36,7 @@ the code path will be generated.
 
 
 [heading Definition]
-Defined in header [headerref boost/numeric/bindings/lapack/driver/lacgv.hpp].
+Defined in header [headerref boost/numeric/bindings/lapack/auxiliary/lacgv.hpp].
 
 
 [heading Parameters or Requirements on Types]
@@ -57,7 +57,7 @@ Defined in header [headerref boost/numeric/bindings/lapack/driver/lacgv.hpp].
 
 [heading Example]
 ``
-#include <boost/numeric/bindings/lapack/driver/lacgv.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/lacgv.hpp>
 using namespace boost::numeric::bindings;
 
 lapack::lacgv( x, y, z );

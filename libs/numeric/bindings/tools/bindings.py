@@ -57,7 +57,7 @@ def subroutine_less( a, b, global_info_map ):
 def proper_indent( input_string ):
   max_chars = 80
   all_results = []
-  find_delim = re.compile( "([\,\+/]|\|\||>=|< |std::log\(|work\()[ ]*" )
+  find_delim = re.compile( "([\,\+\-/]|\|\||>=|< |std::log\(|work\()[ ]*" )
   for input_line in input_string.splitlines():
     result = ''
     # extra indentation size is 8

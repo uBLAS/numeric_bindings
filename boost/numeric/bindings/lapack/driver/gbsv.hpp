@@ -132,7 +132,8 @@ struct gbsv_impl {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ab) );
         BOOST_ASSERT( bindings::size_column(ab) >= 0 );
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
@@ -144,10 +145,11 @@ struct gbsv_impl {
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(ab)) );
         return detail::gbsv( bindings::size_column(ab),
-                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab),
-                bindings::size_column(b), bindings::begin_value(ab),
-                bindings::stride_major(ab), bindings::begin_value(ipiv),
-                bindings::begin_value(b), bindings::stride_major(b) );
+                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab), bindings::size_column(b),
+                bindings::begin_value(ab), bindings::stride_major(ab),
+                bindings::begin_value(ipiv), bindings::begin_value(b),
+                bindings::stride_major(b) );
     }
 
 };

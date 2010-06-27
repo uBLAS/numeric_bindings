@@ -12,9 +12,6 @@ namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
 namespace bindings = boost::numeric::bindings;
 
-static const char NORMAL = 'N';
-static const char TRANSPOSE = 'T';
-
 // solves the equation Ax = B, and puts the solution in B
 // A is mutated by this routine
 template <typename MatrA, typename MatrB>
@@ -25,7 +22,7 @@ void InPlaceSolve(MatrA& a, MatrB& b)
   integer_t const kl = bindings::bandwidth_lower (a);
   integer_t const ku = bindings::bandwidth_upper (a) - kl;
   std::vector<integer_t> piv(a.size1());
-  int ret = lapack::gbtrf(bindings::size_row(a), bindings::size_column(a), kl, ku, a, piv);
+  int ret = lapack::gbtrf(/*kl, ku, */a, piv);
   if (ret < 0) {
     //CStdString err;
     //err.Format("banded::Solve: argument %d in DGBTRF had an illegal value", -ret);
@@ -39,7 +36,7 @@ void InPlaceSolve(MatrA& a, MatrB& b)
     throw std::runtime_error("banded::Solve: the (%d,%d) diagonal element is 0 after DGBTRF");
   }
 
-  ret = lapack::gbtrs(NORMAL, bindings::size_row(a), kl, ku, a, piv, b);
+  ret = lapack::gbtrs(/*kl, ku, */a, piv, b);
   if (ret < 0) {
     //CStdString err;
     //err.Format("banded::Solve: argument %d in DGBTRS had an illegal value", -ret);

@@ -217,6 +217,17 @@ def call_level0_type( name, properties, arg_map ):
         result = "$NAMESPACEbandwidth_upper_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
 
+    if properties[ 'trait_type' ] == 'num_super_sub':
+      if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
+        result = "$NAMESPACEbandwidth_upper(" +  properties[ 'trait_of' ][ 0 ].lower() + \
+            ")-$NAMESPACEbandwidth_lower(" +  properties[ 'trait_of' ][ 0 ].lower() + \
+            ")"
+      else:
+        result = "$NAMESPACEbandwidth_upper_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+            ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + \
+            "())-$NAMESPACEbandwidth_lower_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+            ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
+
     if properties[ 'trait_type' ] == 'num_super_uplo' or \
        properties[ 'trait_type' ] == 'num_sub_uplo':
         result = "$NAMESPACEbandwidth(" + properties[ 'trait_of' ][ 0 ].lower() + \

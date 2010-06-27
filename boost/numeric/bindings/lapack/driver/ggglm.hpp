@@ -170,8 +170,8 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::size_row(a), bindings::size_column(b) ));
         BOOST_ASSERT( bindings::size(x) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(y) >= bindings::size_column(b) );
-        BOOST_ASSERT( bindings::size_column(b) >=
-                bindings::size_row(a)-bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_column(b) >= bindings::size_row(a)-
+                bindings::size_column(a) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
@@ -290,8 +290,8 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::size_row(a), bindings::size_column(b) ));
         BOOST_ASSERT( bindings::size(x) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(y) >= bindings::size_column(b) );
-        BOOST_ASSERT( bindings::size_column(b) >=
-                bindings::size_row(a)-bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_column(b) >= bindings::size_row(a)-
+                bindings::size_column(a) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||

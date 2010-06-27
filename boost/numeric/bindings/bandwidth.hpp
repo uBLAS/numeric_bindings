@@ -133,7 +133,7 @@ GENERATE_FUNCTIONS( bandwidth, _minor, typename addressing_index_minor<T>::type 
 namespace result_of {
 
 template< typename T, typename TransTag >
-struct bandwidth_upper_op {
+struct bandwidth_lower_op {
     typedef typename bandwidth<
         T,
         typename addressing_index_trans< tag::addressing_index<1>, TransTag >::type
@@ -141,7 +141,7 @@ struct bandwidth_upper_op {
 };
 
 template< typename T, typename TransTag >
-struct bandwidth_lower_op {
+struct bandwidth_upper_op {
     typedef typename bandwidth< T, 
         typename addressing_index_trans< tag::addressing_index<2>, TransTag >::type >::type type;
 };
@@ -150,13 +150,13 @@ struct bandwidth_lower_op {
 
 template< typename T, typename Tag >
 inline typename result_of::bandwidth_upper_op< const T, Tag >::type
-bandwidth_upper_op( const T& t, Tag ) {
+bandwidth_lower_op( const T& t, Tag ) {
     return bindings::bandwidth( t, typename addressing_index_trans< tag::addressing_index<1>, Tag >::type() );
 }
 
 template< typename T, typename Tag >
 inline typename result_of::bandwidth_upper_op< const T, Tag >::type
-bandwidth_lower_op( const T& t, Tag ) {
+bandwidth_upper_op( const T& t, Tag ) {
     return bindings::bandwidth( t, typename addressing_index_trans< tag::addressing_index<2>, Tag >::type() );
 }
 

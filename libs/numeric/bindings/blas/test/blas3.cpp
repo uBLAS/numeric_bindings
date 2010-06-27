@@ -31,7 +31,7 @@ namespace bindings = boost::numeric::bindings;
 struct apply_real {
   template< typename MatrixA, typename MatrixC >
   static inline typename bindings::blas::herk_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
   herk( const typename bindings::remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type alpha, const MatrixA& a,
         const typename bindings::remove_imaginary< typename bindings::value_type<
@@ -43,7 +43,7 @@ struct apply_real {
 struct apply_complex {
   template< typename MatrixA, typename MatrixC >
   static inline typename bindings::blas::herk_impl< typename bindings::value_type<
-        MatrixA >::type >::return_type
+        MatrixA >::type >::result_type
   herk( const typename bindings::remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type alpha, const MatrixA& a,
         const typename bindings::remove_imaginary< typename bindings::value_type<

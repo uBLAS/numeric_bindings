@@ -26,13 +26,18 @@ typedef double real_t;
 typedef ublas::matrix<real_t, ublas::column_major> cm_t; 
 typedef ublas::matrix<real_t, ublas::row_major> rm_t; 
 
-int main() {
+int main (int argc, char **argv) {
+  size_t n = 0;
+  if (argc > 1) {
+    n = atoi(argv [1]);
+  }
 
   cout << endl; 
 
-  size_t n; 
-  cout << "n -> "; 
-  cin >> n;
+  if (n <= 0) {
+    cout << "n -> ";
+    cin >> n;
+  }
   cout << endl; 
 
   cm_t uc (n, n);

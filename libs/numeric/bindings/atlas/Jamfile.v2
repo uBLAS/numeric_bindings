@@ -30,31 +30,31 @@ alias bindings-atlas-tests :
     [ run ublas_gesv5.cc ]
     [ run ublas_getrf_getrs.cc ]
 
-    [ link ublas_getri.cc ]
+    [ run ublas_getri.cc ]
 
     [ run ublas_matr1.cc ]
     [ run ublas_matr2.cc ]
     [ run ublas_matr22.cc ]
-    [ link ublas_matr2_bench.cc ]
+    [ run ublas_matr2_bench.cc : 20 5 ]
     [ run ublas_matr2ger.cc ]
     [ run ublas_matr3.cc ]
     [ run ublas_posv.cc ]
     [ run ublas_potrf_potrs.cc ]
 
-    [ link ublas_potri.cc ]
+    [ run ublas_potri.cc ]
 
-    [ link ublas_herm3.cc ]
+    [ run ublas_herm3.cc : 20 ]
     [ run ublas_herm3h2k.cc ]
     [ run ublas_herm3herk.cc ]
 
     [ link ublas_symm2.cc ]
-    [ link ublas_symm3.cc ]
-    [ link ublas_symm2syr.cc ]
-    [ link ublas_symm32.cc ]
-    [ link ublas_symm33.cc ]
-    [ link ublas_symm3s2k.cc ]
-    [ link ublas_symm3syrk.cc ]
-    [ link ublas_symmc3.cc ]
+    [ run ublas_symm3.cc : 20 ]
+    [ run ublas_symm2syr.cc : 20 ]
+    [ run ublas_symm32.cc : 20 ]
+    [ run ublas_symm33.cc : 20 ]
+    [ run ublas_symm3s2k.cc : 20 5 ]
+    [ run ublas_symm3syrk.cc : 20 5 ]
+    [ run ublas_symmc3.cc : 20 ]
     [ run ublas_vct.cc ]
 ;
 

@@ -267,15 +267,25 @@ void bench_spmv (size_t n, size_t runs, const char* msg) {
 
 
 //////////////////////////////////////////////////////
-int main() {
+int main (int argc, char **argv) {
+  size_t n = 0, r = 0;
+  if (argc > 1) {
+    n = atoi(argv [1]);
+  }
+  if (argc > 2) {
+    r = atoi(argv [2]);
+  }
 
   cout << endl; 
 
-  size_t n, r; 
-  cout << "n -> "; 
-  cin >> n;
-  cout << "r -> ";
-  cin >> r;  
+  if (n <= 0) {
+    cout << "n -> ";
+    cin >> n;
+  }
+  if (r <= 0) {
+    cout << "r -> ";
+    cin >> r;
+  }
   cout << endl; 
 
   bench_gemv<rm_t> (n, r, "row major"); 

@@ -37,13 +37,23 @@ typedef ublas::symmetric_adaptor<ccm_t, ublas::lower> clcsa_t;
 typedef ublas::symmetric_adaptor<crm_t, ublas::upper> cursa_t; 
 typedef ublas::symmetric_adaptor<crm_t, ublas::lower> clrsa_t; 
 
-int main() {
+int main (int argc, char **argv) {
+  int n = 0, k = 0;
+  if (argc > 1) {
+    n = atoi(argv [1]);
+  }
+  if (argc > 2) {
+    k = atoi(argv [2]);
+  }
 
-  int n, k;
-  cout << "n -> ";
-  cin >> n;
-  cout << "k -> ";
-  cin >> k; 
+  if (n <= 0) {
+    cout << "n -> ";
+    cin >> n;
+  }
+  if (k <= 0) {
+    cout << "k -> ";
+    cin >> k;
+  }
 
   cm_t ac (n, k); 
   rm_t ar (n, k); 

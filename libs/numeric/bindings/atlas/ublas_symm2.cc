@@ -64,14 +64,19 @@ typedef ublas::hermitian_adaptor<rm_t, ublas::upper> urha_t;
 typedef ublas::hermitian_adaptor<rm_t, ublas::lower> lrha_t; 
 
 
-int main() {
+int main (int argc, char **argv) {
+  size_t n = 0;
+  if (argc > 1) {
+    n = atoi(argv [1]);
+  }
   
   cout << endl; 
 
   cout << "symmetric matrix" << endl << endl; 
-  size_t n; 
-  cout << "n -> "; 
-  cin >> n;
+  if (n <= 0) {
+    cout << "n -> ";
+    cin >> n;
+  }
   cout << endl; 
 
   vct_t vx (n), vy (n); 

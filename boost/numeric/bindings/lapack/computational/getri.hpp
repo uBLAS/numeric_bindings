@@ -241,12 +241,16 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+        bindings::detail::array< real_type > tmp_work( 0 );
+#else
         real_type opt_size_work;
         detail::getri( order(), bindings::size_column(a),
                 bindings::begin_value(a), bindings::stride_major(a),
                 bindings::begin_value(ipiv), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
+#endif
         return invoke( a, ipiv, workspace( tmp_work ) );
     }
 
@@ -255,7 +259,11 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+        return 0;
+#else
         return std::max< std::ptrdiff_t >( 1, n );
+#endif
     }
 };
 
@@ -323,12 +331,16 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+        bindings::detail::array< value_type > tmp_work( 0 );
+#else
         value_type opt_size_work;
         detail::getri( order(), bindings::size_column(a),
                 bindings::begin_value(a), bindings::stride_major(a),
                 bindings::begin_value(ipiv), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
+#endif
         return invoke( a, ipiv, workspace( tmp_work ) );
     }
 
@@ -337,7 +349,11 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+        return 0;
+#else
         return std::max< std::ptrdiff_t >( 1, n );
+#endif
     }
 };
 

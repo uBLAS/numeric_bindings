@@ -85,9 +85,10 @@ def write_functions( info_map, group, template_map, base_dir ):
     #
     # If the first subroutine has a clapack_ routine, assume we are going
     # to provide specialisations
+    provide_clapack_backend = 'clapack_routine' in info_map[ subroutines[0] ]
     overloads = ''
     backend_includes = ''
-    if 'clapack_routine' in info_map[ subroutines[0] ]:
+    if provide_clapack_backend:
         overloads = template_map[ 'backend_lapack_with_clapack' ]
         backend_includes = template_map[ 'lapack_backend_includes_with_clapack' ]
     else:
@@ -520,8 +521,20 @@ def write_functions( info_map, group, template_map, base_dir ):
           opt_workspace_template = template_map[ 'level1_opt_workspace' ]
 
         opt_workspace_template = opt_workspace_template.replace( "$WORKSPACE_QUERY", ", ".join( workspace_query_arg_list ) )
-        opt_workspace_template = opt_workspace_template.replace( "$SETUP_OPT_WORKARRAYS_POST", "\n        ".join( setup_opt_workarrays_post ) )
-        opt_workspace_template = opt_workspace_template.replace( "$SETUP_OPT_WORKARRAYS_PRE", "\n        ".join( setup_opt_workarrays_pre ) )
+        if provide_clapack_backend:
+          # special workaround for clapack frontend of 'getri'
+          opt_workspace_template = opt_workspace_template.replace( "$SETUP_OPT_WORKARRAYS_POST",
+                "\n        ".join( setup_opt_workarrays_post ) +
+                '\n#endif')
+          opt_workspace_template = opt_workspace_template.replace( "        $SETUP_OPT_WORKARRAYS_PRE",
+                '#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK\n' +
+                '        $NAMESPACEdetail::array< ' +
+                info_map[ subroutine ][ 'argument_map' ][ 'WORK' ][ 'code' ][ 'workspace_type' ] +
+                ' > tmp_work( 0 );\n#else\n        ' +
+                "\n        ".join( setup_opt_workarrays_pre ) )
+        else:
+          opt_workspace_template = opt_workspace_template.replace( "$SETUP_OPT_WORKARRAYS_POST", "\n        ".join( setup_opt_workarrays_post ) )
+          opt_workspace_template = opt_workspace_template.replace( "$SETUP_OPT_WORKARRAYS_PRE", "\n        ".join( setup_opt_workarrays_pre ) )
         opt_workspace_template = opt_workspace_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
         opt_workspace_template = opt_workspace_template.replace( "$TMP_WORKARRAYS", ", ".join( tmp_workspace_args ) )
         
@@ -547,12 +560,20 @@ def write_functions( info_map, group, template_map, base_dir ):
 
           # first: user-defined stuff (overrules any auto-detected stuff)
 
+          resulting_code = ''
           my_key = group_name.lower() + '.' + value_type + '.min_size_' + name.lower()
           if netlib.my_has_key( my_key, template_map ):
-            sub_template = sub_template.replace( "$MIN_SIZE_IMPLEMENTATION", indent_lines( template_map[ netlib.my_has_key( my_key, template_map ) ].rstrip(), 8 ) )
+            resulting_code = indent_lines( template_map[ netlib.my_has_key( my_key, template_map ) ].rstrip(), 8 )
 
           elif info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace' ] != None:
             resulting_code = 'return ' + info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace' ] + ';'
+
+          if resulting_code != '' and provide_clapack_backend:
+            # special workaround for clapack frontend of 'getri'
+            sub_template = sub_template.replace( "        $MIN_SIZE_IMPLEMENTATION",
+                                                 '#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK\n        return 0;\n' +
+                                                 '#else\n        ' + resulting_code + '\n#endif' )
+          elif resulting_code != '':
             sub_template = sub_template.replace( "$MIN_SIZE_IMPLEMENTATION", resulting_code.rstrip() )
             
           # Do about the same for the argument stuff.  

@@ -219,14 +219,14 @@ def call_level0_type( name, properties, arg_map ):
 
     if properties[ 'trait_type' ] == 'num_super_sub':
       if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
-        result = "$NAMESPACEbandwidth_upper(" +  properties[ 'trait_of' ][ 0 ].lower() + \
+        result = "($NAMESPACEbandwidth_upper(" +  properties[ 'trait_of' ][ 0 ].lower() + \
             ")-$NAMESPACEbandwidth_lower(" +  properties[ 'trait_of' ][ 0 ].lower() + \
-            ")"
+            "))"
       else:
-        result = "$NAMESPACEbandwidth_upper_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+        result = "($NAMESPACEbandwidth_upper_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + \
             "())-$NAMESPACEbandwidth_lower_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
-            ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
+            ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "()))"
 
     if properties[ 'trait_type' ] == 'num_super_uplo' or \
        properties[ 'trait_type' ] == 'num_sub_uplo':
@@ -788,13 +788,13 @@ def decompose_formula( text_field ):
 #
 def match_assert_ge( argument_map, text_field ):
   #print "Match assert GE..."
-  match_it = re.compile( ' +[A-Z]+[ ]{0,3}(>=|must be at least)[ ]{0,3}([0-9]|(min|max|MIN|MAX|[\(\)\,0-9A-Z\+\*\-])+)' ).findall( text_field )
+  match_it = re.compile( ' +[A-Z]+[ ]{0,3}(>=|must be at least)[ ]{0,3}([0-9]|(min|max|MIN|MAX|[0-9A-Z]| ?[\(\)\,\+\*\-] ?)+)' ).findall( text_field )
   if len( match_it ) == 1 or \
-     (len( match_it ) == 2 and re.compile( 'For optimum performance' ).search( text_field ) != None):
+     (len( match_it ) == 2 and re.compile( 'For (optimum|optimal|best) (performance|efficiency)' ).search( text_field ) != None):
     print "Match assert GE:", match_it
     #print match_it
     #if len( match_it[ 0 ][ 2 ] ) > 0:
-    return decompose_formula( match_it[ 0 ][ 1 ] )
+    return decompose_formula( match_it[ 0 ][ 1 ].replace( ' ', '' ) )
   else:
     print "nr of matches: ", len( match_it )
     return None
@@ -1396,9 +1396,14 @@ def parse_file( filename, template_map ):
       # Fetch greater-than-or-equal-to integer asserts, such as 
       # M >= 0.
       # N >= max(...)
-      match_greater_equal = match_assert_ge( argument_map, comment_block )
-      if match_greater_equal != None:
-        argument_properties[ 'assert_ge' ] = match_greater_equal
+      assert_ge_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + \
+            argument_name + '.assert_ge'
+      if my_has_key( assert_ge_key, template_map ):
+        argument_properties[ 'assert_ge' ] = decompose_formula( template_map[ my_has_key( assert_ge_key, template_map ) ].replace(' ','') )
+      else:
+        match_greater_equal = match_assert_ge( argument_map, comment_block )
+        if match_greater_equal != None:
+          argument_properties[ 'assert_ge' ] = match_greater_equal
 
       # Are we dealing with a workspace-length integer?
       # If so, try to detect the workspace-query text.

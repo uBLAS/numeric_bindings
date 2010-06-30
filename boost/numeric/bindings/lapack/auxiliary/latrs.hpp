@@ -159,7 +159,8 @@ struct latrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::size_column_op(a, trans()) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
-        BOOST_ASSERT( bindings::stride_major(a) >= ?MAX );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
         BOOST_ASSERT( normin == 'Y' || normin == 'N' );
         return detail::latrs( uplo, trans(), diag(), normin,
                 bindings::size_column_op(a, trans()),
@@ -203,7 +204,8 @@ struct latrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::size_column_op(a, trans()) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
-        BOOST_ASSERT( bindings::stride_major(a) >= ?MAX );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
         BOOST_ASSERT( normin == 'Y' || normin == 'N' );
         return detail::latrs( uplo, trans(), diag(), normin,
                 bindings::size_column_op(a, trans()),

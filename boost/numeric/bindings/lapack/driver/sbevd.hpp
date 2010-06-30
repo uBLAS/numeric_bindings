@@ -130,7 +130,7 @@ struct sbevd_impl {
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >= bindings::bandwidth(ab,
-                uplo()) );
+                uplo())+1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         return detail::sbevd( jobz, uplo(), bindings::size_column(ab),
                 bindings::bandwidth(ab, uplo()), bindings::begin_value(ab),

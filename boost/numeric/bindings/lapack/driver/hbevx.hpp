@@ -151,7 +151,7 @@ struct hbevx_impl {
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >= bindings::bandwidth(ab,
-                uplo()) );
+                uplo())+1 );
         BOOST_ASSERT( bindings::stride_major(q) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(ab)) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );

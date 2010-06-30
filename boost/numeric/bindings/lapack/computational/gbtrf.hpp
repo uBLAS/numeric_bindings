@@ -122,8 +122,6 @@ struct gbtrf_impl {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bindings::bandwidth_upper(ab)-
-                bindings::bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bindings::size(ipiv) >= std::min<
                 std::ptrdiff_t >(bindings::size_row(ab),
                 bindings::size_column(ab)) );
@@ -132,9 +130,11 @@ struct gbtrf_impl {
                 bindings::stride_minor(ab) == 1 );
         BOOST_ASSERT( bindings::size_row(ab) >= 0 );
         BOOST_ASSERT( bindings::stride_major(ab) >= 2 );
+        BOOST_ASSERT( (bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab)) >= 0 );
         return detail::gbtrf( bindings::size_row(ab),
                 bindings::size_column(ab), bindings::bandwidth_lower(ab),
-                bindings::bandwidth_upper(ab)-bindings::bandwidth_lower(ab),
+                (bindings::bandwidth_upper(ab)-bindings::bandwidth_lower(ab)),
                 bindings::begin_value(ab), bindings::stride_major(ab),
                 bindings::begin_value(ipiv) );
     }

@@ -140,8 +140,6 @@ struct gbtrs_impl {
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower_op(ab, trans()) >= 0 );
-        BOOST_ASSERT( bindings::bandwidth_upper_op(ab, trans())-
-                bindings::bandwidth_lower_op(ab, trans()) >= 0 );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column_op(ab,
                 trans()) );
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
@@ -153,10 +151,12 @@ struct gbtrs_impl {
         BOOST_ASSERT( bindings::stride_major(ab) >= 2 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column_op(ab, trans())) );
+        BOOST_ASSERT( (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans())) >= 0 );
         return detail::gbtrs( trans(), bindings::size_column_op(ab, trans()),
                 bindings::bandwidth_lower_op(ab, trans()),
-                bindings::bandwidth_upper_op(ab, trans())-
-                bindings::bandwidth_lower_op(ab, trans()),
+                (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans())),
                 bindings::size_column(b), bindings::begin_value(ab),
                 bindings::stride_major(ab), bindings::begin_value(ipiv),
                 bindings::begin_value(b), bindings::stride_major(b) );

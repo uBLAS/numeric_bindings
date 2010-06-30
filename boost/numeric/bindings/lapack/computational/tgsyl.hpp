@@ -214,6 +214,18 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::stride_minor(e) == 1 );
         BOOST_ASSERT( bindings::size_minor(f) == 1 ||
                 bindings::stride_minor(f) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(b)) );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
+        BOOST_ASSERT( bindings::stride_major(d) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
+        BOOST_ASSERT( bindings::stride_major(e) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(b)) );
+        BOOST_ASSERT( bindings::stride_major(f) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
         return detail::tgsyl( trans(), ijob, bindings::size_column_op(a,
                 trans()), bindings::size_column(b), bindings::begin_value(a),
                 bindings::stride_major(a), bindings::begin_value(b),
@@ -375,6 +387,18 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::stride_minor(e) == 1 );
         BOOST_ASSERT( bindings::size_minor(f) == 1 ||
                 bindings::stride_minor(f) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(b)) );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
+        BOOST_ASSERT( bindings::stride_major(d) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
+        BOOST_ASSERT( bindings::stride_major(e) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(b)) );
+        BOOST_ASSERT( bindings::stride_major(f) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(a, trans())) );
         return detail::tgsyl( trans(), ijob, bindings::size_column_op(a,
                 trans()), bindings::size_column(b), bindings::begin_value(a),
                 bindings::stride_major(a), bindings::begin_value(b),

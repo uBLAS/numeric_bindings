@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
@@ -26,6 +27,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -162,8 +164,8 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAFB >::value) );
+        typedef typename result_of::data_order< MatrixAFB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -189,16 +191,16 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth_lower_op(ab, trans()) >= 0 );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
-        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ab) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column_op(ab,
+                trans()) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( bindings::size_column(ab) ));
+                min_size_iwork( bindings::size_column_op(ab, trans()) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( bindings::size_column(ab) ));
-        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+                min_size_work( bindings::size_column_op(ab, trans()) ));
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_column_op(ab, trans()) >= 0 );
         BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
                 bindings::stride_minor(ab) == 1 );
         BOOST_ASSERT( bindings::size_minor(afb) == 1 ||
@@ -208,15 +210,23 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::size_minor(x) == 1 ||
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >=
-                bindings::bandwidth_lower(ab)+bindings::bandwidth_upper(ab)+
-                1 );
-        BOOST_ASSERT( bindings::stride_major(afb) >= 2 );
+                bindings::bandwidth_lower_op(ab, trans())+
+                (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans()))+1 );
+        BOOST_ASSERT( bindings::stride_major(afb) >=
+                2*bindings::bandwidth_lower_op(ab, trans())+
+                (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans()))+1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                bindings::size_column(ab)) );
+                bindings::size_column_op(ab, trans())) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                bindings::size_column(ab)) );
-        return detail::gbrfs( trans(), bindings::size_column(ab),
-                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab),
+                bindings::size_column_op(ab, trans())) );
+        BOOST_ASSERT( (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans())) >= 0 );
+        return detail::gbrfs( trans(), bindings::size_column_op(ab, trans()),
+                bindings::bandwidth_lower_op(ab, trans()),
+                (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans())),
                 bindings::size_column(b), bindings::begin_value(ab),
                 bindings::stride_major(ab), bindings::begin_value(afb),
                 bindings::stride_major(afb), bindings::begin_value(ipiv),
@@ -241,10 +251,12 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAFB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                bindings::size_column(ab) ) );
+                bindings::size_column_op(ab, trans()) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( bindings::size_column(ab) ) );
+                min_size_iwork( bindings::size_column_op(ab, trans()) ) );
         return invoke( ab, afb, ipiv, b, x, ferr, berr, workspace( tmp_work,
                 tmp_iwork ) );
     }
@@ -263,6 +275,8 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAFB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
         return invoke( ab, afb, ipiv, b, x, ferr, berr, minimal_workspace() );
     }
 
@@ -305,8 +319,8 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
             RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAFB >::value) );
+        typedef typename result_of::data_order< MatrixAFB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -328,16 +342,16 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth_lower_op(ab, trans()) >= 0 );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
-        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ab) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column_op(ab,
+                trans()) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_rwork( bindings::size_column(ab) ));
+                min_size_rwork( bindings::size_column_op(ab, trans()) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( bindings::size_column(ab) ));
-        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+                min_size_work( bindings::size_column_op(ab, trans()) ));
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_column_op(ab, trans()) >= 0 );
         BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
                 bindings::stride_minor(ab) == 1 );
         BOOST_ASSERT( bindings::size_minor(afb) == 1 ||
@@ -347,15 +361,23 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::size_minor(x) == 1 ||
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >=
-                bindings::bandwidth_lower(ab)+bindings::bandwidth_upper(ab)+
-                1 );
-        BOOST_ASSERT( bindings::stride_major(afb) >= 2 );
+                bindings::bandwidth_lower_op(ab, trans())+
+                (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans()))+1 );
+        BOOST_ASSERT( bindings::stride_major(afb) >=
+                2*bindings::bandwidth_lower_op(ab, trans())+
+                (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans()))+1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                bindings::size_column(ab)) );
+                bindings::size_column_op(ab, trans())) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                bindings::size_column(ab)) );
-        return detail::gbrfs( trans(), bindings::size_column(ab),
-                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab),
+                bindings::size_column_op(ab, trans())) );
+        BOOST_ASSERT( (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans())) >= 0 );
+        return detail::gbrfs( trans(), bindings::size_column_op(ab, trans()),
+                bindings::bandwidth_lower_op(ab, trans()),
+                (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans())),
                 bindings::size_column(b), bindings::begin_value(ab),
                 bindings::stride_major(ab), bindings::begin_value(afb),
                 bindings::stride_major(afb), bindings::begin_value(ipiv),
@@ -380,10 +402,12 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAFB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                bindings::size_column(ab) ) );
+                bindings::size_column_op(ab, trans()) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                bindings::size_column(ab) ) );
+                bindings::size_column_op(ab, trans()) ) );
         return invoke( ab, afb, ipiv, b, x, ferr, berr, workspace( tmp_work,
                 tmp_rwork ) );
     }
@@ -402,6 +426,8 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixAFB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
         return invoke( ab, afb, ipiv, b, x, ferr, berr, minimal_workspace() );
     }
 

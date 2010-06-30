@@ -207,8 +207,6 @@ struct gbsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bindings::bandwidth_upper(ab)-
-                bindings::bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( bindings::size_column(ab) ));
@@ -225,19 +223,21 @@ struct gbsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::size_minor(x) == 1 ||
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >=
-                bindings::bandwidth_lower(ab)+bindings::bandwidth_upper(ab)-
-                bindings::bandwidth_lower(ab)+1 );
+                bindings::bandwidth_lower(ab)+(bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab))+1 );
         BOOST_ASSERT( bindings::stride_major(afb) >= 2 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(ab)) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(ab)) );
+        BOOST_ASSERT( (bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab)) >= 0 );
         BOOST_ASSERT( equed == 'N' || equed == 'R' || equed == 'C' ||
                 equed == 'B' );
         BOOST_ASSERT( fact == 'F' || fact == 'N' || fact == 'E' );
         return detail::gbsvx( fact, trans(), bindings::size_column(ab),
-                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab)-
-                bindings::bandwidth_lower(ab), bindings::size_column(b),
+                bindings::bandwidth_lower(ab), (bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab)), bindings::size_column(b),
                 bindings::begin_value(ab), bindings::stride_major(ab),
                 bindings::begin_value(afb), bindings::stride_major(afb),
                 bindings::begin_value(ipiv), equed, bindings::begin_value(r),
@@ -370,8 +370,6 @@ struct gbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bindings::bandwidth_upper(ab)-
-                bindings::bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_rwork( bindings::size_column(ab) ));
@@ -388,19 +386,21 @@ struct gbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::size_minor(x) == 1 ||
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >=
-                bindings::bandwidth_lower(ab)+bindings::bandwidth_upper(ab)-
-                bindings::bandwidth_lower(ab)+1 );
+                bindings::bandwidth_lower(ab)+(bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab))+1 );
         BOOST_ASSERT( bindings::stride_major(afb) >= 2 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(ab)) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(ab)) );
+        BOOST_ASSERT( (bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab)) >= 0 );
         BOOST_ASSERT( equed == 'N' || equed == 'R' || equed == 'C' ||
                 equed == 'B' );
         BOOST_ASSERT( fact == 'F' || fact == 'N' || fact == 'E' );
         return detail::gbsvx( fact, trans(), bindings::size_column(ab),
-                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab)-
-                bindings::bandwidth_lower(ab), bindings::size_column(b),
+                bindings::bandwidth_lower(ab), (bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab)), bindings::size_column(b),
                 bindings::begin_value(ab), bindings::stride_major(ab),
                 bindings::begin_value(afb), bindings::stride_major(afb),
                 bindings::begin_value(ipiv), equed, bindings::begin_value(r),

@@ -203,6 +203,10 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::stride_minor(t) == 1 );
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(h) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(h)) );
+        BOOST_ASSERT( bindings::stride_major(t) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(h)) );
         BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( job == 'E' || job == 'S' );
@@ -344,6 +348,10 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::stride_minor(t) == 1 );
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(h) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(h)) );
+        BOOST_ASSERT( bindings::stride_major(t) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(h)) );
         BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( job == 'E' || job == 'S' );

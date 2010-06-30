@@ -101,6 +101,7 @@ struct hetrf_impl {
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >= 1 );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
                 min_size_work());
         BOOST_ASSERT( bindings::size_column(a) >= 0 );

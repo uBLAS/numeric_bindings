@@ -262,7 +262,7 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
 #if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
         return 0;
 #else
-        return std::max< std::ptrdiff_t >( 1, n );
+        return std::max< std::ptrdiff_t >(1,n);
 #endif
     }
 };
@@ -352,7 +352,7 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 #if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
         return 0;
 #else
-        return std::max< std::ptrdiff_t >( 1, n );
+        return std::max< std::ptrdiff_t >(1,n);
 #endif
     }
 };

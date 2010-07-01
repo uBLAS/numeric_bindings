@@ -226,8 +226,7 @@ struct gebrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
             const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, std::max< std::ptrdiff_t >( m,
-                n ) );
+        return std::max< std::ptrdiff_t >(1,std::max< std::ptrdiff_t >(m,n));
     }
 };
 
@@ -341,8 +340,7 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
             const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, std::max< std::ptrdiff_t >( m,
-                n ) );
+        return std::max< std::ptrdiff_t >(1,std::max< std::ptrdiff_t >(m,n));
     }
 };
 

@@ -277,7 +277,7 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, n );
+        return std::max< std::ptrdiff_t >(1,n);
     }
 };
 
@@ -425,7 +425,7 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, n );
+        return std::max< std::ptrdiff_t >(1,n);
     }
 
     //

@@ -225,7 +225,9 @@ struct gbsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::stride_major(ab) >=
                 bindings::bandwidth_lower(ab)+(bindings::bandwidth_upper(ab)-
                 bindings::bandwidth_lower(ab))+1 );
-        BOOST_ASSERT( bindings::stride_major(afb) >= 2 );
+        BOOST_ASSERT( bindings::stride_major(afb) >=
+                2*bindings::bandwidth_lower(ab)+(bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab))+1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(ab)) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
@@ -388,7 +390,9 @@ struct gbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::stride_major(ab) >=
                 bindings::bandwidth_lower(ab)+(bindings::bandwidth_upper(ab)-
                 bindings::bandwidth_lower(ab))+1 );
-        BOOST_ASSERT( bindings::stride_major(afb) >= 2 );
+        BOOST_ASSERT( bindings::stride_major(afb) >=
+                2*bindings::bandwidth_lower(ab)+(bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab))+1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(ab)) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,

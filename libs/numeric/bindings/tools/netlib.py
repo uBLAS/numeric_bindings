@@ -788,13 +788,13 @@ def decompose_formula( text_field ):
 #
 def match_assert_ge( argument_map, text_field ):
   #print "Match assert GE..."
-  match_it = re.compile( ' +[A-Z]+[ ]{0,3}(>=|must be at least)[ ]{0,3}([0-9]|(min|max|MIN|MAX|[0-9A-Z]| ?[\(\)\,\+\*\-] ?)+)' ).findall( text_field )
+  match_it = re.compile( ' +[A-Z]+[ ]{0,3}(>=|must be at least)[ ]{0,3}((min|max|MIN|MAX|[0-9A-Z]| ?[\(\)\,\+\*\-] ?)+)' ).findall( text_field )
   if len( match_it ) == 1 or \
      (len( match_it ) == 2 and re.compile( 'For (optimum|optimal|best) (performance|efficiency)' ).search( text_field ) != None):
     print "Match assert GE:", match_it
     #print match_it
     #if len( match_it[ 0 ][ 2 ] ) > 0:
-    return decompose_formula( match_it[ 0 ][ 1 ].replace( ' ', '' ) )
+    return decompose_formula( match_it[ 0 ][ 1 ].replace( ' ', '' ).rstrip(',') )
   else:
     print "nr of matches: ", len( match_it )
     return None

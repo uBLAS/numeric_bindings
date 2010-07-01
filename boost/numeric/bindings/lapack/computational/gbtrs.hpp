@@ -148,7 +148,10 @@ struct gbtrs_impl {
                 bindings::stride_minor(ab) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
                 bindings::stride_minor(b) == 1 );
-        BOOST_ASSERT( bindings::stride_major(ab) >= 2 );
+        BOOST_ASSERT( bindings::stride_major(ab) >=
+                2*bindings::bandwidth_lower_op(ab, trans())+
+                (bindings::bandwidth_upper_op(ab, trans())-
+                bindings::bandwidth_lower_op(ab, trans()))+1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column_op(ab, trans())) );
         BOOST_ASSERT( (bindings::bandwidth_upper_op(ab, trans())-

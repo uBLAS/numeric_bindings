@@ -129,7 +129,9 @@ struct gbtrf_impl {
         BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
                 bindings::stride_minor(ab) == 1 );
         BOOST_ASSERT( bindings::size_row(ab) >= 0 );
-        BOOST_ASSERT( bindings::stride_major(ab) >= 2 );
+        BOOST_ASSERT( bindings::stride_major(ab) >=
+                2*bindings::bandwidth_lower(ab)+(bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab))+1 );
         BOOST_ASSERT( (bindings::bandwidth_upper(ab)-
                 bindings::bandwidth_lower(ab)) >= 0 );
         return detail::gbtrf( bindings::size_row(ab),

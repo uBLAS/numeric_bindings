@@ -373,7 +373,7 @@ def nested_list_args( arg ):
     return None
   if type( arg ) == StringType:
     if re.compile( '^[A-Z]+$' ).match( arg ) == None:
-      return [ None ]
+      return []
     else:
       return [ arg.upper() ]
   
@@ -384,7 +384,7 @@ def nested_list_args( arg ):
   if re.compile( '^[A-Z]+$' ).match( arg[0] ) == None:
     for a in arg[1]:
       sub_result = nested_list_args( a )
-      if sub_result != [ None ] and sub_result != None:
+      if sub_result != [] and sub_result != None:
         for r in sub_result:
           if r not in result:
             result.append( r )
@@ -788,7 +788,7 @@ def decompose_formula( text_field ):
 #
 def match_assert_ge( argument_map, text_field ):
   #print "Match assert GE..."
-  match_it = re.compile( ' +[A-Z]+[ ]{0,3}(>=|must be at least)[ ]{0,3}((min|max|MIN|MAX|[0-9A-Z]| ?[\(\)\,\+\*\-] ?)+)' ).findall( text_field )
+  match_it = re.compile( ' +[A-Z]+[ ]{0,3}(>=|\.GE\.|must be at least)[ ]{0,3}((min|max|MIN|MAX|[0-9A-Z]| ?[\(\)\,\+\*\-] ?)+)' ).findall( text_field )
   if len( match_it ) == 1 or \
      (len( match_it ) == 2 and re.compile( 'For (optimum|optimal|best) (performance|efficiency)' ).search( text_field ) != None):
     print "Match assert GE:", match_it
@@ -1410,7 +1410,7 @@ def parse_file( filename, template_map ):
       # And, try to detect for which work arrays the query will run.
       # Keep the same order of workspace names as used in the grouped arguments map
       if 'WORK' in argument_name:
-        match_query = re.compile( 'If ' + argument_name + ' \= \-1(\,|then|a|workspace|\s)+query', re.M ).search( comment_block )
+        match_query = re.compile( 'If ' + argument_name + ' \= \-1(\,|then|'+subroutine_name+'|does|a|workspace|\s)+query', re.M ).search( comment_block )
         if match_query != None:
           work_query_block = comment_block[ match_query.start(0): ]
           any_workspace = "(" + "|".join( grouped_arguments[ 'by_io' ][ 'workspace' ] ) + ")"
@@ -1435,6 +1435,8 @@ def parse_file( filename, template_map ):
               else:
                  print "Not relying on backend to return minimum size of " + name + " with a " + \
                        "workspace query."
+        if argument_name[0] == 'L' and 'where NB is the block size returned by ILAENV' in comment_block:
+           argument_properties[ 'workspace_query_for' ] = [ argument_name[1:] ]
 
     #
     # Handle CHARACTER comment blocks.

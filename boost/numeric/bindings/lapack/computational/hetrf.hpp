@@ -23,6 +23,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
@@ -101,7 +102,6 @@ struct hetrf_impl {
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
-        BOOST_ASSERT( bindings::size(work.select(value_type())) >= 1 );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
                 min_size_work());
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
@@ -144,7 +144,13 @@ struct hetrf_impl {
             optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
-        return invoke( a, ipiv, minimal_workspace() );
+        value_type opt_size_work;
+        detail::hetrf( uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(ipiv), &opt_size_work, -1 );
+        bindings::detail::array< value_type > tmp_work(
+                traits::detail::to_int( opt_size_work ) );
+        return invoke( a, ipiv, workspace( tmp_work ) );
     }
 
     //

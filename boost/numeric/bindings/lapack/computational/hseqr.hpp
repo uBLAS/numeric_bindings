@@ -25,6 +25,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -165,10 +166,13 @@ struct hseqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_work( bindings::size_column(h) ));
         BOOST_ASSERT( bindings::size(wr) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size_column(h) >= 0 );
         BOOST_ASSERT( bindings::size_minor(h) == 1 ||
                 bindings::stride_minor(h) == 1 );
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(h) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(h)) );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( job == 'E' || job == 'S' );
         return detail::hseqr( job, compz, bindings::size_column(h), ilo, ihi,
@@ -213,8 +217,16 @@ struct hseqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixH& h, VectorWR& wr, VectorWI& wi, MatrixZ& z,
             optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
+        real_type opt_size_work;
+        detail::hseqr( job, compz, bindings::size_column(h), ilo, ihi,
+                bindings::begin_value(h), bindings::stride_major(h),
+                bindings::begin_value(wr), bindings::begin_value(wi),
+                bindings::begin_value(z), bindings::stride_major(z),
+                &opt_size_work, -1 );
+        bindings::detail::array< real_type > tmp_work(
+                traits::detail::to_int( opt_size_work ) );
         return invoke( job, compz, ilo, ihi, h, wr, wi, z,
-                minimal_workspace() );
+                workspace( tmp_work ) );
     }
 
     //
@@ -262,10 +274,13 @@ struct hseqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
                 min_size_work( bindings::size_column(h) ));
+        BOOST_ASSERT( bindings::size_column(h) >= 0 );
         BOOST_ASSERT( bindings::size_minor(h) == 1 ||
                 bindings::stride_minor(h) == 1 );
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(h) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(h)) );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( job == 'E' || job == 'S' );
         return detail::hseqr( job, compz, bindings::size_column(h), ilo, ihi,
@@ -305,7 +320,14 @@ struct hseqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t ilo, const fortran_int_t ihi,
             MatrixH& h, VectorW& w, MatrixZ& z, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( job, compz, ilo, ihi, h, w, z, minimal_workspace() );
+        value_type opt_size_work;
+        detail::hseqr( job, compz, bindings::size_column(h), ilo, ihi,
+                bindings::begin_value(h), bindings::stride_major(h),
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z), &opt_size_work, -1 );
+        bindings::detail::array< value_type > tmp_work(
+                traits::detail::to_int( opt_size_work ) );
+        return invoke( job, compz, ilo, ihi, h, w, z, workspace( tmp_work ) );
     }
 
     //

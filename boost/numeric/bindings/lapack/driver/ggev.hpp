@@ -270,7 +270,7 @@ struct ggev_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, 8*n );
+        return std::max< std::ptrdiff_t >(1,8*n);
     }
 };
 
@@ -413,7 +413,7 @@ struct ggev_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, 2*n );
+        return std::max< std::ptrdiff_t >(1,2*n);
     }
 
     //

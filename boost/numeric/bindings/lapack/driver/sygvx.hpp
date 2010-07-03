@@ -229,7 +229,7 @@ struct sygvx_impl {
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, 8*n );
+        return std::max< std::ptrdiff_t >(1,8*n);
     }
 
     //

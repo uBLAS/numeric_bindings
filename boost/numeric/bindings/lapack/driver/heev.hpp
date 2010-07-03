@@ -171,7 +171,7 @@ struct heev_impl {
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, 2*n-1 );
+        return std::max< std::ptrdiff_t >(1,2*n-1);
     }
 
     //
@@ -179,7 +179,7 @@ struct heev_impl {
     // workspace-array rwork.
     //
     static std::ptrdiff_t min_size_rwork( const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, 3*n-2 );
+        return std::max< std::ptrdiff_t >(1,3*n-2);
     }
 };
 

@@ -166,8 +166,8 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         BOOST_ASSERT( bindings::size(d) >= bindings::size_row(a) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( bindings::size_column(a),
-                bindings::size_row(a), bindings::size_column(b) ));
+                min_size_work( bindings::size_row(a),
+                bindings::size_column(a), bindings::size_column(b) ));
         BOOST_ASSERT( bindings::size(x) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(y) >= bindings::size_column(b) );
         BOOST_ASSERT( bindings::size_column(b) >= bindings::size_row(a)-
@@ -203,7 +203,7 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorX& x, VectorY& y, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                bindings::size_column(a), bindings::size_row(a),
+                bindings::size_row(a), bindings::size_column(a),
                 bindings::size_column(b) ) );
         return invoke( a, b, d, x, y, workspace( tmp_work ) );
     }
@@ -236,9 +236,9 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
-            const std::ptrdiff_t n, const std::ptrdiff_t p ) {
-        return std::max< std::ptrdiff_t >( 1, n+m+p );
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n,
+            const std::ptrdiff_t m, const std::ptrdiff_t p ) {
+        return std::max< std::ptrdiff_t >(1,n+m+p);
     }
 };
 
@@ -286,8 +286,8 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         BOOST_ASSERT( bindings::size(d) >= bindings::size_row(a) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( bindings::size_column(a),
-                bindings::size_row(a), bindings::size_column(b) ));
+                min_size_work( bindings::size_row(a),
+                bindings::size_column(a), bindings::size_column(b) ));
         BOOST_ASSERT( bindings::size(x) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(y) >= bindings::size_column(b) );
         BOOST_ASSERT( bindings::size_column(b) >= bindings::size_row(a)-
@@ -323,7 +323,7 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorX& x, VectorY& y, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                bindings::size_column(a), bindings::size_row(a),
+                bindings::size_row(a), bindings::size_column(a),
                 bindings::size_column(b) ) );
         return invoke( a, b, d, x, y, workspace( tmp_work ) );
     }
@@ -356,9 +356,9 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
-            const std::ptrdiff_t n, const std::ptrdiff_t p ) {
-        return std::max< std::ptrdiff_t >( 1, n+m+p );
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n,
+            const std::ptrdiff_t m, const std::ptrdiff_t p ) {
+        return std::max< std::ptrdiff_t >(1,n+m+p);
     }
 };
 

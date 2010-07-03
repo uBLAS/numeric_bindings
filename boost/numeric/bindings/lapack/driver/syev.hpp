@@ -164,7 +164,7 @@ struct syev_impl {
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, 3*n-1 );
+        return std::max< std::ptrdiff_t >(1,3*n-1);
     }
 };
 

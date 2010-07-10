@@ -157,7 +157,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorLSCALE >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorRSCALE >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( job, bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -188,8 +188,8 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( job,
+                bindings::size_column(a) ) );
         return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 workspace( tmp_work ) );
     }
@@ -215,9 +215,12 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char job,
+            const std::ptrdiff_t n ) {
+        if ( job == 'S' || job == 'B' )
+            return std::max< std::ptrdiff_t >(1, 6*n);
+        else // if ( job == 'N' || job == 'P' )
+            return 1;
     }
 };
 
@@ -257,7 +260,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorLSCALE >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorRSCALE >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( job, bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -288,8 +291,8 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( job,
+                bindings::size_column(a) ) );
         return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 workspace( tmp_work ) );
     }
@@ -315,9 +318,12 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char job,
+            const std::ptrdiff_t n ) {
+        if ( job == 'S' || job == 'B' )
+            return std::max< std::ptrdiff_t >(1, 6*n);
+        else // if ( job == 'N' || job == 'P' )
+            return 1;
     }
 };
 

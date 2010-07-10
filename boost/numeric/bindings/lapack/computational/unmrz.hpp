@@ -18,6 +18,7 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -121,7 +122,8 @@ struct unmrz_impl {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(tau) >= k );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( side, bindings::size_row(c),
+                bindings::size_column(c) ));
         BOOST_ASSERT( bindings::size_column(c) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -156,8 +158,8 @@ struct unmrz_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
-        bindings::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work( side,
+                bindings::size_row(c), bindings::size_column(c) ) );
         return invoke( side, k, a, tau, c, workspace( tmp_work ) );
     }
 
@@ -191,9 +193,11 @@ struct unmrz_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    template< typename Side >
+    static std::ptrdiff_t min_size_work( const Side side,
+            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
+                n, m ) );
     }
 };
 

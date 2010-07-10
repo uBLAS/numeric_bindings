@@ -62,6 +62,12 @@ $TEMPLATE[unmrq.includes]
 #include <boost/numeric/bindings/detail/if_left.hpp>
 $TEMPLATE[unmrq.all.min_size_work]
 return std::max< $INTEGER_TYPE >( 1, bindings::detail::if_left( side, n, m ) );
+$TEMPLATE[unmrz.all.min_size_work.args]
+SIDE,M,N
+$TEMPLATE[unmrz.includes]
+#include <boost/numeric/bindings/detail/if_left.hpp>
+$TEMPLATE[unmrz.all.min_size_work]
+return std::max< $INTEGER_TYPE >( 1, bindings::detail::if_left( side, n, m ) );
 $TEMPLATE[unmql.all.min_size_work.args]
 SIDE,M,N
 $TEMPLATE[unmql.includes]

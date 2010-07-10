@@ -24,6 +24,12 @@ $TEMPLATE[ormrq.includes]
 #include <boost/numeric/bindings/detail/if_left.hpp>
 $TEMPLATE[ormrq.all.min_size_work]
 return std::max< $INTEGER_TYPE >( 1, bindings::detail::if_left( side, n, m ) );
+$TEMPLATE[ormrz.all.min_size_work.args]
+SIDE,M,N
+$TEMPLATE[ormrz.includes]
+#include <boost/numeric/bindings/detail/if_left.hpp>
+$TEMPLATE[ormrz.all.min_size_work]
+return std::max< $INTEGER_TYPE >( 1, bindings::detail::if_left( side, n, m ) );
 $TEMPLATE[ormtr.all.min_size_work.args]
 SIDE,M,N
 $TEMPLATE[ormtr.includes]

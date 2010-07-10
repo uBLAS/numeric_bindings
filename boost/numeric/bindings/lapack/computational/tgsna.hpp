@@ -185,9 +185,9 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDIF >::value) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( $CALL_MIN_SIZE ));
+                min_size_iwork( job, n ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( job, n ));
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
@@ -231,10 +231,10 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t mm, fortran_int_t& m,
             minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( job,
+                n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( $CALL_MIN_SIZE ) );
+                min_size_iwork( job, n ) );
         return invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m,
                 workspace( tmp_work, tmp_iwork ) );
     }
@@ -258,7 +258,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( $CALL_MIN_SIZE ) );
+                min_size_iwork( job, n ) );
         detail::tgsna( job, howmny, bindings::begin_value(select), n,
                 bindings::begin_value(a), bindings::stride_major(a),
                 bindings::begin_value(b), bindings::stride_major(b),
@@ -276,18 +276,24 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char job,
+            const std::ptrdiff_t n ) {
+        if ( job == 'V' || job == 'B' )
+            return std::max< std::ptrdiff_t >(1, 2*n*(n+2)+16);
+        else
+            return std::max< std::ptrdiff_t >(1, n);
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array iwork.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_iwork( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_iwork( const char job,
+            const std::ptrdiff_t n ) {
+        if ( job == 'E')
+            return 1;
+        else
+            return n+6;
     }
 };
 
@@ -338,9 +344,9 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDIF >::value) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( $CALL_MIN_SIZE ));
+                min_size_iwork( job, n ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( job, n ));
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
@@ -384,10 +390,10 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t mm, fortran_int_t& m,
             minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work( job,
+                n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( $CALL_MIN_SIZE ) );
+                min_size_iwork( job, n ) );
         return invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m,
                 workspace( tmp_work, tmp_iwork ) );
     }
@@ -417,18 +423,24 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char job,
+            const std::ptrdiff_t n ) {
+        if ( job == 'V' || job == 'B' )
+            return std::max< std::ptrdiff_t >(1, 2*n*n);
+        else
+            return std::max< std::ptrdiff_t >(1, n);
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array iwork.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_iwork( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_iwork( const char job,
+            const std::ptrdiff_t n ) {
+        if ( job == 'E')
+            return 1;
+        else
+            return n+2;
     }
 };
 

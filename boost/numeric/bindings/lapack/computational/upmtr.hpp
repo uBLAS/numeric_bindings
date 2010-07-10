@@ -171,7 +171,8 @@ struct upmtr_impl {
     template< typename Side >
     static std::ptrdiff_t min_size_work( const Side side,
             const std::ptrdiff_t m, const std::ptrdiff_t n ) {
-        $MIN_SIZE_IMPLEMENTATION
+        return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
+                n, m ) );
     }
 };
 

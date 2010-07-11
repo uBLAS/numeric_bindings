@@ -212,11 +212,9 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::size(alphar) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(select) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( ijob, bindings::size_column(a),
-                bindings::begin_value(select) ));
+                min_size_iwork( ijob, bindings::size_column(a), m ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( ijob, bindings::size_column(a),
-                bindings::begin_value(select) ));
+                min_size_work( ijob, bindings::size_column(a), m ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -263,10 +261,9 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             real_type& pr, VectorDIF& dif, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( ijob,
-                bindings::size_column(a), bindings::begin_value(select) ) );
+                bindings::size_column(a), m ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( ijob, bindings::size_column(a),
-                bindings::begin_value(select) ) );
+                min_size_iwork( ijob, bindings::size_column(a), m ) );
         return invoke( ijob, wantq, wantz, select, a, b, alphar, alphai, beta,
                 q, z, m, pl, pr, dif, workspace( tmp_work, tmp_iwork ) );
     }
@@ -312,8 +309,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t ijob,
-            const std::ptrdiff_t n, const logical_t* select ) {
-        std::ptrdiff_t m = n/2; // FIXME: num_selected( select );
+            const std::ptrdiff_t n, std::ptrdiff_t& m ) {
         if ( ijob == 1 || ijob == 2 || ijob == 4 )
             return std::max< std::ptrdiff_t >(4*n+16, 2*m*(n-m));
         else // if ( ijob == 3 || ijob == 5 )
@@ -325,8 +321,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // workspace-array iwork.
     //
     static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t ijob,
-            const std::ptrdiff_t n, const logical_t* select ) {
-        std::ptrdiff_t m = n/2; // FIXME: num_selected( select );
+            const std::ptrdiff_t n, std::ptrdiff_t& m ) {
         if ( ijob == 1 || ijob == 2 || ijob == 4 )
             return std::max< std::ptrdiff_t >(1, n+6);
         else // if ( ijob == 3 || ijob == 5 )
@@ -393,11 +388,9 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::size(alpha) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(select) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( ijob, bindings::size_column(a),
-                bindings::begin_value(select) ));
+                min_size_iwork( ijob, bindings::size_column(a), m ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( ijob, bindings::size_column(a),
-                bindings::begin_value(select) ));
+                min_size_work( ijob, bindings::size_column(a), m ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -443,10 +436,9 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorDIF& dif, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( ijob,
-                bindings::size_column(a), bindings::begin_value(select) ) );
+                bindings::size_column(a), m ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( ijob, bindings::size_column(a),
-                bindings::begin_value(select) ) );
+                min_size_iwork( ijob, bindings::size_column(a), m ) );
         return invoke( ijob, wantq, wantz, select, a, b, alpha, beta, q, z, m,
                 pl, pr, dif, workspace( tmp_work, tmp_iwork ) );
     }
@@ -492,8 +484,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t ijob,
-            const std::ptrdiff_t n, const logical_t* select ) {
-        std::ptrdiff_t m = n/2; // FIXME: num_selected( select );
+            const std::ptrdiff_t n, std::ptrdiff_t& m ) {
         if ( ijob == 1 || ijob == 2 || ijob == 4 )
             return std::max< std::ptrdiff_t >(1, 2*m*(n-m));
         else // if ( ijob == 3 || ijob == 5 )
@@ -505,8 +496,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // workspace-array iwork.
     //
     static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t ijob,
-            const std::ptrdiff_t n, const logical_t* select ) {
-        std::ptrdiff_t m = n/2; // FIXME: num_selected( select );
+            const std::ptrdiff_t n, std::ptrdiff_t& m ) {
         if ( ijob == 1 || ijob == 2 || ijob == 4 )
             return std::max< std::ptrdiff_t >(1, n+2);
         else // if ( ijob == 3 || ijob == 5 )

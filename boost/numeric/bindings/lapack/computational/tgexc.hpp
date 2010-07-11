@@ -167,7 +167,7 @@ struct tgexc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );

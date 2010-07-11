@@ -120,7 +120,7 @@ struct trsen_impl {
         BOOST_ASSERT( bindings::size(select) >= bindings::size_column(t) );
         BOOST_ASSERT( bindings::size(w) >= bindings::size_column(t) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( job, bindings::size_column(t), m ));
         BOOST_ASSERT( bindings::size_column(t) >= 0 );
         BOOST_ASSERT( bindings::size_minor(q) == 1 ||
                 bindings::stride_minor(q) == 1 );
@@ -152,8 +152,8 @@ struct trsen_impl {
             fortran_int_t& m, real_type& s, real_type& sep,
             minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work( job,
+                bindings::size_column(t), m ) );
         return invoke( job, compq, select, t, q, w, m, s, sep,
                 workspace( tmp_work ) );
     }
@@ -188,9 +188,14 @@ struct trsen_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char job, const std::ptrdiff_t n,
+            std::ptrdiff_t& m ) {
+        if ( job == 'N' )
+            return 1;
+        else if ( job == 'E' )
+            return std::max< std::ptrdiff_t >(1, m*(n-m));
+        else // if ( job == 'V' || job == 'B' )
+            return std::max< std::ptrdiff_t >(1, 2*m*(n-m));
     }
 };
 

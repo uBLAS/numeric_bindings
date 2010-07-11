@@ -11,7 +11,8 @@ There is one prototype of `trsna` available, please see below.
 ``
 trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
-        VectorSEP& sep, const int_t mm, int_t& m );
+        VectorSEP& sep, const int_t mm, int_t& m,
+        const int_t ldwork );
 ``
 
 

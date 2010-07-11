@@ -149,7 +149,8 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            detail::workspace2< WORK, IWORK > work ) {
+            const fortran_int_t ldwork, detail::workspace2< WORK,
+            IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixVL >::value) );
@@ -173,9 +174,9 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSEP >::value) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( $CALL_MIN_SIZE ));
+                min_size_iwork( job, bindings::size_column(t) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( job, ldwork, bindings::size_column(t) ));
         BOOST_ASSERT( bindings::size_column(t) >= 0 );
         BOOST_ASSERT( bindings::size_minor(t) == 1 ||
                 bindings::stride_minor(t) == 1 );
@@ -193,7 +194,7 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::stride_major(vl), bindings::begin_value(vr),
                 bindings::stride_major(vr), bindings::begin_value(s),
                 bindings::begin_value(sep), mm, m,
-                bindings::begin_value(work), bindings::stride_major(work),
+                bindings::begin_value(work.select(real_type())), ldwork,
                 bindings::begin_value(work.select(fortran_int_t())) );
     }
 
@@ -210,13 +211,13 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            minimal_workspace ) {
+            const fortran_int_t ldwork, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( job,
+                ldwork, bindings::size_column(t) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( $CALL_MIN_SIZE ) );
-        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
+                min_size_iwork( job, bindings::size_column(t) ) );
+        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, ldwork,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -233,9 +234,9 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            optimal_workspace ) {
+            const fortran_int_t ldwork, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
+        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, ldwork,
                 minimal_workspace() );
     }
 
@@ -243,18 +244,18 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char job,
+            const std::ptrdiff_t ldwork, const std::ptrdiff_t n ) {
+        return job == 'E' ? 1 : ldwork * (n+6);
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array iwork.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_iwork( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_iwork( const char job,
+            const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, job == 'E' ? 1 : 2 * (n-1));
     }
 };
 
@@ -279,7 +280,8 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            detail::workspace2< WORK, RWORK > work ) {
+            const fortran_int_t ldwork, detail::workspace2< WORK,
+            RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixVL >::value) );
@@ -299,9 +301,9 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSEP >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_rwork( $CALL_MIN_SIZE ));
+                min_size_rwork( job, bindings::size_column(t) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( job, ldwork, bindings::size_column(t) ));
         BOOST_ASSERT( bindings::size_column(t) >= 0 );
         BOOST_ASSERT( bindings::size_minor(t) == 1 ||
                 bindings::stride_minor(t) == 1 );
@@ -319,7 +321,7 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::stride_major(vl), bindings::begin_value(vr),
                 bindings::stride_major(vr), bindings::begin_value(s),
                 bindings::begin_value(sep), mm, m,
-                bindings::begin_value(work), bindings::stride_major(work),
+                bindings::begin_value(work.select(value_type())), ldwork,
                 bindings::begin_value(work.select(real_type())) );
     }
 
@@ -336,13 +338,13 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            minimal_workspace ) {
+            const fortran_int_t ldwork, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
-        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                $CALL_MIN_SIZE ) );
-        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
+        bindings::detail::array< value_type > tmp_work( min_size_work( job,
+                ldwork, bindings::size_column(t) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( job,
+                bindings::size_column(t) ) );
+        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, ldwork,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -359,9 +361,9 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            optimal_workspace ) {
+            const fortran_int_t ldwork, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
+        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, ldwork,
                 minimal_workspace() );
     }
 
@@ -369,18 +371,18 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char job,
+            const std::ptrdiff_t ldwork, const std::ptrdiff_t n ) {
+        return job == 'E' ? 1 : ldwork * (n+6);
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array rwork.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_rwork( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_rwork( const char job,
+            const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, job == 'E' ? 1 : n);
     }
 };
 
@@ -406,10 +408,10 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
 trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
         VectorSEP& sep, const fortran_int_t mm, fortran_int_t& m,
-        Workspace work ) {
+        const fortran_int_t ldwork, Workspace work ) {
     return trsna_impl< typename bindings::value_type<
             MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
-            mm, m, work );
+            mm, m, ldwork, work );
 }
 
 //
@@ -422,10 +424,11 @@ inline typename boost::disable_if< detail::is_workspace< VectorSEP >,
         std::ptrdiff_t >::type
 trsna( const char job, const char howmny, const VectorSELECT& select,
         const MatrixT& t, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
-        VectorSEP& sep, const fortran_int_t mm, fortran_int_t& m ) {
+        VectorSEP& sep, const fortran_int_t mm, fortran_int_t& m,
+        const fortran_int_t ldwork ) {
     return trsna_impl< typename bindings::value_type<
             MatrixT >::type >::invoke( job, howmny, select, t, vl, vr, s, sep,
-            mm, m, optimal_workspace() );
+            mm, m, ldwork, optimal_workspace() );
 }
 
 } // namespace lapack

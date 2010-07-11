@@ -12,6 +12,7 @@ project libs/numeric/bindings/lapack/test : requirements
 import testing ;
 
 alias bindings-lapack-tests :
+    [ compile include_test.cpp ]
     [ run hseqr.cpp ]
 
     [ run ublas_geev.cpp ]

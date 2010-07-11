@@ -15,10 +15,10 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_AUXILIARY_HPP
 
 #include <boost/numeric/bindings/lapack/auxiliary/larf.hpp>
-#include <boost/numeric/bindings/lapack/auxiliary/larfb.hpp>
+// #include <boost/numeric/bindings/lapack/auxiliary/larfb.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/larfg.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/larft.hpp>
-#include <boost/numeric/bindings/lapack/auxiliary/larfx.hpp>
+// #include <boost/numeric/bindings/lapack/auxiliary/larfx.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/largv.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/larnv.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/larrb.hpp>
@@ -39,11 +39,11 @@
 #include <boost/numeric/bindings/lapack/auxiliary/lacgv.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/lacon.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/laebz.hpp>
-#include <boost/numeric/bindings/lapack/auxiliary/lalsd.hpp>
+// #include <boost/numeric/bindings/lapack/auxiliary/lalsd.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/largv.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/larz.hpp>
-#include <boost/numeric/bindings/lapack/auxiliary/latrd.hpp>
-#include <boost/numeric/bindings/lapack/auxiliary/latrs.hpp>
+// #include <boost/numeric/bindings/lapack/auxiliary/latrd.hpp>
+// #include <boost/numeric/bindings/lapack/auxiliary/latrs.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/latrz.hpp>
 
 #endif

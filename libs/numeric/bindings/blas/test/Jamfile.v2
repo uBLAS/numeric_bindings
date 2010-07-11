@@ -11,6 +11,7 @@ project libs/numeric/bindings/blas/test : requirements
 import testing ;
 
 alias bindings-blas-tests :
+    [ compile include_test.cpp ]
     [ run scal.cpp ]
     [ run blas1.cpp ]
     [ link blas2.cpp ]

@@ -194,7 +194,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::size(select) >= bindings::size_column(h) );
         BOOST_ASSERT( bindings::size(wi) >= bindings::size_column(h) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( bindings::size_column(h), ?2 ));
+                min_size_work( bindings::size_column(h) ));
         BOOST_ASSERT( bindings::size(wr) >= bindings::size_column(h) );
         BOOST_ASSERT( bindings::size_column(h) >= 0 );
         BOOST_ASSERT( bindings::size_minor(h) == 1 ||
@@ -234,7 +234,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                bindings::size_column(h), ?2 ) );
+                bindings::size_column(h) ) );
         return invoke( side, eigsrc, initv, select, h, wr, wi, vl, vr, mm, m,
                 ifaill, ifailr, workspace( tmp_work ) );
     }
@@ -263,7 +263,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n, ?? ) {
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return (n+2)*n;
     }
 };

@@ -391,7 +391,9 @@ def nested_list_args( arg ):
 
   else:
     for a in arg:
-      result.append( a )
+      if a != None and re.compile( '^[A-Z]+$' ).match( a ) != None and \
+            a not in result:
+        result.append( a )
 
   print "returning ",result
   return result

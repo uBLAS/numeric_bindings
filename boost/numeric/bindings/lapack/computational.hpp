@@ -56,7 +56,7 @@
 #include <boost/numeric/bindings/lapack/computational/gebak.hpp>
 #include <boost/numeric/bindings/lapack/computational/gebal.hpp>
 #include <boost/numeric/bindings/lapack/computational/gehrd.hpp>
-//#include <boost/numeric/bindings/lapack/computational/hsein.hpp>
+#include <boost/numeric/bindings/lapack/computational/hsein.hpp>
 #include <boost/numeric/bindings/lapack/computational/hseqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/orghr.hpp>
 #include <boost/numeric/bindings/lapack/computational/ormhr.hpp>

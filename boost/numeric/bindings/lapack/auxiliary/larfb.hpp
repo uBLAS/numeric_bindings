@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -153,7 +154,7 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixC, typename WORK >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            detail::workspace1< WORK > work ) {
+            const fortran_int_t ldwork, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
@@ -168,7 +169,7 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( ldwork, bindings::size_column(t) ));
         BOOST_ASSERT( bindings::size_minor(c) == 1 ||
                 bindings::stride_minor(c) == 1 );
         BOOST_ASSERT( bindings::size_minor(t) == 1 ||
@@ -185,8 +186,8 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::size_column(t), bindings::begin_value(v),
                 bindings::stride_major(v), bindings::begin_value(t),
                 bindings::stride_major(t), bindings::begin_value(c),
-                bindings::stride_major(c), bindings::begin_value(work),
-                bindings::stride_major(work) );
+                bindings::stride_major(c),
+                bindings::begin_value(work.select(real_type())), ldwork );
     }
 
     //
@@ -200,11 +201,12 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            minimal_workspace ) {
+            const fortran_int_t ldwork, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
-        return invoke( side, direct, storev, v, t, c, workspace( tmp_work ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( ldwork,
+                bindings::size_column(t) ) );
+        return invoke( side, direct, storev, v, t, c, ldwork,
+                workspace( tmp_work ) );
     }
 
     //
@@ -218,18 +220,19 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            optimal_workspace ) {
+            const fortran_int_t ldwork, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( side, direct, storev, v, t, c, minimal_workspace() );
+        return invoke( side, direct, storev, v, t, c, ldwork,
+                minimal_workspace() );
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t ldwork,
+            const std::ptrdiff_t k ) {
+        return ldwork * k;
     }
 };
 
@@ -251,7 +254,7 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixC, typename WORK >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            detail::workspace1< WORK > work ) {
+            const fortran_int_t ldwork, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
@@ -266,7 +269,7 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( ldwork, bindings::size_column(t) ));
         BOOST_ASSERT( bindings::size_minor(c) == 1 ||
                 bindings::stride_minor(c) == 1 );
         BOOST_ASSERT( bindings::size_minor(t) == 1 ||
@@ -283,8 +286,8 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::size_column(t), bindings::begin_value(v),
                 bindings::stride_major(v), bindings::begin_value(t),
                 bindings::stride_major(t), bindings::begin_value(c),
-                bindings::stride_major(c), bindings::begin_value(work),
-                bindings::stride_major(work) );
+                bindings::stride_major(c),
+                bindings::begin_value(work.select(value_type())), ldwork );
     }
 
     //
@@ -298,11 +301,12 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            minimal_workspace ) {
+            const fortran_int_t ldwork, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
-        return invoke( side, direct, storev, v, t, c, workspace( tmp_work ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work( ldwork,
+                bindings::size_column(t) ) );
+        return invoke( side, direct, storev, v, t, c, ldwork,
+                workspace( tmp_work ) );
     }
 
     //
@@ -316,18 +320,19 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixC >
     static std::ptrdiff_t invoke( const Side side, const char direct,
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
-            optimal_workspace ) {
+            const fortran_int_t ldwork, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( side, direct, storev, v, t, c, minimal_workspace() );
+        return invoke( side, direct, storev, v, t, c, ldwork,
+                minimal_workspace() );
     }
 
     //
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t ldwork,
+            const std::ptrdiff_t k ) {
+        return ldwork * k;
     }
 };
 
@@ -351,9 +356,11 @@ template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larfb( const Side side, const char direct, const char storev,
-        const MatrixV& v, const MatrixT& t, MatrixC& c, Workspace work ) {
+        const MatrixV& v, const MatrixT& t, MatrixC& c,
+        const fortran_int_t ldwork, Workspace work ) {
     return larfb_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( side, direct, storev, v, t, c, work );
+            MatrixV >::type >::invoke( side, direct, storev, v, t, c, ldwork,
+            work );
 }
 
 //
@@ -365,9 +372,10 @@ template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 larfb( const Side side, const char direct, const char storev,
-        const MatrixV& v, const MatrixT& t, MatrixC& c ) {
+        const MatrixV& v, const MatrixT& t, MatrixC& c,
+        const fortran_int_t ldwork ) {
     return larfb_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( side, direct, storev, v, t, c,
+            MatrixV >::type >::invoke( side, direct, storev, v, t, c, ldwork,
             optimal_workspace() );
 }
 
@@ -382,9 +390,10 @@ inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 larfb( const Side side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, const MatrixC& c,
-        Workspace work ) {
+        const fortran_int_t ldwork, Workspace work ) {
     return larfb_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( side, direct, storev, v, t, c, work );
+            MatrixV >::type >::invoke( side, direct, storev, v, t, c, ldwork,
+            work );
 }
 
 //
@@ -396,9 +405,10 @@ template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 larfb( const Side side, const char direct, const char storev,
-        const MatrixV& v, const MatrixT& t, const MatrixC& c ) {
+        const MatrixV& v, const MatrixT& t, const MatrixC& c,
+        const fortran_int_t ldwork ) {
     return larfb_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( side, direct, storev, v, t, c,
+            MatrixV >::type >::invoke( side, direct, storev, v, t, c, ldwork,
             optimal_workspace() );
 }
 

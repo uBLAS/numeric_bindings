@@ -126,7 +126,7 @@ struct lansy_impl {
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( norm, bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
@@ -149,8 +149,8 @@ struct lansy_impl {
             minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( norm,
+                bindings::size_column(a) ) );
         return invoke( norm, a, workspace( tmp_work ) );
     }
 
@@ -173,9 +173,12 @@ struct lansy_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char norm,
+            const std::ptrdiff_t n ) {
+        if ( norm == 'I' || norm == '1' || norm == 'O' )
+            return std::max< std::ptrdiff_t >( 1, n );
+        else
+            return 1;
     }
 };
 

@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -202,10 +203,8 @@ struct larz_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     template< typename Side >
     static std::ptrdiff_t min_size_work( const Side side,
             const std::ptrdiff_t m, const std::ptrdiff_t n ) {
-        if ( side == 'L' )
-            return n;
-        else
-            return m;
+        return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
+                n, m ) );
     }
 };
 
@@ -288,10 +287,8 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename Side >
     static std::ptrdiff_t min_size_work( const Side side,
             const std::ptrdiff_t m, const std::ptrdiff_t n ) {
-        if ( side == 'L' )
-            return n;
-        else
-            return m;
+        return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
+                n, m ) );
     }
 };
 

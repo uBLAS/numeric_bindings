@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -146,7 +147,8 @@ struct larfx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( side, bindings::size_row(c),
+                bindings::size_column(c) ));
         BOOST_ASSERT( bindings::size_minor(c) == 1 ||
                 bindings::stride_minor(c) == 1 );
         BOOST_ASSERT( bindings::stride_major(c) >= (ERROR) );
@@ -167,8 +169,8 @@ struct larfx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const Side side, const VectorV& v,
             const real_type tau, MatrixC& c, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( side,
+                bindings::size_row(c), bindings::size_column(c) ) );
         return invoke( side, v, tau, c, workspace( tmp_work ) );
     }
 
@@ -190,9 +192,14 @@ struct larfx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    template< typename Side >
+    static std::ptrdiff_t min_size_work( const Side side,
+            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+        std::ptrdiff_t order = bindings::detail::if_left( side, n, m );
+        if ( order < 11)
+            return 1;
+        else
+            return std::max< std::ptrdiff_t >( 1, order );
     }
 };
 
@@ -223,7 +230,8 @@ struct larfx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( side, bindings::size_row(c),
+                bindings::size_column(c) ));
         BOOST_ASSERT( bindings::size_minor(c) == 1 ||
                 bindings::stride_minor(c) == 1 );
         BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
@@ -245,8 +253,8 @@ struct larfx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const Side side, const VectorV& v,
             const value_type tau, MatrixC& c, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work( side,
+                bindings::size_row(c), bindings::size_column(c) ) );
         return invoke( side, v, tau, c, workspace( tmp_work ) );
     }
 
@@ -268,9 +276,14 @@ struct larfx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    template< typename Side >
+    static std::ptrdiff_t min_size_work( const Side side,
+            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+        std::ptrdiff_t order = bindings::detail::if_left( side, n, m );
+        if ( order < 11)
+            return 1;
+        else
+            return std::max< std::ptrdiff_t >( 1, order );
     }
 };
 

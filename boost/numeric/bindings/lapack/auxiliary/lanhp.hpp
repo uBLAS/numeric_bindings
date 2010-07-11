@@ -94,7 +94,7 @@ struct lanhp_impl {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( norm, bindings::size_column(ap) ));
         BOOST_ASSERT( bindings::size_column(ap) >= 0 );
         return detail::lanhp( norm, uplo(), bindings::size_column(ap),
                 bindings::begin_value(ap),
@@ -113,8 +113,8 @@ struct lanhp_impl {
             minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( norm,
+                bindings::size_column(ap) ) );
         return invoke( norm, ap, workspace( tmp_work ) );
     }
 
@@ -137,9 +137,12 @@ struct lanhp_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char norm,
+            const std::ptrdiff_t n ) {
+        if ( norm == 'I' || norm == '1' || norm == 'O' )
+            return std::max< std::ptrdiff_t >( 1, n );
+        else
+            return 1;
     }
 };
 

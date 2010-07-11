@@ -125,7 +125,7 @@ struct langb_impl {
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( norm, bindings::size_column(ab) ));
         BOOST_ASSERT( bindings::size_column(ab) >= 0 );
         BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
                 bindings::stride_minor(ab) == 1 );
@@ -149,8 +149,8 @@ struct langb_impl {
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( norm,
+                bindings::size_column(ab) ) );
         return invoke( norm, ab, workspace( tmp_work ) );
     }
 
@@ -172,9 +172,12 @@ struct langb_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< $TYPES >
-    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE_IMPLEMENTATION
+    static std::ptrdiff_t min_size_work( const char norm,
+            const std::ptrdiff_t n ) {
+        if ( norm == 'I' )
+            return std::max< std::ptrdiff_t >( 1, n );
+        else
+            return 1;
     }
 };
 

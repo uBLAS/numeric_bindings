@@ -1,3 +1,5 @@
+$TEMPLATE[upmtr.all.TRANS.trait_of]
+AP
 $TEMPLATE[upmtr.all.min_size_work.args]
 SIDE,M,N
 $TEMPLATE[upmtr.includes]

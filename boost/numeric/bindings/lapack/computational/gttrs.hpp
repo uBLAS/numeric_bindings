@@ -128,10 +128,12 @@ struct gttrs_impl {
     //
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDU2, typename VectorIPIV, typename MatrixB >
-    static std::ptrdiff_t invoke( const fortran_int_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            const VectorDU2& du2, const VectorIPIV& ipiv, MatrixB& b ) {
+    static std::ptrdiff_t invoke( const VectorDL& dl, const VectorD& d,
+            const VectorDU& du, const VectorDU2& du2, const VectorIPIV& ipiv,
+            MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorD, order >::type trans;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorDL >::type >::type,
@@ -150,21 +152,26 @@ struct gttrs_impl {
                 typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( bindings::size(d) >= n );
-        BOOST_ASSERT( bindings::size(dl) >= n-1 );
-        BOOST_ASSERT( bindings::size(du) >= n-1 );
-        BOOST_ASSERT( bindings::size(du2) >= n-2 );
-        BOOST_ASSERT( bindings::size(ipiv) >= n );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_column_op(d,
+                trans()) );
+        BOOST_ASSERT( bindings::size(dl) >= bindings::size_column_op(d,
+                trans())-1 );
+        BOOST_ASSERT( bindings::size(du) >= bindings::size_column_op(d,
+                trans())-1 );
+        BOOST_ASSERT( bindings::size(du2) >= bindings::size_column_op(d,
+                trans())-2 );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column_op(d,
+                trans()) );
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                n) );
-        return detail::gttrs( trans(), n, bindings::size_column(b),
-                bindings::begin_value(dl), bindings::begin_value(d),
-                bindings::begin_value(du), bindings::begin_value(du2),
-                bindings::begin_value(ipiv), bindings::begin_value(b),
-                bindings::stride_major(b) );
+                bindings::size_column_op(d, trans())) );
+        return detail::gttrs( trans(), bindings::size_column_op(d, trans()),
+                bindings::size_column(b), bindings::begin_value(dl),
+                bindings::begin_value(d), bindings::begin_value(du),
+                bindings::begin_value(du2), bindings::begin_value(ipiv),
+                bindings::begin_value(b), bindings::stride_major(b) );
     }
 
 };
@@ -185,11 +192,11 @@ struct gttrs_impl {
 //
 template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gttrs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDU2& du2, const VectorIPIV& ipiv, MatrixB& b ) {
+inline std::ptrdiff_t gttrs( const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDU2& du2, const VectorIPIV& ipiv,
+        MatrixB& b ) {
     return gttrs_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( n, dl, d, du, du2, ipiv, b );
+            VectorDL >::type >::invoke( dl, d, du, du2, ipiv, b );
 }
 
 //
@@ -198,11 +205,11 @@ inline std::ptrdiff_t gttrs( const fortran_int_t n,
 //
 template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gttrs( const fortran_int_t n,
-        const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b ) {
+inline std::ptrdiff_t gttrs( const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, const VectorDU2& du2, const VectorIPIV& ipiv,
+        const MatrixB& b ) {
     return gttrs_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( n, dl, d, du, du2, ipiv, b );
+            VectorDL >::type >::invoke( dl, d, du, du2, ipiv, b );
 }
 
 } // namespace lapack

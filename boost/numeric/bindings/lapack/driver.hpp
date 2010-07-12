@@ -41,12 +41,12 @@
 #include <boost/numeric/bindings/lapack/driver/ggglm.hpp>
 #include <boost/numeric/bindings/lapack/driver/gglse.hpp>
 #include <boost/numeric/bindings/lapack/driver/gbsv.hpp>
-// #include <boost/numeric/bindings/lapack/driver/gbsvx.hpp>
+#include <boost/numeric/bindings/lapack/driver/gbsvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/gejsv.hpp>
 #include <boost/numeric/bindings/lapack/driver/gesv.hpp>
 #include <boost/numeric/bindings/lapack/driver/gesvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/gtsv.hpp>
-// #include <boost/numeric/bindings/lapack/driver/gtsvx.hpp>
+#include <boost/numeric/bindings/lapack/driver/gtsvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/hesv.hpp>
 #include <boost/numeric/bindings/lapack/driver/hesvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/hpsv.hpp>

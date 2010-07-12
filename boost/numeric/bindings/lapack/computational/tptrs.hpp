@@ -16,12 +16,13 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
@@ -131,24 +132,25 @@ struct tptrs_impl {
     template< typename MatrixAP, typename MatrixB >
     static std::ptrdiff_t invoke( const MatrixAP& ap, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
+        typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::trans_tag< MatrixAP, order >::type trans;
+        typedef typename result_of::uplo_tag< MatrixAP, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixAP >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_column_op(ap, trans()) >= 0 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                bindings::size_column(ap)) );
+                bindings::size_column_op(ap, trans())) );
         return detail::tptrs( uplo(), trans(), diag(),
-                bindings::size_column(ap), bindings::size_column(b),
-                bindings::begin_value(ap), bindings::begin_value(b),
-                bindings::stride_major(b) );
+                bindings::size_column_op(ap, trans()),
+                bindings::size_column(b), bindings::begin_value(ap),
+                bindings::begin_value(b), bindings::stride_major(b) );
     }
 
 };

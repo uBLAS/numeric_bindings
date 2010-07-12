@@ -161,13 +161,14 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
-            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
-            IWORK > work ) {
+    static std::ptrdiff_t invoke( const char fact, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, VectorDLF& dlf,
+            VectorDF& df, VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
+            VectorBERR& berr, detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorD, order >::type trans;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -219,32 +220,36 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
-        BOOST_ASSERT( bindings::size(d) >= n );
-        BOOST_ASSERT( bindings::size(dl) >= n-1 );
-        BOOST_ASSERT( bindings::size(du) >= n-1 );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_column_op(d,
+                trans()) );
+        BOOST_ASSERT( bindings::size(dl) >= bindings::size_column_op(d,
+                trans())-1 );
+        BOOST_ASSERT( bindings::size(du) >= bindings::size_column_op(d,
+                trans())-1 );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
+                min_size_iwork( bindings::size_column_op(d, trans()) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( n ));
+                min_size_work( bindings::size_column_op(d, trans()) ));
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_column_op(d, trans()) >= 0 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::size_minor(x) == 1 ||
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                n) );
+                bindings::size_column_op(d, trans())) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                n) );
+                bindings::size_column_op(d, trans())) );
         BOOST_ASSERT( fact == 'F' || fact == 'N' );
-        BOOST_ASSERT( n >= 0 );
-        return detail::gtsvx( fact, trans(), n, bindings::size_column(b),
-                bindings::begin_value(dl), bindings::begin_value(d),
-                bindings::begin_value(du), bindings::begin_value(dlf),
-                bindings::begin_value(df), bindings::begin_value(duf),
-                bindings::begin_value(du2), bindings::begin_value(ipiv),
-                bindings::begin_value(b), bindings::stride_major(b),
-                bindings::begin_value(x), bindings::stride_major(x), rcond,
-                bindings::begin_value(ferr), bindings::begin_value(berr),
+        return detail::gtsvx( fact, trans(), bindings::size_column_op(d,
+                trans()), bindings::size_column(b), bindings::begin_value(dl),
+                bindings::begin_value(d), bindings::begin_value(du),
+                bindings::begin_value(dlf), bindings::begin_value(df),
+                bindings::begin_value(duf), bindings::begin_value(du2),
+                bindings::begin_value(ipiv), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(x),
+                bindings::stride_major(x), rcond, bindings::begin_value(ferr),
+                bindings::begin_value(berr),
                 bindings::begin_value(work.select(real_type())),
                 bindings::begin_value(work.select(fortran_int_t())) );
     }
@@ -260,17 +265,20 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
-            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
+    static std::ptrdiff_t invoke( const char fact, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, VectorDLF& dlf,
+            VectorDF& df, VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
+            VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorD, order >::type trans;
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                bindings::size_column_op(d, trans()) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
-                rcond, ferr, berr, workspace( tmp_work, tmp_iwork ) );
+                min_size_iwork( bindings::size_column_op(d, trans()) ) );
+        return invoke( fact, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond,
+                ferr, berr, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -284,14 +292,16 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
-            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
+    static std::ptrdiff_t invoke( const char fact, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, VectorDLF& dlf,
+            VectorDF& df, VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
+            VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
-                rcond, ferr, berr, minimal_workspace() );
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorD, order >::type trans;
+        return invoke( fact, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond,
+                ferr, berr, minimal_workspace() );
     }
 
     //
@@ -330,13 +340,14 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
-            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
-            RWORK > work ) {
+    static std::ptrdiff_t invoke( const char fact, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, VectorDLF& dlf,
+            VectorDF& df, VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
+            VectorBERR& berr, detail::workspace2< WORK, RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorD, order >::type trans;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -384,32 +395,36 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
-        BOOST_ASSERT( bindings::size(d) >= n );
-        BOOST_ASSERT( bindings::size(dl) >= n-1 );
-        BOOST_ASSERT( bindings::size(du) >= n-1 );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_column_op(d,
+                trans()) );
+        BOOST_ASSERT( bindings::size(dl) >= bindings::size_column_op(d,
+                trans())-1 );
+        BOOST_ASSERT( bindings::size(du) >= bindings::size_column_op(d,
+                trans())-1 );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_rwork( n ));
+                min_size_rwork( bindings::size_column_op(d, trans()) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( n ));
+                min_size_work( bindings::size_column_op(d, trans()) ));
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_column_op(d, trans()) >= 0 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
                 bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( bindings::size_minor(x) == 1 ||
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                n) );
+                bindings::size_column_op(d, trans())) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                n) );
+                bindings::size_column_op(d, trans())) );
         BOOST_ASSERT( fact == 'F' || fact == 'N' );
-        BOOST_ASSERT( n >= 0 );
-        return detail::gtsvx( fact, trans(), n, bindings::size_column(b),
-                bindings::begin_value(dl), bindings::begin_value(d),
-                bindings::begin_value(du), bindings::begin_value(dlf),
-                bindings::begin_value(df), bindings::begin_value(duf),
-                bindings::begin_value(du2), bindings::begin_value(ipiv),
-                bindings::begin_value(b), bindings::stride_major(b),
-                bindings::begin_value(x), bindings::stride_major(x), rcond,
-                bindings::begin_value(ferr), bindings::begin_value(berr),
+        return detail::gtsvx( fact, trans(), bindings::size_column_op(d,
+                trans()), bindings::size_column(b), bindings::begin_value(dl),
+                bindings::begin_value(d), bindings::begin_value(du),
+                bindings::begin_value(dlf), bindings::begin_value(df),
+                bindings::begin_value(duf), bindings::begin_value(du2),
+                bindings::begin_value(ipiv), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(x),
+                bindings::stride_major(x), rcond, bindings::begin_value(ferr),
+                bindings::begin_value(berr),
                 bindings::begin_value(work.select(value_type())),
                 bindings::begin_value(work.select(real_type())) );
     }
@@ -425,16 +440,20 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
-            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
+    static std::ptrdiff_t invoke( const char fact, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, VectorDLF& dlf,
+            VectorDF& df, VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
+            VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
-        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
-                rcond, ferr, berr, workspace( tmp_work, tmp_rwork ) );
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorD, order >::type trans;
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                bindings::size_column_op(d, trans()) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                bindings::size_column_op(d, trans()) ) );
+        return invoke( fact, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond,
+                ferr, berr, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -448,14 +467,16 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
-            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
+    static std::ptrdiff_t invoke( const char fact, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, VectorDLF& dlf,
+            VectorDF& df, VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
+            VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
-                rcond, ferr, berr, minimal_workspace() );
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorD, order >::type trans;
+        return invoke( fact, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond,
+                ferr, berr, minimal_workspace() );
     }
 
     //
@@ -497,14 +518,14 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-gtsvx( const char fact, const fortran_int_t n, const VectorDL& dl,
-        const VectorD& d, const VectorDU& du, VectorDLF& dlf, VectorDF& df,
-        VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
+gtsvx( const char fact, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, VectorDLF& dlf, VectorDF& df, VectorDUF& duf,
+        VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename bindings::value_type<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
     return gtsvx_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( fact, n, dl, d, du, dlf, df, duf, du2,
+            VectorDL >::type >::invoke( fact, dl, d, du, dlf, df, duf, du2,
             ipiv, b, x, rcond, ferr, berr, work );
 }
 
@@ -519,13 +540,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-gtsvx( const char fact, const fortran_int_t n, const VectorDL& dl,
-        const VectorD& d, const VectorDU& du, VectorDLF& dlf, VectorDF& df,
-        VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
-        MatrixX& x, typename remove_imaginary< typename bindings::value_type<
+gtsvx( const char fact, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, VectorDLF& dlf, VectorDF& df, VectorDUF& duf,
+        VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        typename remove_imaginary< typename bindings::value_type<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return gtsvx_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( fact, n, dl, d, du, dlf, df, duf, du2,
+            VectorDL >::type >::invoke( fact, dl, d, du, dlf, df, duf, du2,
             ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
@@ -541,14 +562,14 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-gtsvx( const char fact, const fortran_int_t n, const VectorDL& dl,
-        const VectorD& d, const VectorDU& du, VectorDLF& dlf, VectorDF& df,
-        VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary<
-        typename bindings::value_type< VectorDL >::type >::type& rcond,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+gtsvx( const char fact, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, VectorDLF& dlf, VectorDF& df, VectorDUF& duf,
+        VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename bindings::value_type<
+        VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
     return gtsvx_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( fact, n, dl, d, du, dlf, df, duf, du2,
+            VectorDL >::type >::invoke( fact, dl, d, du, dlf, df, duf, du2,
             ipiv, b, x, rcond, ferr, berr, work );
 }
 
@@ -563,14 +584,13 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
 inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
-gtsvx( const char fact, const fortran_int_t n, const VectorDL& dl,
-        const VectorD& d, const VectorDU& du, VectorDLF& dlf, VectorDF& df,
-        VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, typename remove_imaginary<
-        typename bindings::value_type< VectorDL >::type >::type& rcond,
-        VectorFERR& ferr, VectorBERR& berr ) {
+gtsvx( const char fact, const VectorDL& dl, const VectorD& d,
+        const VectorDU& du, VectorDLF& dlf, VectorDF& df, VectorDUF& duf,
+        VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
+        typename remove_imaginary< typename bindings::value_type<
+        VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return gtsvx_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( fact, n, dl, d, du, dlf, df, duf, du2,
+            VectorDL >::type >::invoke( fact, dl, d, du, dlf, df, duf, du2,
             ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 

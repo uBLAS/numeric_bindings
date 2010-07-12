@@ -288,6 +288,9 @@ def write_functions( info_map, group, template_map, base_dir ):
               includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
               del matrix_wo_trans[0]
               del matrix_wo_trans_arg[0]
+            elif 'TRANS' in info_map[ subroutine ][ 'arguments' ]:
+              # FIXME: workaround such that tridiagonal stuff has a chance to pass compile test even if a 'TRANS' argument is present.
+              typedef_list.insert( 0, 'typedef tag::column_major order;' )
 
         # in LAPACK, every matrix that is not
         # * transposeable
@@ -382,7 +385,7 @@ def write_functions( info_map, group, template_map, base_dir ):
           # make sure trans tags always preceed other tags, as they may be dependant
           if 'TRANS' in arg:
               at_i = 0
-              if len(typedef_list)>0 and '_order<' in typedef_list[0]:
+              if len(typedef_list)>0 and ' order;' in typedef_list[0]:
                 at_i = 1
               typedef_list.insert( at_i, info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] )
           else:

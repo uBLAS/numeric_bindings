@@ -15,7 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_AUXILIARY_HPP
 
 #include <boost/numeric/bindings/lapack/auxiliary/larf.hpp>
-// #include <boost/numeric/bindings/lapack/auxiliary/larfb.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/larfb.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/larfg.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/larft.hpp>
 // #include <boost/numeric/bindings/lapack/auxiliary/larfx.hpp>

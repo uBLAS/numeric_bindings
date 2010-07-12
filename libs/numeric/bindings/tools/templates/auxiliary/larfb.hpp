@@ -1,3 +1,5 @@
+$TEMPLATE[larfb.all.TRANS.trait_of]
+V
 $TEMPLATE[larfb.all.WORK.type]
 vector
 $TEMPLATE[larfb.all.fixme]

@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
@@ -26,6 +27,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -156,8 +158,8 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             const fortran_int_t ldwork, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
+        typedef typename result_of::data_order< MatrixT >::type order;
+        typedef typename result_of::trans_tag< MatrixV, order >::type trans;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixV >::type >::type,
@@ -203,6 +205,8 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             const fortran_int_t ldwork, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixT >::type order;
+        typedef typename result_of::trans_tag< MatrixV, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work( ldwork,
                 bindings::size_column(t) ) );
         return invoke( side, direct, storev, v, t, c, ldwork,
@@ -222,6 +226,8 @@ struct larfb_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             const fortran_int_t ldwork, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixT >::type order;
+        typedef typename result_of::trans_tag< MatrixV, order >::type trans;
         return invoke( side, direct, storev, v, t, c, ldwork,
                 minimal_workspace() );
     }
@@ -256,8 +262,8 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             const fortran_int_t ldwork, detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixV >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
+        typedef typename result_of::data_order< MatrixT >::type order;
+        typedef typename result_of::trans_tag< MatrixV, order >::type trans;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixV >::type >::type,
@@ -303,6 +309,8 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             const fortran_int_t ldwork, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixT >::type order;
+        typedef typename result_of::trans_tag< MatrixV, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work( ldwork,
                 bindings::size_column(t) ) );
         return invoke( side, direct, storev, v, t, c, ldwork,
@@ -322,6 +330,8 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char storev, const MatrixV& v, const MatrixT& t, MatrixC& c,
             const fortran_int_t ldwork, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::data_order< MatrixT >::type order;
+        typedef typename result_of::trans_tag< MatrixV, order >::type trans;
         return invoke( side, direct, storev, v, t, c, ldwork,
                 minimal_workspace() );
     }

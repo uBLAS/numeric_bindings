@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
@@ -27,6 +28,7 @@
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
 #include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
@@ -160,10 +162,10 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
             IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
+        typedef typename result_of::uplo_tag< MatrixAB, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< MatrixAB >::type >::type,
@@ -185,11 +187,11 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( bindings::size_column(ab) ));
+                min_size_iwork( bindings::size_column_op(ab, trans()) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( bindings::size_column(ab) ));
-        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+                min_size_work( bindings::size_column_op(ab, trans()) ));
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_column_op(ab, trans()) >= 0 );
         BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
                 bindings::stride_minor(ab) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
@@ -198,16 +200,17 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >= kd+1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                bindings::size_column(ab)) );
+                bindings::size_column_op(ab, trans())) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                bindings::size_column(ab)) );
+                bindings::size_column_op(ab, trans())) );
         BOOST_ASSERT( kd >= 0 );
         return detail::tbrfs( uplo(), trans(), diag(),
-                bindings::size_column(ab), kd, bindings::size_column(b),
-                bindings::begin_value(ab), bindings::stride_major(ab),
-                bindings::begin_value(b), bindings::stride_major(b),
-                bindings::begin_value(x), bindings::stride_major(x),
-                bindings::begin_value(ferr), bindings::begin_value(berr),
+                bindings::size_column_op(ab, trans()), kd,
+                bindings::size_column(b), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(x),
+                bindings::stride_major(x), bindings::begin_value(ferr),
+                bindings::begin_value(berr),
                 bindings::begin_value(work.select(real_type())),
                 bindings::begin_value(work.select(fortran_int_t())) );
     }
@@ -225,12 +228,14 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixAB& ab, const MatrixB& b, const MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
+        typedef typename result_of::uplo_tag< MatrixAB, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                bindings::size_column(ab) ) );
+                bindings::size_column_op(ab, trans()) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( bindings::size_column(ab) ) );
+                min_size_iwork( bindings::size_column_op(ab, trans()) ) );
         return invoke( kd, ab, b, x, ferr, berr, workspace( tmp_work,
                 tmp_iwork ) );
     }
@@ -248,7 +253,9 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixAB& ab, const MatrixB& b, const MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
+        typedef typename result_of::uplo_tag< MatrixAB, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         return invoke( kd, ab, b, x, ferr, berr, minimal_workspace() );
     }
@@ -292,10 +299,10 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
             RWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
+        typedef typename result_of::uplo_tag< MatrixAB, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename bindings::value_type< VectorFERR >::type >::type,
@@ -313,11 +320,11 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_rwork( bindings::size_column(ab) ));
+                min_size_rwork( bindings::size_column_op(ab, trans()) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( bindings::size_column(ab) ));
-        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+                min_size_work( bindings::size_column_op(ab, trans()) ));
         BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_column_op(ab, trans()) >= 0 );
         BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
                 bindings::stride_minor(ab) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
@@ -326,16 +333,17 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::stride_minor(x) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >= kd+1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                bindings::size_column(ab)) );
+                bindings::size_column_op(ab, trans())) );
         BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                bindings::size_column(ab)) );
+                bindings::size_column_op(ab, trans())) );
         BOOST_ASSERT( kd >= 0 );
         return detail::tbrfs( uplo(), trans(), diag(),
-                bindings::size_column(ab), kd, bindings::size_column(b),
-                bindings::begin_value(ab), bindings::stride_major(ab),
-                bindings::begin_value(b), bindings::stride_major(b),
-                bindings::begin_value(x), bindings::stride_major(x),
-                bindings::begin_value(ferr), bindings::begin_value(berr),
+                bindings::size_column_op(ab, trans()), kd,
+                bindings::size_column(b), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(x),
+                bindings::stride_major(x), bindings::begin_value(ferr),
+                bindings::begin_value(berr),
                 bindings::begin_value(work.select(value_type())),
                 bindings::begin_value(work.select(real_type())) );
     }
@@ -353,12 +361,14 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixAB& ab, const MatrixB& b, const MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
+        typedef typename result_of::uplo_tag< MatrixAB, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                bindings::size_column(ab) ) );
+                bindings::size_column_op(ab, trans()) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                bindings::size_column(ab) ) );
+                bindings::size_column_op(ab, trans()) ) );
         return invoke( kd, ab, b, x, ferr, berr, workspace( tmp_work,
                 tmp_rwork ) );
     }
@@ -376,7 +386,9 @@ struct tbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixAB& ab, const MatrixB& b, const MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
+        typedef typename result_of::uplo_tag< MatrixAB, trans >::type uplo;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         return invoke( kd, ab, b, x, ferr, berr, minimal_workspace() );
     }

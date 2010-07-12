@@ -1,3 +1,5 @@
+$TEMPLATE[gbsvx.all.TRANS.trait_of]
+AB
 $TEMPLATE[gbsvx.all.KU.trait]
 num_super_sub,AB
 $TEMPLATE[gbsvx.real.min_size_iwork.args]

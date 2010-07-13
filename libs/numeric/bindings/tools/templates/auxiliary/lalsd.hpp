@@ -16,7 +16,7 @@ $TEMPLATE[lalsd.all.extra_variables]
 NLVL
 $TEMPLATE[lalsd.complex.NLVL.init]
 $INTEGER_TYPE nlvl = std::max< $INTEGER_TYPE >( 0, static_cast<$INTEGER_TYPE>(
-    std::log(static_cast<real_type>(std::min< $INTEGER_TYPE >(traits::matrix_size2(b),n))/
+    std::log(static_cast<real_type>(n)/
     static_cast<real_type>(smlsiz+1)) /
     std::log(static_cast<real_type>(2.))) + 1 );
 $TEMPLATE[lalsd.real.NLVL.init]

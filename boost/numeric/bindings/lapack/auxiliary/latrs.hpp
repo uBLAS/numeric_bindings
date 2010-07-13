@@ -141,7 +141,7 @@ struct latrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixA& a, VectorX& x, real_type& scale,
             VectorCNORM& cnorm ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename detail::default_order< MatrixA >::type order;
+        typedef typename blas::detail::default_order< MatrixA >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -190,7 +190,7 @@ struct latrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixA& a, VectorX& x, real_type& scale,
             VectorCNORM& cnorm ) {
         namespace bindings = ::boost::numeric::bindings;
-        typedef typename detail::default_order< MatrixA >::type order;
+        typedef typename blas::detail::default_order< MatrixA >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<

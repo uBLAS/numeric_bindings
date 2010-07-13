@@ -276,7 +276,7 @@ def write_functions( info_map, group, template_map, base_dir ):
             matrix_wo_trans_arg_removed = [ matrix_wo_trans_arg[0] ]
             del matrix_wo_trans_arg[0]
           else:
-            typedef_list.insert( 0, 'typedef typename detail::default_order< ' + matrix_with_trans[0] + \
+            typedef_list.insert( 0, 'typedef typename blas::detail::default_order< ' + matrix_with_trans[0] + \
                 ' >::type order;' )
             includes += [ '#include <boost/numeric/bindings/blas/detail/default_order.hpp>' ]
         else:

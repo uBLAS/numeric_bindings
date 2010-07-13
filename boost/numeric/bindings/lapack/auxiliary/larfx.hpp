@@ -151,7 +151,8 @@ struct larfx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::size_column(c) ));
         BOOST_ASSERT( bindings::size_minor(c) == 1 ||
                 bindings::stride_minor(c) == 1 );
-        BOOST_ASSERT( bindings::stride_major(c) >= (ERROR) );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(c)) );
         return detail::larfx( side, bindings::size_row(c),
                 bindings::size_column(c), bindings::begin_value(v), tau,
                 bindings::begin_value(c), bindings::stride_major(c),

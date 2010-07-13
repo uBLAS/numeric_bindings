@@ -8,4 +8,6 @@ if ( order < 11)
     return 1;
 else
     return std::max< $INTEGER_TYPE >( 1, order );
+$TEMPLATE[larfx.all.LDC.assert_ge]
+max(1,M)
 $TEMPLATE[end]

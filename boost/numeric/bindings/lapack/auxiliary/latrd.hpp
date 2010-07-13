@@ -160,7 +160,8 @@ struct latrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::size_minor(w) == 1 ||
                 bindings::stride_minor(w) == 1 );
-        BOOST_ASSERT( bindings::stride_major(a) >= (ERROR) );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( bindings::stride_major(w) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(a)) );
         return detail::latrd( uplo(), bindings::size_column(a), nb,

@@ -273,8 +273,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
-            std::log(static_cast<real_type>(std::min<
-                    std::ptrdiff_t >(traits::matrix_size2(b),n))/
+            std::log(static_cast<real_type>(n)/
             static_cast<real_type>(smlsiz+1)) /
             std::log(static_cast<real_type>(2.))) + 1 );
         BOOST_ASSERT( bindings::size(e) >= n-1 );
@@ -313,8 +312,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
-            std::log(static_cast<real_type>(std::min<
-                    std::ptrdiff_t >(traits::matrix_size2(b),n))/
+            std::log(static_cast<real_type>(n)/
             static_cast<real_type>(smlsiz+1)) /
             std::log(static_cast<real_type>(2.))) + 1 );
         bindings::detail::array< value_type > tmp_work( min_size_work( n,

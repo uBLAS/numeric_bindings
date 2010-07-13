@@ -72,7 +72,7 @@ struct get_impl< T, Key, typename boost::enable_if<
 
     typedef typename property_at< T, Key >::type result_type;
 
-    static result_type invoke( const T& t ) {
+    static result_type invoke( const T& ) {
         return result_type();
     }
 

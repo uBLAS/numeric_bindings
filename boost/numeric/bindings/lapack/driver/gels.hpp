@@ -223,7 +223,7 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
             const std::ptrdiff_t n, const std::ptrdiff_t nrhs ) {
-        integer_t minmn = std::min< std::ptrdiff_t >( m, n );
+        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( m, n );
         return std::max< std::ptrdiff_t >( 1, minmn + std::max<
                 std::ptrdiff_t >( minmn, nrhs ) );
     }
@@ -327,7 +327,7 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
             const std::ptrdiff_t n, const std::ptrdiff_t nrhs ) {
-        integer_t minmn = std::min< std::ptrdiff_t >( m, n );
+        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( m, n );
         return std::max< std::ptrdiff_t >( 1, minmn + std::max<
                 std::ptrdiff_t >( minmn, nrhs ) );
     }

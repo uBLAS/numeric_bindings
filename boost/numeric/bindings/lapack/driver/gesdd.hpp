@@ -163,7 +163,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixU >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVT >::value) );
-        integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
+        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         BOOST_ASSERT( bindings::size(s) >= std::min<
                 std::ptrdiff_t >(bindings::size_row(a),
@@ -207,7 +207,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
             MatrixU& u, MatrixVT& vt, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
+        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a), jobz,
@@ -293,7 +293,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixU >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVT >::value) );
-        integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
+        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         BOOST_ASSERT( bindings::size(s) >= std::min<
                 std::ptrdiff_t >(bindings::size_row(a),
@@ -340,7 +340,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
             MatrixU& u, MatrixVT& vt, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
+        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 bindings::size_row(a), bindings::size_column(a), jobz,
@@ -365,7 +365,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
             MatrixU& u, MatrixVT& vt, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
+        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,

@@ -88,7 +88,7 @@ int main (int argc, char **argv) {
   print_m (bu, "bu"); 
   cout << endl; 
 
-  std::vector<integer_t> ipiv (n); 
+  std::vector<fortran_int_t> ipiv (n); 
   
   int err = lapack::sptrf (sal, ipiv);  
   if (err == 0) {

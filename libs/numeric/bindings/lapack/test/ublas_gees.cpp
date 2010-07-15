@@ -31,13 +31,13 @@ namespace bindings = boost::numeric::bindings;
 struct apply_real {
   template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-  static inline integer_t gees( const char jobvs, const char sort,
-        logical_t* select, MatrixA& a, integer_t& sdim, VectorW& w,
+  static inline std::ptrdiff_t gees( const char jobvs, const char sort,
+        logical_t* select, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         MatrixVS& vs, Workspace work ) {
     typedef typename bindings::value_type< MatrixA >::type value_type;
     bindings::detail::array<value_type> wr(bindings::size(w));
     bindings::detail::array<value_type> wi(bindings::size(w));
-    integer_t info = lapack::gees( jobvs, sort, select, a, sdim, wr, wi, vs, work );
+    fortran_int_t info = lapack::gees( jobvs, sort, select, a, sdim, wr, wi, vs, work );
     traits::detail::interlace(bindings::begin_value(wr),
                               bindings::begin_value(wr)+bindings::size(w),
                               bindings::begin_value(wi),
@@ -49,8 +49,8 @@ struct apply_real {
 struct apply_complex {
   template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-  static inline integer_t gees( const char jobvs, const char sort,
-        logical_t* select, MatrixA& a, integer_t& sdim, VectorW& w,
+  static inline std::ptrdiff_t gees( const char jobvs, const char sort,
+        logical_t* select, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         MatrixVS& vs, Workspace work ) {
     return lapack::gees( jobvs, sort, select, a, sdim, w, vs, work );
   }
@@ -95,7 +95,7 @@ int do_memory_type(int n, W workspace) {
    randomize( a );
    matrix_type a2( a );
    logical_t* select = 0;
-   integer_t sdim_info(0);
+   fortran_int_t sdim_info(0);
    // Compute Schur decomposition.
    apply_t::gees( 'V', 'N', select, a, sdim_info, e1, z, workspace ) ;
 

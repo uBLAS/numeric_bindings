@@ -19,9 +19,9 @@ void InPlaceSolve(MatrA& a, MatrB& b)
 {
   // if the matrix has kl lower and ku upper diagonals, then we should have
   // allocated kl lower and kl+ku upper diagonals
-  integer_t const kl = bindings::bandwidth_lower (a);
-  integer_t const ku = bindings::bandwidth_upper (a) - kl;
-  std::vector<integer_t> piv(a.size1());
+  fortran_int_t const kl = bindings::bandwidth_lower (a);
+  fortran_int_t const ku = bindings::bandwidth_upper (a) - kl;
+  std::vector<fortran_int_t> piv(a.size1());
   int ret = lapack::gbtrf(/*kl, ku, */a, piv);
   if (ret < 0) {
     //CStdString err;

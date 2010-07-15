@@ -64,7 +64,7 @@ int main (int argc, char **argv) {
   m_t x (n, nrhs);
   m_t bl (n, nrhs), bu (n, nrhs);  // RHS matrices
 
-  std::vector<integer_t> ipiv (n);
+  std::vector<fortran_int_t> ipiv (n);
 
   init_symm2 (al); 
   swap (row (al, 1), row (al, 4)); 

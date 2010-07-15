@@ -34,12 +34,12 @@ namespace tag = boost::numeric::bindings::tag;
 
 struct apply_real {
   template< typename MatrixA, typename VectorTAU, typename Workspace >
-  static inline integer_t orgqr(  MatrixA& a, const VectorTAU& tau, Workspace work ) {
+  static inline std::ptrdiff_t orgqr(  MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return lapack::orgqr( a, tau, work );
   }
   template< typename Side, typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-  static inline integer_t ormqr( const Side side, 
+  static inline std::ptrdiff_t ormqr( const Side side, 
         const MatrixA& a, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
     return lapack::ormqr( side, a, tau, c, work );
@@ -48,12 +48,12 @@ struct apply_real {
 
 struct apply_complex {
   template< typename MatrixA, typename VectorTAU, typename Workspace >
-  static inline integer_t orgqr( MatrixA& a, const VectorTAU& tau, Workspace work ) {
+  static inline std::ptrdiff_t orgqr( MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return lapack::ungqr( a, tau, work );
   }
   template< typename Side, typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-  static inline integer_t ormqr( const Side side, 
+  static inline std::ptrdiff_t ormqr( const Side side, 
         const MatrixA& a, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
     return lapack::unmqr( side, a, tau, c, work );

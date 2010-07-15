@@ -29,7 +29,7 @@ namespace bindings = boost::numeric::bindings;
 struct apply_real {
   template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-  static inline integer_t hegv( const integer_t itype, const char jobz,
+  static inline std::ptrdiff_t hegv( const fortran_int_t itype, const char jobz,
         MatrixA& a, MatrixB& b, VectorW& w,
         Workspace work ) {
     return lapack::sygv( itype, jobz, a, b, w, work );
@@ -39,7 +39,7 @@ struct apply_real {
 struct apply_complex {
   template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-  static inline integer_t hegv( const integer_t itype, const char jobz,
+  static inline std::ptrdiff_t hegv( const fortran_int_t itype, const char jobz,
         MatrixA& a, MatrixB& b, VectorW& w,
         Workspace work ) {
     return lapack::hegv( itype, jobz, a, b, w, work );

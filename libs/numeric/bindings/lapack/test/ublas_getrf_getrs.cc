@@ -79,7 +79,7 @@ int main (int argc, char **argv) {
   print_m (b, "B"); 
   cout << endl; 
 
-  std::vector<integer_t> ipiv (n);  // pivot vector
+  std::vector<fortran_int_t> ipiv (n);  // pivot vector
 
   lapack::getrf (a, ipiv);      // factor a
   m_t ia (a);

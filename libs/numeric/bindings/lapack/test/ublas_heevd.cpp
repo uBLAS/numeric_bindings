@@ -29,7 +29,7 @@ namespace bindings = boost::numeric::bindings;
 
 struct apply_real {
   template< typename MatrixA, typename VectorW, typename Workspace >
-  static inline integer_t heevd( const char jobz, MatrixA& a, VectorW& w,
+  static inline std::ptrdiff_t heevd( const char jobz, MatrixA& a, VectorW& w,
         Workspace work ) {
     return lapack::syevd( jobz, a, w, work );
   }
@@ -37,7 +37,7 @@ struct apply_real {
 
 struct apply_complex {
   template< typename MatrixA, typename VectorW, typename Workspace >
-  static inline integer_t heevd( const char jobz, MatrixA& a, VectorW& w,
+  static inline std::ptrdiff_t heevd( const char jobz, MatrixA& a, VectorW& w,
         Workspace work ) {
     return lapack::heevd( jobz, a, w, work );
   }
@@ -106,7 +106,7 @@ int do_memory_type(int n, W workspace) {
 template <typename T>
 struct Workspace {
    typedef ublas::vector< T >                                       array_type ;
-   typedef ublas::vector< integer_t >                               int_array_type ;
+   typedef ublas::vector< fortran_int_t >                               int_array_type ;
    typedef lapack::detail::workspace2< array_type, int_array_type > type ;
 
    Workspace(size_t n)
@@ -126,7 +126,7 @@ template <typename T>
 struct Workspace< std::complex<T> > {
    typedef ublas::vector< std::complex<T> >                 complex_array_type ;
    typedef ublas::vector< T >                               real_array_type ;
-   typedef ublas::vector< integer_t >                       int_array_type ;
+   typedef ublas::vector< fortran_int_t >                       int_array_type ;
    typedef lapack::detail::workspace3<
       complex_array_type, real_array_type, int_array_type > type ;
 

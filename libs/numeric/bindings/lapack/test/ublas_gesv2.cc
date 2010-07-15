@@ -90,7 +90,7 @@ int main() {
 
 //  lapack::gesv (a, b);  // solving the system, b contains x 
 //  no ipiv less version is currently provided, so fall back to using ipiv
-  std::vector<integer_t> ipiv(n);
+  std::vector<fortran_int_t> ipiv(n);
   lapack::gesv (a, ipiv, b);  // solving the system, b contains x 
 
   print_m (b, "X");

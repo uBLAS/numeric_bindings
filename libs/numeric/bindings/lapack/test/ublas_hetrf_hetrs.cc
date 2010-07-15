@@ -75,7 +75,7 @@ int main() {
   cm_t cal2 (hcal), cau2 (hcau);  // for part 2
   cm_t cbl2 (cbl), cbu2 (cbu); 
 
-  std::vector<integer_t> ipiv (3); 
+  std::vector<fortran_int_t> ipiv (3); 
 
   int ierr = lapack::hetrf (hcal, ipiv); 
   if (ierr == 0) {

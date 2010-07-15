@@ -239,7 +239,7 @@ int test_square_gelsd(StreamType& oss)
 	typedef typename bindings::value_type<MatType>::type val_t;
 	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
-	integer_t rank;
+	fortran_int_t rank;
 
 	// return value
 	int err = 0;
@@ -300,7 +300,7 @@ int test_under_gelsd(StreamType& oss)
 	typedef typename bindings::value_type<MatType>::type val_t;
 	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
-	integer_t rank;
+	fortran_int_t rank;
 
 	// return value
 	int err = 0;
@@ -361,7 +361,7 @@ int test_over_gelsd(StreamType& oss)
 	typedef typename bindings::value_type<MatType>::type val_t;
 	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
-	integer_t rank;
+	fortran_int_t rank;
 
 	// return value
 	int err = 0;
@@ -422,7 +422,7 @@ int test_multiple_gelsd(StreamType& oss)
 	typedef typename bindings::value_type<MatType>::type val_t;
 	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
-	integer_t rank;
+	fortran_int_t rank;
 
 	// return value
 	int err = 0;

@@ -30,7 +30,7 @@ namespace bindings = boost::numeric::bindings;
 struct apply_real {
   template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-  static inline integer_t hbev( const char jobz, 
+  static inline std::ptrdiff_t hbev( const char jobz, 
         MatrixAB& ab, VectorW& w, MatrixZ& z,
         Workspace work ) {
     return lapack::sbev( jobz, ab, w, z, work );
@@ -40,7 +40,7 @@ struct apply_real {
 struct apply_complex {
   template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-  static inline integer_t hbev( const char jobz, 
+  static inline std::ptrdiff_t hbev( const char jobz, 
         MatrixAB& ab, VectorW& w, MatrixZ& z,
         Workspace work ) {
     return lapack::hbev( jobz, ab, w, z, work );

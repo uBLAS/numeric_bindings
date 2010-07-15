@@ -82,8 +82,8 @@ int do_memory_uplo(int n, W& workspace ) {
    matrix_type z( a );
 
    // Compute Schur decomposition.
-   integer_t m;
-   ublas::vector<integer_t> ifail(n);
+   fortran_int_t m;
+   ublas::vector<fortran_int_t> ifail(n);
    
    hermitian_type h_a( a );
    apply_t::heevx( 'V', 'A', h_a, real_type(0.0), real_type(1.0), 2, n-1, real_type(1e-28), m,
@@ -106,7 +106,7 @@ int do_memory_uplo(int n, W& workspace ) {
    matrix_range a_r( a, r, r );
    matrix_range z_r( z, r, r );
    ublas::vector_range< vector_type> e_r( e1, r );
-   ublas::vector<integer_t> ifail_r(n-2);
+   ublas::vector<fortran_int_t> ifail_r(n-2);
 
    hermitian_range_type h_a_r( a_r );
    apply_t::heevx( 'V', 'A', h_a_r, real_type(0.0), real_type(1.0), 2, n-1, real_type(1e-28), m,
@@ -132,7 +132,7 @@ int do_memory_type(int n, W workspace) {
 template <typename T>
 struct Workspace {
    typedef ublas::vector< T >                                       array_type ;
-   typedef ublas::vector< integer_t >                               int_array_type ;
+   typedef ublas::vector< fortran_int_t >                               int_array_type ;
    typedef lapack::detail::workspace2< array_type, int_array_type > type ;
 
    Workspace(size_t n)
@@ -152,7 +152,7 @@ template <typename T>
 struct Workspace< std::complex<T> > {
    typedef ublas::vector< std::complex<T> >                 complex_array_type ;
    typedef ublas::vector< T >                               real_array_type ;
-   typedef ublas::vector< integer_t >                       int_array_type ;
+   typedef ublas::vector< fortran_int_t >                       int_array_type ;
    typedef lapack::detail::workspace3<
       complex_array_type, real_array_type, int_array_type > type ;
 

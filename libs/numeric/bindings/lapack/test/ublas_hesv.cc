@@ -36,7 +36,7 @@ int main() {
   cm_t cx (3, 1);
   cm_t cbl (3, 1), cbu (3, 1);  // RHS
 
-  std::vector<integer_t> ipiv (3);
+  std::vector<fortran_int_t> ipiv (3);
 
   hcal (0, 0) = cmplx_t (3, 0);
   hcal (1, 0) = cmplx_t (4, -2);

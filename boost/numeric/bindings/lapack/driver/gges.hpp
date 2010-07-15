@@ -294,7 +294,11 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 8*n, 6*n + 16 );
+        if ( n == 0 ) {
+            return 1;
+        } else {
+            return std::max< std::ptrdiff_t >( 8*n, 6*n + 16 );
+        }
     }
 
     //

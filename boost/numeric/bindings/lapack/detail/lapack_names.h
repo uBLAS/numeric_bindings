@@ -426,6 +426,18 @@
 #define LAPACK_CPBTRS FORTRAN_ID( cpbtrs )
 #define LAPACK_ZPBTRS FORTRAN_ID( zpbtrs )
 
+// Value-type variants of pftrf
+#define LAPACK_SPFTRF FORTRAN_ID( spftrf )
+#define LAPACK_DPFTRF FORTRAN_ID( dpftrf )
+#define LAPACK_CPFTRF FORTRAN_ID( cpftrf )
+#define LAPACK_ZPFTRF FORTRAN_ID( zpftrf )
+
+// Value-type variants of pftri
+#define LAPACK_SPFTRI FORTRAN_ID( spftri )
+#define LAPACK_DPFTRI FORTRAN_ID( dpftri )
+#define LAPACK_CPFTRI FORTRAN_ID( cpftri )
+#define LAPACK_ZPFTRI FORTRAN_ID( zpftri )
+
 // Value-type variants of pftrs
 #define LAPACK_SPFTRS FORTRAN_ID( spftrs )
 #define LAPACK_DPFTRS FORTRAN_ID( dpftrs )
@@ -605,6 +617,12 @@
 #define LAPACK_DTBTRS FORTRAN_ID( dtbtrs )
 #define LAPACK_CTBTRS FORTRAN_ID( ctbtrs )
 #define LAPACK_ZTBTRS FORTRAN_ID( ztbtrs )
+
+// Value-type variants of tftri
+#define LAPACK_STFTRI FORTRAN_ID( stftri )
+#define LAPACK_DTFTRI FORTRAN_ID( dtftri )
+#define LAPACK_CTFTRI FORTRAN_ID( ctftri )
+#define LAPACK_ZTFTRI FORTRAN_ID( ztftri )
 
 // Value-type variants of tpcon
 #define LAPACK_STPCON FORTRAN_ID( stpcon )

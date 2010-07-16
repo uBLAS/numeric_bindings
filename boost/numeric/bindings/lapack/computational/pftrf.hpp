@@ -16,11 +16,13 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/blas/detail/default_order.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -48,11 +50,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-template< typename TransR, typename UpLo >
-inline std::ptrdiff_t pftrf( TransR, UpLo, const fortran_int_t n, float* a ) {
+template< typename TransR >
+inline std::ptrdiff_t pftrf( const TransR transr, const char uplo,
+        const fortran_int_t n, float* a ) {
     fortran_int_t info(0);
-    LAPACK_SPFTRF( &lapack_option< TransR >::value, &lapack_option<
-            UpLo >::value, &n, a, &info );
+    LAPACK_SPFTRF( &lapack_option< TransR >::value, &uplo, &n, a, &info );
     return info;
 }
 
@@ -61,11 +63,11 @@ inline std::ptrdiff_t pftrf( TransR, UpLo, const fortran_int_t n, float* a ) {
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-template< typename TransR, typename UpLo >
-inline std::ptrdiff_t pftrf( TransR, UpLo, const fortran_int_t n, double* a ) {
+template< typename TransR >
+inline std::ptrdiff_t pftrf( const TransR transr, const char uplo,
+        const fortran_int_t n, double* a ) {
     fortran_int_t info(0);
-    LAPACK_DPFTRF( &lapack_option< TransR >::value, &lapack_option<
-            UpLo >::value, &n, a, &info );
+    LAPACK_DPFTRF( &lapack_option< TransR >::value, &uplo, &n, a, &info );
     return info;
 }
 
@@ -74,12 +76,11 @@ inline std::ptrdiff_t pftrf( TransR, UpLo, const fortran_int_t n, double* a ) {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-template< typename TransR, typename UpLo >
-inline std::ptrdiff_t pftrf( TransR, UpLo, const fortran_int_t n,
-        std::complex<float>* a ) {
+template< typename TransR >
+inline std::ptrdiff_t pftrf( const TransR transr, const char uplo,
+        const fortran_int_t n, std::complex<float>* a ) {
     fortran_int_t info(0);
-    LAPACK_CPFTRF( &lapack_option< TransR >::value, &lapack_option<
-            UpLo >::value, &n, a, &info );
+    LAPACK_CPFTRF( &lapack_option< TransR >::value, &uplo, &n, a, &info );
     return info;
 }
 
@@ -88,12 +89,11 @@ inline std::ptrdiff_t pftrf( TransR, UpLo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-template< typename TransR, typename UpLo >
-inline std::ptrdiff_t pftrf( TransR, UpLo, const fortran_int_t n,
-        std::complex<double>* a ) {
+template< typename TransR >
+inline std::ptrdiff_t pftrf( const TransR transr, const char uplo,
+        const fortran_int_t n, std::complex<double>* a ) {
     fortran_int_t info(0);
-    LAPACK_ZPFTRF( &lapack_option< TransR >::value, &lapack_option<
-            UpLo >::value, &n, a, &info );
+    LAPACK_ZPFTRF( &lapack_option< TransR >::value, &uplo, &n, a, &info );
     return info;
 }
 
@@ -108,7 +108,6 @@ struct pftrf_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function, that
@@ -116,12 +115,14 @@ struct pftrf_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA >
-    static std::ptrdiff_t invoke( MatrixA& a ) {
+    static std::ptrdiff_t invoke( const char uplo, MatrixA& a ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef typename blas::detail::default_order< MatrixA >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type transr;
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( size_column_op(a, transr()) >= 0 );
-        return detail::pftrf( transr(), uplo(), size_column_op(a, transr()),
-                begin_value(a) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( bindings::size_column_op(a, transr()) >= 0 );
+        return detail::pftrf( transr(), uplo, bindings::size_column_op(a,
+                transr()), bindings::begin_value(a) );
     }
 
 };
@@ -141,8 +142,9 @@ struct pftrf_impl {
 // * MatrixA&
 //
 template< typename MatrixA >
-inline std::ptrdiff_t pftrf( MatrixA& a ) {
-    return pftrf_impl< typename bindings::value_type< MatrixA >::type >::invoke( a );
+inline std::ptrdiff_t pftrf( const char uplo, MatrixA& a ) {
+    return pftrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( uplo, a );
 }
 
 //
@@ -150,8 +152,9 @@ inline std::ptrdiff_t pftrf( MatrixA& a ) {
 // * const MatrixA&
 //
 template< typename MatrixA >
-inline std::ptrdiff_t pftrf( const MatrixA& a ) {
-    return pftrf_impl< typename bindings::value_type< MatrixA >::type >::invoke( a );
+inline std::ptrdiff_t pftrf( const char uplo, const MatrixA& a ) {
+    return pftrf_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( uplo, a );
 }
 
 } // namespace lapack

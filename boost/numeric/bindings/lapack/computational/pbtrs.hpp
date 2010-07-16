@@ -50,11 +50,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t pbtrs( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t kd, const fortran_int_t nrhs, const float* ab,
         const fortran_int_t ldab, float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_SPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
+    LAPACK_SPBTRS( &lapack_option< UpLo >::value, &n, &kd, &nrhs, ab, &ldab,
+            b, &ldb, &info );
     return info;
 }
 
@@ -63,11 +65,13 @@ inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t pbtrs( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t kd, const fortran_int_t nrhs, const double* ab,
         const fortran_int_t ldab, double* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_DPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
+    LAPACK_DPBTRS( &lapack_option< UpLo >::value, &n, &kd, &nrhs, ab, &ldab,
+            b, &ldb, &info );
     return info;
 }
 
@@ -76,12 +80,14 @@ inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t pbtrs( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t kd, const fortran_int_t nrhs,
         const std::complex<float>* ab, const fortran_int_t ldab,
         std::complex<float>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_CPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
+    LAPACK_CPBTRS( &lapack_option< UpLo >::value, &n, &kd, &nrhs, ab, &ldab,
+            b, &ldb, &info );
     return info;
 }
 
@@ -90,12 +96,14 @@ inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t pbtrs( const UpLo uplo, const fortran_int_t n,
         const fortran_int_t kd, const fortran_int_t nrhs,
         const std::complex<double>* ab, const fortran_int_t ldab,
         std::complex<double>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_ZPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
+    LAPACK_ZPBTRS( &lapack_option< UpLo >::value, &n, &kd, &nrhs, ab, &ldab,
+            b, &ldb, &info );
     return info;
 }
 
@@ -117,9 +125,9 @@ struct pbtrs_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename MatrixB >
-    static std::ptrdiff_t invoke( const char uplo, const MatrixAB& ab,
-            MatrixB& b ) {
+    static std::ptrdiff_t invoke( const MatrixAB& ab, MatrixB& b ) {
         namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -138,7 +146,7 @@ struct pbtrs_impl {
                 uplo())+1 );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_column(ab)) );
-        return detail::pbtrs( uplo, bindings::size_column(ab),
+        return detail::pbtrs( uplo(), bindings::size_column(ab),
                 bindings::bandwidth(ab, uplo()), bindings::size_column(b),
                 bindings::begin_value(ab), bindings::stride_major(ab),
                 bindings::begin_value(b), bindings::stride_major(b) );
@@ -161,10 +169,9 @@ struct pbtrs_impl {
 // * MatrixB&
 //
 template< typename MatrixAB, typename MatrixB >
-inline std::ptrdiff_t pbtrs( const char uplo, const MatrixAB& ab,
-        MatrixB& b ) {
+inline std::ptrdiff_t pbtrs( const MatrixAB& ab, MatrixB& b ) {
     return pbtrs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( uplo, ab, b );
+            MatrixAB >::type >::invoke( ab, b );
 }
 
 //
@@ -172,10 +179,9 @@ inline std::ptrdiff_t pbtrs( const char uplo, const MatrixAB& ab,
 // * const MatrixB&
 //
 template< typename MatrixAB, typename MatrixB >
-inline std::ptrdiff_t pbtrs( const char uplo, const MatrixAB& ab,
-        const MatrixB& b ) {
+inline std::ptrdiff_t pbtrs( const MatrixAB& ab, const MatrixB& b ) {
     return pbtrs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( uplo, ab, b );
+            MatrixAB >::type >::invoke( ab, b );
 }
 
 } // namespace lapack

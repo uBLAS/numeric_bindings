@@ -17,7 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
-#include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
@@ -110,7 +109,7 @@ struct ungtr_impl {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size(tau) >= n-1 );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( side, m, n ));
+                min_size_work( n ));
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::stride_major(a) >= n );
@@ -133,8 +132,7 @@ struct ungtr_impl {
             const VectorTAU& tau, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
-        bindings::detail::array< value_type > tmp_work( min_size_work( side,
-                m, n ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         return invoke( n, a, tau, workspace( tmp_work ) );
     }
 
@@ -163,11 +161,8 @@ struct ungtr_impl {
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
-                n, m ) );
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+        return n-1;
     }
 };
 

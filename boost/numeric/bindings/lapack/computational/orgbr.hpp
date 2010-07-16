@@ -160,7 +160,8 @@ struct orgbr_impl {
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
             const std::ptrdiff_t n ) {
-        return std::max< std::ptrdiff_t >( 1, std::min< std::ptrdiff_t >( m, n );
+        return std::max< std::ptrdiff_t >( 1, std::min< std::ptrdiff_t >( m,
+                n ) );
     }
 };
 

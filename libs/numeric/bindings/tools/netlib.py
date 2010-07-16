@@ -1579,7 +1579,8 @@ def parse_file( filename, template_map ):
       # matrices in our bindings. E.g. as used in spsv. 
       #
       packed_keywords = re.compile( '(stored|packed)\s+(columnwise|triangular\s+matrix)', re.M | re.S ).findall( comment_block )
-      if len( packed_keywords ) > 0:
+      rectangular_full_packed = ' RFP '
+      if len( packed_keywords ) > 0 or rectangular_full_packed in comment_block:
         #
         # Overrule my type :-)
         #

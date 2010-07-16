@@ -16,11 +16,13 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/blas/detail/default_order.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/uplo_tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -49,7 +51,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename TransR, typename UpLo >
-inline std::ptrdiff_t pftri( TransR, UpLo, const fortran_int_t n, float* a ) {
+inline std::ptrdiff_t pftri( const TransR transr, const UpLo uplo,
+        const fortran_int_t n, float* a ) {
     fortran_int_t info(0);
     LAPACK_SPFTRI( &lapack_option< TransR >::value, &lapack_option<
             UpLo >::value, &n, a, &info );
@@ -62,7 +65,8 @@ inline std::ptrdiff_t pftri( TransR, UpLo, const fortran_int_t n, float* a ) {
 // * double value-type.
 //
 template< typename TransR, typename UpLo >
-inline std::ptrdiff_t pftri( TransR, UpLo, const fortran_int_t n, double* a ) {
+inline std::ptrdiff_t pftri( const TransR transr, const UpLo uplo,
+        const fortran_int_t n, double* a ) {
     fortran_int_t info(0);
     LAPACK_DPFTRI( &lapack_option< TransR >::value, &lapack_option<
             UpLo >::value, &n, a, &info );
@@ -75,8 +79,8 @@ inline std::ptrdiff_t pftri( TransR, UpLo, const fortran_int_t n, double* a ) {
 // * complex<float> value-type.
 //
 template< typename TransR, typename UpLo >
-inline std::ptrdiff_t pftri( TransR, UpLo, const fortran_int_t n,
-        std::complex<float>* a ) {
+inline std::ptrdiff_t pftri( const TransR transr, const UpLo uplo,
+        const fortran_int_t n, std::complex<float>* a ) {
     fortran_int_t info(0);
     LAPACK_CPFTRI( &lapack_option< TransR >::value, &lapack_option<
             UpLo >::value, &n, a, &info );
@@ -89,8 +93,8 @@ inline std::ptrdiff_t pftri( TransR, UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename TransR, typename UpLo >
-inline std::ptrdiff_t pftri( TransR, UpLo, const fortran_int_t n,
-        std::complex<double>* a ) {
+inline std::ptrdiff_t pftri( const TransR transr, const UpLo uplo,
+        const fortran_int_t n, std::complex<double>* a ) {
     fortran_int_t info(0);
     LAPACK_ZPFTRI( &lapack_option< TransR >::value, &lapack_option<
             UpLo >::value, &n, a, &info );
@@ -108,7 +112,6 @@ struct pftri_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::column_major order;
 
     //
     // Static member function, that
@@ -117,12 +120,14 @@ struct pftri_impl {
     //
     template< typename MatrixA >
     static std::ptrdiff_t invoke( MatrixA& a ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef typename blas::detail::default_order< MatrixA >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type transr;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( size_column_op(a, transr()) >= 0 );
-        return detail::pftri( transr(), uplo(), size_column_op(a, transr()),
-                begin_value(a) );
+        typedef typename result_of::uplo_tag< MatrixA, transr >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( bindings::size_column_op(a, transr()) >= 0 );
+        return detail::pftri( transr(), uplo(), bindings::size_column_op(a,
+                transr()), bindings::begin_value(a) );
     }
 
 };
@@ -143,7 +148,8 @@ struct pftri_impl {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t pftri( MatrixA& a ) {
-    return pftri_impl< typename bindings::value_type< MatrixA >::type >::invoke( a );
+    return pftri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a );
 }
 
 //
@@ -152,7 +158,8 @@ inline std::ptrdiff_t pftri( MatrixA& a ) {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t pftri( const MatrixA& a ) {
-    return pftri_impl< typename bindings::value_type< MatrixA >::type >::invoke( a );
+    return pftri_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( a );
 }
 
 } // namespace lapack

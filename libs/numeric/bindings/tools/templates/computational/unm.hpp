@@ -1,3 +1,8 @@
+$TEMPLATE[unmbr.all.fixme]
+Declaring NQ as extra variables leads to a key error in the generator,
+so the init below is pretty useless right now. It only shows how it could work in theory.
+$TEMPLATE[unmbr.all.NQ.init]
+$INTEGER_TYPE nq = bindings::detail::if_left( side, bindings::size_row(c), bindings::size_column(c) );
 $TEMPLATE[unmbr.all.min_size_work.args]
 SIDE,M,N
 $TEMPLATE[unmbr.includes]

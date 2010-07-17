@@ -120,8 +120,6 @@ struct unmbr_impl {
                 typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
-        BOOST_ASSERT( bindings::size(tau) >= std::min< std::ptrdiff_t >(?NQ,
-                k) );
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
                 min_size_work( side, bindings::size_row(c),
                 bindings::size_column(c) ));

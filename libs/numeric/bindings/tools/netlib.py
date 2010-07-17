@@ -415,7 +415,7 @@ def expand_nested_list( arg, arg_map, use_arg_map = True ):
       if use_arg_map:
         # mainly used by assert stuff
         if not arg_map.has_key( arg ):
-          return '?' + arg.upper()
+          return '?' + arg.upper() + 'no_assert'
         else:
           if arg_map[ arg ][ 'io' ] == [ 'output' ] and \
              arg_map[ arg ][ 'type' ] == 'scalar':

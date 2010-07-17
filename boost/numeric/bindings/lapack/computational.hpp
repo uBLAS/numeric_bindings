@@ -50,9 +50,9 @@
 #include <boost/numeric/bindings/lapack/computational/gbbrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/gebrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/orgbr.hpp>
-// #include <boost/numeric/bindings/lapack/computational/ormbr.hpp>
+#include <boost/numeric/bindings/lapack/computational/ormbr.hpp>
 #include <boost/numeric/bindings/lapack/computational/ungbr.hpp>
-// #include <boost/numeric/bindings/lapack/computational/unmbr.hpp>
+#include <boost/numeric/bindings/lapack/computational/unmbr.hpp>
 #include <boost/numeric/bindings/lapack/computational/gebak.hpp>
 #include <boost/numeric/bindings/lapack/computational/gebal.hpp>
 #include <boost/numeric/bindings/lapack/computational/gehrd.hpp>

@@ -55,7 +55,7 @@ namespace detail {
 // * float value-type.
 //
 inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const fortran_int_t n, float* a,
+        external_t* select, const char sense, const fortran_int_t n, float* a,
         const fortran_int_t lda, fortran_int_t& sdim, float* wr, float* wi,
         float* vs, const fortran_int_t ldvs, float& rconde, float& rcondv,
         float* work, const fortran_int_t lwork, fortran_int_t* iwork,
@@ -73,11 +73,11 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * double value-type.
 //
 inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const fortran_int_t n, double* a,
-        const fortran_int_t lda, fortran_int_t& sdim, double* wr, double* wi,
-        double* vs, const fortran_int_t ldvs, double& rconde, double& rcondv,
-        double* work, const fortran_int_t lwork, fortran_int_t* iwork,
-        const fortran_int_t liwork, logical_t* bwork ) {
+        external_t* select, const char sense, const fortran_int_t n,
+        double* a, const fortran_int_t lda, fortran_int_t& sdim, double* wr,
+        double* wi, double* vs, const fortran_int_t ldvs, double& rconde,
+        double& rcondv, double* work, const fortran_int_t lwork,
+        fortran_int_t* iwork, const fortran_int_t liwork, logical_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_DGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, wr, wi,
             vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork, bwork,
@@ -91,7 +91,7 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * complex<float> value-type.
 //
 inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const fortran_int_t n,
+        external_t* select, const char sense, const fortran_int_t n,
         std::complex<float>* a, const fortran_int_t lda, fortran_int_t& sdim,
         std::complex<float>* w, std::complex<float>* vs,
         const fortran_int_t ldvs, float& rconde, float& rcondv,
@@ -109,7 +109,7 @@ inline std::ptrdiff_t geesx( const char jobvs, const char sort,
 // * complex<double> value-type.
 //
 inline std::ptrdiff_t geesx( const char jobvs, const char sort,
-        logical_t* select, const char sense, const fortran_int_t n,
+        external_t* select, const char sense, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda, fortran_int_t& sdim,
         std::complex<double>* w, std::complex<double>* vs,
         const fortran_int_t ldvs, double& rconde, double& rcondv,
@@ -147,7 +147,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS, typename WORK, typename IWORK, typename BWORK >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
-            logical_t* select, const char sense, MatrixA& a,
+            external_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, detail::workspace3< WORK,
             IWORK, BWORK > work ) {
@@ -211,7 +211,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
-            logical_t* select, const char sense, MatrixA& a,
+            external_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -235,7 +235,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
-            logical_t* select, const char sense, MatrixA& a,
+            external_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -311,7 +311,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorW, typename MatrixVS,
             typename WORK, typename RWORK, typename BWORK >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
-            logical_t* select, const char sense, MatrixA& a,
+            external_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, detail::workspace3< WORK,
             RWORK, BWORK > work ) {
@@ -366,7 +366,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorW, typename MatrixVS >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
-            logical_t* select, const char sense, MatrixA& a,
+            external_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -389,7 +389,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorW, typename MatrixVS >
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
-            logical_t* select, const char sense, MatrixA& a,
+            external_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -463,7 +463,7 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
         VectorWI& wi, MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -484,7 +484,7 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
 inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
         VectorWI& wi, MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -505,7 +505,7 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, const MatrixA& a, fortran_int_t& sdim,
         VectorWR& wr, VectorWI& wi, MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -526,7 +526,7 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
 inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, const MatrixA& a, fortran_int_t& sdim,
         VectorWR& wr, VectorWI& wi, MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -547,7 +547,7 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
         VectorWI& wi, const MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -568,7 +568,7 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
 inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, MatrixA& a, fortran_int_t& sdim, VectorWR& wr,
         VectorWI& wi, const MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -589,7 +589,7 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, const MatrixA& a, fortran_int_t& sdim,
         VectorWR& wr, VectorWI& wi, const MatrixVS& vs,
         typename remove_imaginary< typename bindings::value_type<
@@ -611,7 +611,7 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
 inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, const MatrixA& a, fortran_int_t& sdim,
         VectorWR& wr, VectorWI& wi, const MatrixVS& vs,
         typename remove_imaginary< typename bindings::value_type<
@@ -631,7 +631,7 @@ template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -651,7 +651,7 @@ geesx( const char jobvs, const char sort, logical_t* select,
 template< typename MatrixA, typename VectorW, typename MatrixVS >
 inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -672,7 +672,7 @@ template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, const MatrixA& a, fortran_int_t& sdim,
         VectorW& w, MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -692,7 +692,7 @@ geesx( const char jobvs, const char sort, logical_t* select,
 template< typename MatrixA, typename VectorW, typename MatrixVS >
 inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, const MatrixA& a, fortran_int_t& sdim,
         VectorW& w, MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -713,7 +713,7 @@ template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         const MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -733,7 +733,7 @@ geesx( const char jobvs, const char sort, logical_t* select,
 template< typename MatrixA, typename VectorW, typename MatrixVS >
 inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         const MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -754,7 +754,7 @@ template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, const MatrixA& a, fortran_int_t& sdim,
         VectorW& w, const MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,
@@ -774,7 +774,7 @@ geesx( const char jobvs, const char sort, logical_t* select,
 template< typename MatrixA, typename VectorW, typename MatrixVS >
 inline typename boost::disable_if< detail::is_workspace< MatrixVS >,
         std::ptrdiff_t >::type
-geesx( const char jobvs, const char sort, logical_t* select,
+geesx( const char jobvs, const char sort, external_t* select,
         const char sense, const MatrixA& a, fortran_int_t& sdim,
         VectorW& w, const MatrixVS& vs, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rconde,

@@ -17,24 +17,26 @@ import pprint
 library_integer_type = '$LIBRARY_INT_TYPE'
 generic_integer_type = 'std::ptrdiff_t'
 
-complex_float_type = 'std::complex<float>'  
+complex_float_type = 'std::complex<float>'
 complex_double_type = 'std::complex<double>'
 
 fortran_complex_float_ptr = 'void'    # was fcomplex_t
 fortran_complex_double_ptr = 'void'   # was dcomplex_t
 
-global_type_map = { 
+global_type_map = {
   'CHARACTER': 'char',
   'CHARACTER*1': 'char',
-  'LOGICAL': 'logical_t', 
+  'LOGICAL': 'logical_t',
+  'EXTERNAL': 'external_t',
   'INTEGER': library_integer_type,
-  'REAL': 'float', 
+  'REAL': 'float',
   'DOUBLE PRECISION': 'double' }
 
 global_type_variant_map = {
   'CHARACTER': None,
   'CHARACTER*1': None,
   'LOGICAL': None, 
+  'EXTERNAL': None,
   'INTEGER': None,
   'REAL': 'real', 
   'DOUBLE PRECISION': 'real',
@@ -1041,6 +1043,15 @@ def parse_file( filename, template_map ):
   if len(argument_map) < len( subroutine_arguments ):
     print "ERROR: Unable to find all argument declarations"
     return None, None
+
+  # Look for an EXTERNAL statement
+  if code_line_nr < len(code) and 'EXTERNAL' in code[ code_line_nr ]:
+    for argument_name in re.findall( '[A-Z0-9_]+', code[ code_line_nr ] ):
+      if argument_name in subroutine_arguments:
+        argument_map[ argument_name ] = {}
+        argument_map[ argument_name ][ 'value_type' ] = 'EXTERNAL'
+        argument_map[ argument_name ][ 'value_type_variant' ] = global_type_variant_map[ 'EXTERNAL' ]
+        argument_map[ argument_name ][ 'type' ] = 'scalar'
 
   # See if we are hard-forcing argument renaming aliases
   # This is needed for BLAS. It has argument names that are tied to the 

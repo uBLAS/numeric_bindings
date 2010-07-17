@@ -150,7 +150,7 @@
 #include <boost/numeric/bindings/lapack/computational/stedc.hpp>
 #include <boost/numeric/bindings/lapack/computational/stegr.hpp>
 #include <boost/numeric/bindings/lapack/computational/stein.hpp>
-//#include <boost/numeric/bindings/lapack/computational/stemr.hpp>
+#include <boost/numeric/bindings/lapack/computational/stemr.hpp>
 #include <boost/numeric/bindings/lapack/computational/steqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/sterf.hpp>
 #include <boost/numeric/bindings/lapack/computational/sytrd.hpp>
@@ -164,7 +164,7 @@
 #include <boost/numeric/bindings/lapack/computational/hgeqz.hpp>
 #include <boost/numeric/bindings/lapack/computational/tgevc.hpp>
 //#include <boost/numeric/bindings/lapack/computational/tgexc.hpp>
-//#include <boost/numeric/bindings/lapack/computational/tgsen.hpp>
+#include <boost/numeric/bindings/lapack/computational/tgsen.hpp>
 #include <boost/numeric/bindings/lapack/computational/tgsna.hpp>
 #include <boost/numeric/bindings/lapack/computational/tgsyl.hpp>
 #include <boost/numeric/bindings/lapack/computational/ggsvp.hpp>

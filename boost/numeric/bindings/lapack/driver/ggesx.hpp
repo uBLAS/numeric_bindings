@@ -55,7 +55,7 @@ namespace detail {
 // * float value-type.
 //
 inline std::ptrdiff_t ggesx( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const char sense,
+        const char sort, external_t* selctg, const char sense,
         const fortran_int_t n, float* a, const fortran_int_t lda, float* b,
         const fortran_int_t ldb, fortran_int_t& sdim, float* alphar,
         float* alphai, float* beta, float* vsl, const fortran_int_t ldvsl,
@@ -75,7 +75,7 @@ inline std::ptrdiff_t ggesx( const char jobvsl, const char jobvsr,
 // * double value-type.
 //
 inline std::ptrdiff_t ggesx( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const char sense,
+        const char sort, external_t* selctg, const char sense,
         const fortran_int_t n, double* a, const fortran_int_t lda, double* b,
         const fortran_int_t ldb, fortran_int_t& sdim, double* alphar,
         double* alphai, double* beta, double* vsl, const fortran_int_t ldvsl,
@@ -95,7 +95,7 @@ inline std::ptrdiff_t ggesx( const char jobvsl, const char jobvsr,
 // * complex<float> value-type.
 //
 inline std::ptrdiff_t ggesx( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const char sense,
+        const char sort, external_t* selctg, const char sense,
         const fortran_int_t n, std::complex<float>* a,
         const fortran_int_t lda, std::complex<float>* b,
         const fortran_int_t ldb, fortran_int_t& sdim,
@@ -118,7 +118,7 @@ inline std::ptrdiff_t ggesx( const char jobvsl, const char jobvsr,
 // * complex<double> value-type.
 //
 inline std::ptrdiff_t ggesx( const char jobvsl, const char jobvsr,
-        const char sort, logical_t* selctg, const char sense,
+        const char sort, external_t* selctg, const char sense,
         const fortran_int_t n, std::complex<double>* a,
         const fortran_int_t lda, std::complex<double>* b,
         const fortran_int_t ldb, fortran_int_t& sdim,
@@ -163,7 +163,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixVSR, typename VectorRCONDE, typename VectorRCONDV,
             typename WORK, typename IWORK, typename BWORK >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, logical_t* selctg, const char sense, MatrixA& a,
+            const char sort, external_t* selctg, const char sense, MatrixA& a,
             MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
@@ -267,7 +267,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR, typename VectorRCONDE, typename VectorRCONDV >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, logical_t* selctg, const char sense, MatrixA& a,
+            const char sort, external_t* selctg, const char sense, MatrixA& a,
             MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
@@ -295,7 +295,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR, typename VectorRCONDE, typename VectorRCONDV >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, logical_t* selctg, const char sense, MatrixA& a,
+            const char sort, external_t* selctg, const char sense, MatrixA& a,
             MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
@@ -383,7 +383,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorRCONDE, typename VectorRCONDV, typename WORK,
             typename RWORK, typename IWORK, typename BWORK >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, logical_t* selctg, const char sense, MatrixA& a,
+            const char sort, external_t* selctg, const char sense, MatrixA& a,
             MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
             VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
             VectorRCONDE& rconde, VectorRCONDV& rcondv, detail::workspace4<
@@ -480,7 +480,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
             typename VectorRCONDE, typename VectorRCONDV >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, logical_t* selctg, const char sense, MatrixA& a,
+            const char sort, external_t* selctg, const char sense, MatrixA& a,
             MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
             VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
             VectorRCONDE& rconde, VectorRCONDV& rcondv, minimal_workspace ) {
@@ -509,7 +509,7 @@ struct ggesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
             typename VectorRCONDE, typename VectorRCONDV >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, logical_t* selctg, const char sense, MatrixA& a,
+            const char sort, external_t* selctg, const char sense, MatrixA& a,
             MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
             VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
             VectorRCONDE& rconde, VectorRCONDV& rcondv, optimal_workspace ) {
@@ -610,7 +610,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -633,7 +633,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -658,7 +658,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -681,7 +681,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -706,7 +706,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -729,7 +729,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -754,7 +754,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
@@ -778,7 +778,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -803,7 +803,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -826,7 +826,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -851,7 +851,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -874,7 +874,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -899,7 +899,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -922,7 +922,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -947,7 +947,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
@@ -971,7 +971,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -996,7 +996,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -1019,7 +1019,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1044,7 +1044,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -1067,7 +1067,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1092,7 +1092,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -1115,7 +1115,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1140,7 +1140,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
@@ -1164,7 +1164,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1189,7 +1189,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -1212,7 +1212,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1237,7 +1237,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -1260,7 +1260,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1285,7 +1285,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -1308,7 +1308,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1333,7 +1333,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
@@ -1357,7 +1357,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1380,7 +1380,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1403,7 +1403,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1427,7 +1427,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1450,7 +1450,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1474,7 +1474,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1497,7 +1497,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1521,7 +1521,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -1544,7 +1544,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1568,7 +1568,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1591,7 +1591,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1615,7 +1615,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1638,7 +1638,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1662,7 +1662,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1685,7 +1685,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1709,7 +1709,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -1732,7 +1732,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1756,7 +1756,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1779,7 +1779,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1803,7 +1803,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1826,7 +1826,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1850,7 +1850,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1873,7 +1873,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1897,7 +1897,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -1920,7 +1920,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -1944,7 +1944,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -1967,7 +1967,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -1991,7 +1991,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -2014,7 +2014,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
+        external_t* selctg, const char sense, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -2038,7 +2038,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -2061,7 +2061,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
+        external_t* selctg, const char sense, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
@@ -2085,7 +2085,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
@@ -2108,7 +2108,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< VectorRCONDV >,
         std::ptrdiff_t >::type
 ggesx( const char jobvsl, const char jobvsr, const char sort,
-        logical_t* selctg, const char sense, const MatrixA& a,
+        external_t* selctg, const char sense, const MatrixA& a,
         const MatrixB& b, fortran_int_t& sdim, VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         VectorRCONDE& rconde, VectorRCONDV& rcondv ) {

@@ -195,6 +195,10 @@ def write_functions( info_map, group, template_map, base_dir ):
     level2_map = {}
     for value_type, case_map in cases.iteritems():
 
+      # take this subroutine for arguments etc.
+      subroutine = case_map[ 'subroutines' ][ 0 ]
+      print "taking",subroutine
+
       level1_template = ''
       level2_template = ''
       if info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ].has_key( 'workspace' ):
@@ -222,10 +226,6 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = level1_template.replace( '$groupname', group_name.lower() )
       level1_template = level1_template.replace( "$SPECIALIZATION", value_type )
 
-      # take this subroutine for arguments etc.
-      subroutine = case_map[ 'subroutines' ][ 0 ]
-      print "taking",subroutine
-      
       level0_arg_list = []
       level1_arg_list = []
       level2_arg_list = []

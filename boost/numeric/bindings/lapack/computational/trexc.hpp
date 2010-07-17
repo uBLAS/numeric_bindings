@@ -122,13 +122,14 @@ struct trexc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     typedef typename remove_imaginary< Value >::type real_type;
 
     //
-    // Static member function, that
+    // Static member function for user-defined workspaces, that
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixT, typename MatrixQ >
+    template< typename MatrixT, typename MatrixQ, typename WORK >
     static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
-            fortran_int_t& ifst, fortran_int_t& ilst ) {
+            fortran_int_t& ifst, fortran_int_t& ilst,
+            detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixQ >::value) );
@@ -156,6 +157,45 @@ struct trexc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 ilst, bindings::begin_value(work.select(real_type())) );
     }
 
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
+    template< typename MatrixT, typename MatrixQ >
+    static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
+            fortran_int_t& ifst, fortran_int_t& ilst,
+            minimal_workspace ) {
+        namespace bindings = ::boost::numeric::bindings;
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                bindings::size_column(t) ) );
+        return invoke( compq, t, q, ifst, ilst, workspace( tmp_work ) );
+    }
+
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
+    template< typename MatrixT, typename MatrixQ >
+    static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
+            fortran_int_t& ifst, fortran_int_t& ilst,
+            optimal_workspace ) {
+        namespace bindings = ::boost::numeric::bindings;
+        return invoke( compq, t, q, ifst, ilst, minimal_workspace() );
+    }
+
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+        return n;
+    }
 };
 
 //
@@ -168,14 +208,13 @@ struct trexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     typedef typename remove_imaginary< Value >::type real_type;
 
     //
-    // Static member function for user-defined workspaces, that
+    // Static member function, that
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixT, typename MatrixQ, $WORKSPACE_TYPENAMES >
+    template< typename MatrixT, typename MatrixQ >
     static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
-            const fortran_int_t ifst, const fortran_int_t ilst,
-            detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
+            const fortran_int_t ifst, const fortran_int_t ilst ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixT >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixQ >::value) );
@@ -201,38 +240,6 @@ struct trexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 ilst );
     }
 
-    //
-    // Static member function that
-    // * Figures out the minimal workspace requirements, and passes
-    //   the results to the user-defined workspace overload of the 
-    //   invoke static member function
-    // * Enables the unblocked algorithm (BLAS level 2)
-    //
-    template< typename MatrixT, typename MatrixQ >
-    static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
-            const fortran_int_t ifst, const fortran_int_t ilst,
-            minimal_workspace ) {
-        namespace bindings = ::boost::numeric::bindings;
-$SETUP_MIN_WORKARRAYS_POST
-        return invoke( compq, t, q, ifst, ilst, workspace( $TMP_WORKARRAYS ) );
-    }
-
-    //
-    // Static member function that
-    // * Figures out the optimal workspace requirements, and passes
-    //   the results to the user-defined workspace overload of the 
-    //   invoke static member
-    // * Enables the blocked algorithm (BLAS level 3)
-    //
-    template< typename MatrixT, typename MatrixQ >
-    static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
-            const fortran_int_t ifst, const fortran_int_t ilst,
-            optimal_workspace ) {
-        namespace bindings = ::boost::numeric::bindings;
-$OPT_WORKSPACE_FUNC
-    }
-
-$MIN_SIZE_FUNCS
 };
 
 
@@ -249,10 +256,133 @@ $MIN_SIZE_FUNCS
 // Overloaded function for trexc. Its overload differs for
 // * MatrixT&
 // * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixT, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trexc( const char compq, MatrixT& t, MatrixQ& q, fortran_int_t& ifst,
+        fortran_int_t& ilst, Workspace work ) {
+    return trexc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
+}
+
+//
+// Overloaded function for trexc. Its overload differs for
+// * MatrixT&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixT, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+trexc( const char compq, MatrixT& t, MatrixQ& q, fortran_int_t& ifst,
+        fortran_int_t& ilst ) {
+    return trexc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for trexc. Its overload differs for
+// * const MatrixT&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixT, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trexc( const char compq, const MatrixT& t, MatrixQ& q,
+        fortran_int_t& ifst, fortran_int_t& ilst, Workspace work ) {
+    return trexc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
+}
+
+//
+// Overloaded function for trexc. Its overload differs for
+// * const MatrixT&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixT, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+trexc( const char compq, const MatrixT& t, MatrixQ& q,
+        fortran_int_t& ifst, fortran_int_t& ilst ) {
+    return trexc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for trexc. Its overload differs for
+// * MatrixT&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixT, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trexc( const char compq, MatrixT& t, const MatrixQ& q,
+        fortran_int_t& ifst, fortran_int_t& ilst, Workspace work ) {
+    return trexc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
+}
+
+//
+// Overloaded function for trexc. Its overload differs for
+// * MatrixT&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixT, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+trexc( const char compq, MatrixT& t, const MatrixQ& q,
+        fortran_int_t& ifst, fortran_int_t& ilst ) {
+    return trexc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
+            optimal_workspace() );
+}
+
+//
+// Overloaded function for trexc. Its overload differs for
+// * const MatrixT&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixT, typename MatrixQ, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+trexc( const char compq, const MatrixT& t, const MatrixQ& q,
+        fortran_int_t& ifst, fortran_int_t& ilst, Workspace work ) {
+    return trexc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
+}
+
+//
+// Overloaded function for trexc. Its overload differs for
+// * const MatrixT&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixT, typename MatrixQ >
+inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
+        std::ptrdiff_t >::type
+trexc( const char compq, const MatrixT& t, const MatrixQ& q,
+        fortran_int_t& ifst, fortran_int_t& ilst ) {
+    return trexc_impl< typename bindings::value_type<
+            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
+            optimal_workspace() );
+}
+//
+// Overloaded function for trexc. Its overload differs for
+// * MatrixT&
+// * MatrixQ&
 //
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
-        fortran_int_t& ifst, fortran_int_t& ilst ) {
+        const fortran_int_t ifst, const fortran_int_t ilst ) {
     return trexc_impl< typename bindings::value_type<
             MatrixT >::type >::invoke( compq, t, q, ifst, ilst );
 }
@@ -264,7 +394,8 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
 //
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        MatrixQ& q, fortran_int_t& ifst, fortran_int_t& ilst ) {
+        MatrixQ& q, const fortran_int_t ifst,
+        const fortran_int_t ilst ) {
     return trexc_impl< typename bindings::value_type<
             MatrixT >::type >::invoke( compq, t, q, ifst, ilst );
 }
@@ -276,7 +407,8 @@ inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
 //
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
-        const MatrixQ& q, fortran_int_t& ifst, fortran_int_t& ilst ) {
+        const MatrixQ& q, const fortran_int_t ifst,
+        const fortran_int_t ilst ) {
     return trexc_impl< typename bindings::value_type<
             MatrixT >::type >::invoke( compq, t, q, ifst, ilst );
 }
@@ -288,136 +420,10 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
 //
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        const MatrixQ& q, fortran_int_t& ifst, fortran_int_t& ilst ) {
+        const MatrixQ& q, const fortran_int_t ifst,
+        const fortran_int_t ilst ) {
     return trexc_impl< typename bindings::value_type<
             MatrixT >::type >::invoke( compq, t, q, ifst, ilst );
-}
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-trexc( const char compq, MatrixT& t, MatrixQ& q,
-        const fortran_int_t ifst, const fortran_int_t ilst,
-        Workspace work ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixT, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-trexc( const char compq, MatrixT& t, MatrixQ& q,
-        const fortran_int_t ifst, const fortran_int_t ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-trexc( const char compq, const MatrixT& t, MatrixQ& q,
-        const fortran_int_t ifst, const fortran_int_t ilst,
-        Workspace work ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixT, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-trexc( const char compq, const MatrixT& t, MatrixQ& q,
-        const fortran_int_t ifst, const fortran_int_t ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-trexc( const char compq, MatrixT& t, const MatrixQ& q,
-        const fortran_int_t ifst, const fortran_int_t ilst,
-        Workspace work ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixT, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-trexc( const char compq, MatrixT& t, const MatrixQ& q,
-        const fortran_int_t ifst, const fortran_int_t ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-trexc( const char compq, const MatrixT& t, const MatrixQ& q,
-        const fortran_int_t ifst, const fortran_int_t ilst,
-        Workspace work ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixT, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-trexc( const char compq, const MatrixT& t, const MatrixQ& q,
-        const fortran_int_t ifst, const fortran_int_t ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
-            optimal_workspace() );
 }
 
 } // namespace lapack

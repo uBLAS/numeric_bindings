@@ -88,7 +88,7 @@ $TEMPLATE[lapack_overloads]
 template< $TYPES >
 inline $INTEGER_TYPE $groupname( $LEVEL0 ) {
     $STATIC_ASSERTS
-    fortran_int_t info(0);
+    $LIBRARY_INT_TYPE info(0);
     LAPACK_$SUBROUTINE( $CALL_LAPACK_HEADER );
     return info;
 }

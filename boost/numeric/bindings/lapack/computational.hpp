@@ -61,7 +61,7 @@
 #include <boost/numeric/bindings/lapack/computational/orghr.hpp>
 #include <boost/numeric/bindings/lapack/computational/ormhr.hpp>
 #include <boost/numeric/bindings/lapack/computational/trevc.hpp>
-//#include <boost/numeric/bindings/lapack/computational/trexc.hpp>
+#include <boost/numeric/bindings/lapack/computational/trexc.hpp>
 #include <boost/numeric/bindings/lapack/computational/trsen.hpp>
 #include <boost/numeric/bindings/lapack/computational/trsna.hpp>
 #include <boost/numeric/bindings/lapack/computational/trsyl.hpp>
@@ -163,7 +163,7 @@
 #include <boost/numeric/bindings/lapack/computational/gghrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/hgeqz.hpp>
 #include <boost/numeric/bindings/lapack/computational/tgevc.hpp>
-//#include <boost/numeric/bindings/lapack/computational/tgexc.hpp>
+#include <boost/numeric/bindings/lapack/computational/tgexc.hpp>
 #include <boost/numeric/bindings/lapack/computational/tgsen.hpp>
 #include <boost/numeric/bindings/lapack/computational/tgsna.hpp>
 #include <boost/numeric/bindings/lapack/computational/tgsyl.hpp>

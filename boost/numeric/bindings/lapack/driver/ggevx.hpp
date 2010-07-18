@@ -236,8 +236,8 @@ struct ggevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::size(alphar) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( sense, bindings::size_column(a) ));
-        BOOST_ASSERT( bindings::size(work.select(bool())) >= min_size_bwork(
-                sense, bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(logical_t())) >=
+                min_size_bwork( sense, bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_work( balanc, jobvl, jobvr, sense,
                 bindings::size_column(a) ));
@@ -273,7 +273,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bindings::begin_value(work.select(real_type())),
                 bindings::size(work.select(real_type())),
                 bindings::begin_value(work.select(fortran_int_t())),
-                bindings::begin_value(work.select(bool())) );
+                bindings::begin_value(work.select(logical_t())) );
     }
 
     //
@@ -299,7 +299,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 jobvl, jobvr, sense, bindings::size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( sense, bindings::size_column(a) ) );
-        bindings::detail::array< bool > tmp_bwork( min_size_bwork( sense,
+        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork( sense,
                 bindings::size_column(a) ) );
         return invoke( balanc, jobvl, jobvr, sense, a, b, alphar, alphai,
                 beta, vl, vr, ilo, ihi, lscale, rscale, abnrm, bbnrm, rconde,
@@ -328,7 +328,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( sense, bindings::size_column(a) ) );
-        bindings::detail::array< bool > tmp_bwork( min_size_bwork( sense,
+        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork( sense,
                 bindings::size_column(a) ) );
         detail::ggevx( balanc, jobvl, jobvr, sense,
                 bindings::size_column(a), bindings::begin_value(a),
@@ -466,8 +466,8 @@ struct ggevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::size(beta) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( sense, bindings::size_column(a) ));
-        BOOST_ASSERT( bindings::size(work.select(bool())) >= min_size_bwork(
-                sense, bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(logical_t())) >=
+                min_size_bwork( sense, bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_rwork( balanc, bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
@@ -505,7 +505,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bindings::size(work.select(value_type())),
                 bindings::begin_value(work.select(real_type())),
                 bindings::begin_value(work.select(fortran_int_t())),
-                bindings::begin_value(work.select(bool())) );
+                bindings::begin_value(work.select(logical_t())) );
     }
 
     //
@@ -533,7 +533,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 balanc, bindings::size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( sense, bindings::size_column(a) ) );
-        bindings::detail::array< bool > tmp_bwork( min_size_bwork( sense,
+        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork( sense,
                 bindings::size_column(a) ) );
         return invoke( balanc, jobvl, jobvr, sense, a, b, alpha, beta, vl, vr,
                 ilo, ihi, lscale, rscale, abnrm, bbnrm, rconde, rcondv,
@@ -564,7 +564,7 @@ struct ggevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 balanc, bindings::size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( sense, bindings::size_column(a) ) );
-        bindings::detail::array< bool > tmp_bwork( min_size_bwork( sense,
+        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork( sense,
                 bindings::size_column(a) ) );
         detail::ggevx( balanc, jobvl, jobvr, sense,
                 bindings::size_column(a), bindings::begin_value(a),

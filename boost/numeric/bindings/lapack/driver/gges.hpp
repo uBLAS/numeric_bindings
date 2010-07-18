@@ -55,14 +55,14 @@ namespace detail {
 // * float value-type.
 //
 inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, external_t* selctg, const fortran_int_t n, float* a,
+        const char sort, external_fp selctg, const fortran_int_t n, float* a,
         const fortran_int_t lda, float* b, const fortran_int_t ldb,
         fortran_int_t& sdim, float* alphar, float* alphai, float* beta,
         float* vsl, const fortran_int_t ldvsl, float* vsr,
         const fortran_int_t ldvsr, float* work, const fortran_int_t lwork,
         logical_t* bwork ) {
     fortran_int_t info(0);
-    LAPACK_SGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,
+    LAPACK_SGGES( &jobvsl, &jobvsr, &sort, selctg, &n, a, &lda, b, &ldb,
             &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr, work,
             &lwork, bwork, &info );
     return info;
@@ -74,14 +74,14 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // * double value-type.
 //
 inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, external_t* selctg, const fortran_int_t n, double* a,
+        const char sort, external_fp selctg, const fortran_int_t n, double* a,
         const fortran_int_t lda, double* b, const fortran_int_t ldb,
         fortran_int_t& sdim, double* alphar, double* alphai, double* beta,
         double* vsl, const fortran_int_t ldvsl, double* vsr,
         const fortran_int_t ldvsr, double* work, const fortran_int_t lwork,
         logical_t* bwork ) {
     fortran_int_t info(0);
-    LAPACK_DGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,
+    LAPACK_DGGES( &jobvsl, &jobvsr, &sort, selctg, &n, a, &lda, b, &ldb,
             &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr, work,
             &lwork, bwork, &info );
     return info;
@@ -93,7 +93,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // * complex<float> value-type.
 //
 inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, external_t* selctg, const fortran_int_t n,
+        const char sort, external_fp selctg, const fortran_int_t n,
         std::complex<float>* a, const fortran_int_t lda,
         std::complex<float>* b, const fortran_int_t ldb, fortran_int_t& sdim,
         std::complex<float>* alpha, std::complex<float>* beta,
@@ -102,7 +102,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
         std::complex<float>* work, const fortran_int_t lwork, float* rwork,
         logical_t* bwork ) {
     fortran_int_t info(0);
-    LAPACK_CGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,
+    LAPACK_CGGES( &jobvsl, &jobvsr, &sort, selctg, &n, a, &lda, b, &ldb,
             &sdim, alpha, beta, vsl, &ldvsl, vsr, &ldvsr, work, &lwork, rwork,
             bwork, &info );
     return info;
@@ -114,7 +114,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
 // * complex<double> value-type.
 //
 inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
-        const char sort, external_t* selctg, const fortran_int_t n,
+        const char sort, external_fp selctg, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda,
         std::complex<double>* b, const fortran_int_t ldb, fortran_int_t& sdim,
         std::complex<double>* alpha, std::complex<double>* beta,
@@ -123,7 +123,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
         std::complex<double>* work, const fortran_int_t lwork, double* rwork,
         logical_t* bwork ) {
     fortran_int_t info(0);
-    LAPACK_ZGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,
+    LAPACK_ZGGES( &jobvsl, &jobvsr, &sort, selctg, &n, a, &lda, b, &ldb,
             &sdim, alpha, beta, vsl, &ldvsl, vsr, &ldvsr, work, &lwork, rwork,
             bwork, &info );
     return info;
@@ -156,7 +156,7 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR, typename WORK, typename BWORK >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, external_t* selctg, MatrixA& a, MatrixB& b,
+            const char sort, external_fp selctg, MatrixA& a, MatrixB& b,
             fortran_int_t& sdim, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, detail::workspace2< WORK, BWORK > work ) {
@@ -198,8 +198,8 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVSR >::value) );
         BOOST_ASSERT( bindings::size(alphai) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(alphar) >= bindings::size_column(a) );
-        BOOST_ASSERT( bindings::size(work.select(bool())) >= min_size_bwork(
-                bindings::size_column(a), sort ));
+        BOOST_ASSERT( bindings::size(work.select(logical_t())) >=
+                min_size_bwork( bindings::size_column(a), sort ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_work( bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
@@ -228,7 +228,7 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 bindings::stride_major(vsr),
                 bindings::begin_value(work.select(real_type())),
                 bindings::size(work.select(real_type())),
-                bindings::begin_value(work.select(bool())) );
+                bindings::begin_value(work.select(logical_t())) );
     }
 
     //
@@ -242,14 +242,14 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, external_t* selctg, MatrixA& a, MatrixB& b,
+            const char sort, external_fp selctg, MatrixA& a, MatrixB& b,
             fortran_int_t& sdim, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
-        bindings::detail::array< bool > tmp_bwork( min_size_bwork(
+        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork(
                 bindings::size_column(a), sort ) );
         return invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alphar,
                 alphai, beta, vsl, vsr, workspace( tmp_work, tmp_bwork ) );
@@ -266,13 +266,13 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, external_t* selctg, MatrixA& a, MatrixB& b,
+            const char sort, external_fp selctg, MatrixA& a, MatrixB& b,
             fortran_int_t& sdim, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
-        bindings::detail::array< bool > tmp_bwork( min_size_bwork(
+        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork(
                 bindings::size_column(a), sort ) );
         detail::gges( jobvsl, jobvsr, sort, selctg,
                 bindings::size_column(a), bindings::begin_value(a),
@@ -332,7 +332,7 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
             typename WORK, typename RWORK, typename BWORK >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, external_t* selctg, MatrixA& a, MatrixB& b,
+            const char sort, external_fp selctg, MatrixA& a, MatrixB& b,
             fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
             MatrixVSL& vsl, MatrixVSR& vsr, detail::workspace3< WORK, RWORK,
             BWORK > work ) {
@@ -369,8 +369,8 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVSR >::value) );
         BOOST_ASSERT( bindings::size(alpha) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(beta) >= bindings::size_column(a) );
-        BOOST_ASSERT( bindings::size(work.select(bool())) >= min_size_bwork(
-                bindings::size_column(a), sort ));
+        BOOST_ASSERT( bindings::size(work.select(logical_t())) >=
+                min_size_bwork( bindings::size_column(a), sort ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_rwork( bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
@@ -401,7 +401,7 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 bindings::begin_value(work.select(value_type())),
                 bindings::size(work.select(value_type())),
                 bindings::begin_value(work.select(real_type())),
-                bindings::begin_value(work.select(bool())) );
+                bindings::begin_value(work.select(logical_t())) );
     }
 
     //
@@ -414,7 +414,7 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, external_t* selctg, MatrixA& a, MatrixB& b,
+            const char sort, external_fp selctg, MatrixA& a, MatrixB& b,
             fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
             MatrixVSL& vsl, MatrixVSR& vsr, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -422,7 +422,7 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 bindings::size_column(a) ) );
-        bindings::detail::array< bool > tmp_bwork( min_size_bwork(
+        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork(
                 bindings::size_column(a), sort ) );
         return invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alpha, beta,
                 vsl, vsr, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
@@ -438,14 +438,14 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
     static std::ptrdiff_t invoke( const char jobvsl, const char jobvsr,
-            const char sort, external_t* selctg, MatrixA& a, MatrixB& b,
+            const char sort, external_fp selctg, MatrixA& a, MatrixB& b,
             fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
             MatrixVSL& vsl, MatrixVSR& vsr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 bindings::size_column(a) ) );
-        bindings::detail::array< bool > tmp_bwork( min_size_bwork(
+        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork(
                 bindings::size_column(a), sort ) );
         detail::gges( jobvsl, jobvsr, sort, selctg,
                 bindings::size_column(a), bindings::begin_value(a),
@@ -515,7 +515,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -537,7 +537,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -559,7 +559,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -581,7 +581,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -603,7 +603,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -625,7 +625,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -647,7 +647,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -669,7 +669,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -691,7 +691,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -713,7 +713,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -735,7 +735,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
@@ -758,7 +758,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -780,7 +780,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
@@ -803,7 +803,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -825,7 +825,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
@@ -848,7 +848,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -870,7 +870,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -892,7 +892,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -914,7 +914,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -937,7 +937,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -959,7 +959,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -982,7 +982,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1004,7 +1004,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -1027,7 +1027,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1049,7 +1049,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1071,7 +1071,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1093,7 +1093,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -1116,7 +1116,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1138,7 +1138,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -1161,7 +1161,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1183,7 +1183,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr,
         Workspace work ) {
@@ -1206,7 +1206,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1227,7 +1227,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
         Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1248,7 +1248,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1270,7 +1270,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1291,7 +1291,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1313,7 +1313,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1334,7 +1334,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1356,7 +1356,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1377,7 +1377,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1399,7 +1399,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1420,7 +1420,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1442,7 +1442,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1463,7 +1463,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1485,7 +1485,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1506,7 +1506,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1528,7 +1528,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1549,7 +1549,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1571,7 +1571,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1592,7 +1592,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1614,7 +1614,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1635,7 +1635,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1657,7 +1657,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1678,7 +1678,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1700,7 +1700,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1721,7 +1721,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1743,7 +1743,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1764,7 +1764,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
+        external_fp selctg, MatrixA& a, MatrixB& b, fortran_int_t& sdim,
         VectorALPHA& alpha, VectorBETA& beta, const MatrixVSL& vsl,
         const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1786,7 +1786,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1807,7 +1807,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, MatrixB& b,
+        external_fp selctg, const MatrixA& a, MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1829,7 +1829,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1850,7 +1850,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, MatrixA& a, const MatrixB& b,
+        external_fp selctg, MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<
@@ -1872,7 +1872,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr, Workspace work ) {
     return gges_impl< typename bindings::value_type<
@@ -1893,7 +1893,7 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline typename boost::disable_if< detail::is_workspace< MatrixVSR >,
         std::ptrdiff_t >::type
 gges( const char jobvsl, const char jobvsr, const char sort,
-        external_t* selctg, const MatrixA& a, const MatrixB& b,
+        external_fp selctg, const MatrixA& a, const MatrixB& b,
         fortran_int_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVSL& vsl, const MatrixVSR& vsr ) {
     return gges_impl< typename bindings::value_type<

@@ -32,7 +32,7 @@ struct apply_real {
   template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
   static inline std::ptrdiff_t gees( const char jobvs, const char sort,
-        logical_t* select, MatrixA& a, fortran_int_t& sdim, VectorW& w,
+        external_fp select, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         MatrixVS& vs, Workspace work ) {
     typedef typename bindings::value_type< MatrixA >::type value_type;
     bindings::detail::array<value_type> wr(bindings::size(w));
@@ -50,7 +50,7 @@ struct apply_complex {
   template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
   static inline std::ptrdiff_t gees( const char jobvs, const char sort,
-        logical_t* select, MatrixA& a, fortran_int_t& sdim, VectorW& w,
+        external_fp select, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         MatrixVS& vs, Workspace work ) {
     return lapack::gees( jobvs, sort, select, a, sdim, w, vs, work );
   }
@@ -74,6 +74,38 @@ void randomize(M& m) {
 } // randomize()
 
 
+template< typename T >
+struct dispatch_select
+{
+};
+template<>
+struct dispatch_select<float>
+{
+  static logical_t my_select(float* w_real, float* w_imag) {
+    return *w_real > std::abs(*w_imag);
+  }
+};
+template<>
+struct dispatch_select<double>
+{
+  static logical_t my_select(double* w_real, double* w_imag) {
+    return *w_real > std::abs(*w_imag);
+  }
+};
+template<>
+struct dispatch_select<std::complex<float> >
+{
+  static logical_t my_select(std::complex<float>* w) {
+    return w->real() > std::abs(w->imag());
+  }
+};
+template<>
+struct dispatch_select<std::complex<double> >
+{
+  static logical_t my_select(std::complex<double>* w) {
+    return w->real() > std::abs(w->imag());
+  }
+};
 
 
 template <typename T, typename W>
@@ -94,17 +126,17 @@ int do_memory_type(int n, W workspace) {
 
    randomize( a );
    matrix_type a2( a );
-   logical_t* select = 0;
+   external_fp select = reinterpret_cast<external_fp>(dispatch_select<T>::my_select);
    fortran_int_t sdim_info(0);
    // Compute Schur decomposition.
-   apply_t::gees( 'V', 'N', select, a, sdim_info, e1, z, workspace ) ;
+   apply_t::gees( 'V', 'S', select, a, sdim_info, e1, z, workspace ) ;
 
    // Check Schur factorization
    if (norm_frobenius( prod( a2, z ) - prod( z, a ) )
            >= safety_factor*10.0* norm_frobenius( a2 ) * std::numeric_limits< real_type >::epsilon() ) return 255 ;
 
    matrix_type z_dummy( 1, 1 );
-   apply_t::gees( 'N', 'N', select, a2, sdim_info, e2, z_dummy, workspace ) ;
+   apply_t::gees( 'N', 'S', select, a2, sdim_info, e2, z_dummy, workspace ) ;
    if (norm_2( e1 - e2 ) > safety_factor*norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
    if (norm_frobenius( a2 - a )
@@ -118,12 +150,12 @@ int do_memory_type(int n, W workspace) {
 template <typename T>
 struct Workspace {
    typedef ublas::vector<T>                         array_type ;
-   typedef ublas::vector< bool >                    bool_array_type ;
+   typedef ublas::vector< logical_t >               bool_array_type ;
    typedef lapack::detail::workspace2< array_type,bool_array_type > type ;
 
    Workspace(size_t n)
    : work_( 3*n )
-   , bwork_(1)
+   , bwork_( n )
    {}
 
    type operator() () {
@@ -139,13 +171,13 @@ template <typename T>
 struct Workspace< std::complex<T> > {
    typedef ublas::vector<T>                                                 real_array_type ;
    typedef ublas::vector< std::complex<T> >                                 complex_array_type ;
-   typedef ublas::vector< bool >                                            bool_array_type ;
+   typedef ublas::vector< logical_t >                                       bool_array_type ;
    typedef lapack::detail::workspace3< complex_array_type,real_array_type,bool_array_type > type ;
 
    Workspace(size_t n)
    : work_( 2*n )
    , rwork_( n )
-   , bwork_(1)
+   , bwork_( n )
    {}
 
    type operator() () {

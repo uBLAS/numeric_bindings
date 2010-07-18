@@ -102,7 +102,7 @@ void hseqr(int n){
     ublas::matrix<complex<double>, ublas::column_major> cVR(cZ);
     boost::numeric::bindings::detail::array<complex<double> > work_c(2*n);
     boost::numeric::bindings::detail::array<double> work_r(n);
-    ublas::vector<bool> select_dummy(n);
+    ublas::vector<logical_t> select_dummy(n);
     fortran_int_t m_info(n+1);
     lapack::trevc( tag::both(),'B',select_dummy,G,cVL,cVR,n,m_info,lapack::workspace(work_c,work_r));
 

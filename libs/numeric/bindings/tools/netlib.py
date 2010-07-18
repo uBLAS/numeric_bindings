@@ -27,7 +27,7 @@ global_type_map = {
   'CHARACTER': 'char',
   'CHARACTER*1': 'char',
   'LOGICAL': 'logical_t',
-  'EXTERNAL': 'external_t',
+  'EXTERNAL': 'external_fp',
   'INTEGER': library_integer_type,
   'REAL': 'float',
   'DOUBLE PRECISION': 'double' }
@@ -69,7 +69,8 @@ def c_type( name, properties ):
   result = m_type_map[ properties[ 'value_type' ] ];
   if properties[ 'io' ] == [ 'input' ]:
     result = 'const ' + result
-  result += '*'
+  if properties[ 'io' ] != [ 'external procedure' ]:
+    result += '*'
   result += ' ' + name.lower()  # is this really needed?
   
   return result
@@ -88,7 +89,7 @@ def cpp_type( name, properties ):
     if properties[ 'io' ] == [ 'input' ]:
       result = 'const ' + result
     elif properties[ 'io' ] == [ 'external procedure' ]:
-      result += '*'
+      result += ''
     else:
       result += '&'
     
@@ -158,6 +159,8 @@ def call_c_type( name, properties ):
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
        properties[ 'value_type' ] == 'DOUBLE COMPLEX':
       result = '&' + name.lower() + ''
+    elif properties[ 'io' ] == [ 'external procedure' ]:
+      result = name.lower()
     else:
       result = '&' + name.lower()
   
@@ -557,7 +560,7 @@ def workspace_type( name, properties ):
     if properties[ 'value_type' ] == 'INTEGER':
       result = library_integer_type
     elif properties[ 'value_type' ] == 'LOGICAL':
-      result = 'bool'
+      result = 'logical_t'
     elif properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
       result = 'real_type'
     else: 

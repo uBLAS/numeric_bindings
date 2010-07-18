@@ -41,19 +41,4 @@ struct {
 
 #endif /* BOOST_NUMERIC_BINDINGS_USE_COMPLEX_STRUCT */
 
-/*
- * Define a fortran LOGICAL as a bool (for now).
- */
-
-typedef bool logical_t ;
-
-/*
- * Define a fortran EXTERNAL as void, so that the argument type is void*
- * and one can pass a function pointer. These functions return bool,
- * but they don't all take the same type of arguments. So there is no 
- * function pointer definition that would work for all cases.
- */
-
-typedef void external_t ;
-
 #endif /* BOOST_NUMERIC_BINDINGS_TRAITS_TYPE_H */

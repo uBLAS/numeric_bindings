@@ -28,8 +28,10 @@ $CONTENT//
 // LAPACK auxiliary routines
 //
 
-int LAPACK_ILAENV(int const* ispec, const char* name, const char* opt,
-    int const* n1, int const* n2, int const* n3, int const* n4, int, int);
+$LIBRARY_INT_TYPE LAPACK_ILAENV(const $LIBRARY_INT_TYPE* ispec, const char* name,
+        const char* opt, const $LIBRARY_INT_TYPE* n1, const $LIBRARY_INT_TYPE* n2,
+        const $LIBRARY_INT_TYPE* n3, const $LIBRARY_INT_TYPE* n4, $LIBRARY_INT_TYPE,
+        $LIBRARY_INT_TYPE);
 
 }
 

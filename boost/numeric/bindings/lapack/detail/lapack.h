@@ -4352,8 +4352,10 @@ void LAPACK_ZLATRZ( const fortran_int_t* m, const fortran_int_t* n,
 // LAPACK auxiliary routines
 //
 
-int LAPACK_ILAENV(int const* ispec, const char* name, const char* opt,
-    int const* n1, int const* n2, int const* n3, int const* n4, int, int);
+fortran_int_t LAPACK_ILAENV(const fortran_int_t* ispec, const char* name,
+        const char* opt, const fortran_int_t* n1, const fortran_int_t* n2,
+        const fortran_int_t* n3, const fortran_int_t* n4, fortran_int_t,
+        fortran_int_t);
 
 }
 

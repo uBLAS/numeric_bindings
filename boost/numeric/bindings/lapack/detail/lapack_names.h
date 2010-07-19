@@ -516,6 +516,12 @@
 #define LAPACK_CPPTRS FORTRAN_ID( cpptrs )
 #define LAPACK_ZPPTRS FORTRAN_ID( zpptrs )
 
+// Value-type variants of pstrf
+#define LAPACK_SPSTRF FORTRAN_ID( spstrf )
+#define LAPACK_DPSTRF FORTRAN_ID( dpstrf )
+#define LAPACK_CPSTRF FORTRAN_ID( cpstrf )
+#define LAPACK_ZPSTRF FORTRAN_ID( zpstrf )
+
 // Value-type variants of ptcon
 #define LAPACK_SPTCON FORTRAN_ID( sptcon )
 #define LAPACK_DPTCON FORTRAN_ID( dptcon )

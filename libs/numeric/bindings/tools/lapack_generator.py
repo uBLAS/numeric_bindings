@@ -704,7 +704,7 @@ def read_templates( template_file ):
     result[ split_templates[ index*2 ] ] = split_templates[ index*2 + 1 ]
   return result
 
-lapack_src_path = './lapack-3.2.0/SRC'
+lapack_src_path = './lapack-3.2.2/SRC'
 clapack_h_path = './atlas-3.6.0/include/clapack.h'
 template_src_path = './templates'
 bindings_impl_target_path = '../../../../boost/numeric/bindings/lapack/'

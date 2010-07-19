@@ -110,6 +110,7 @@
 #include <boost/numeric/bindings/lapack/computational/pptrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/pptri.hpp>
 #include <boost/numeric/bindings/lapack/computational/pptrs.hpp>
+#include <boost/numeric/bindings/lapack/computational/pstrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/ptcon.hpp>
 #include <boost/numeric/bindings/lapack/computational/ptrfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pttrf.hpp>

@@ -1412,6 +1412,20 @@ void LAPACK_ZPPTRS( const char* uplo, const fortran_int_t* n,
         const fortran_int_t* nrhs, const void* ap, void* b,
         const fortran_int_t* ldb, fortran_int_t* info );
 
+// Value-type variants of pstrf
+void LAPACK_SPSTRF( const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, fortran_int_t* piv, fortran_int_t* rank,
+        const float* tol, float* work, fortran_int_t* info );
+void LAPACK_DPSTRF( const char* uplo, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, fortran_int_t* piv, fortran_int_t* rank,
+        const double* tol, double* work, fortran_int_t* info );
+void LAPACK_CPSTRF( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* piv, fortran_int_t* rank,
+        const float* tol, float* work, fortran_int_t* info );
+void LAPACK_ZPSTRF( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* piv, fortran_int_t* rank,
+        const double* tol, double* work, fortran_int_t* info );
+
 // Value-type variants of ptcon
 void LAPACK_SPTCON( const fortran_int_t* n, const float* d, const float* e,
         const float* anorm, float* rcond, float* work, fortran_int_t* info );

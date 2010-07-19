@@ -122,6 +122,7 @@ struct iter_gesv_impl< Value, typename boost::enable_if< is_real< Value > >::typ
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(a) );
@@ -240,6 +241,7 @@ struct iter_gesv_impl< Value, typename boost::enable_if< is_complex< Value > >::
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(a) );

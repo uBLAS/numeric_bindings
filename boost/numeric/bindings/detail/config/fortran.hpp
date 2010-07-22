@@ -62,8 +62,8 @@ typedef int fortran_int_t;
 typedef std::ptrdiff_t fortran_int_t;
 #endif
 
-// Looks like fortran_int_t and logical_t should be identical, the unsigned is
-// required so overloads can distinguish between logical_t and fortran_int_t.
+// Looks like fortran_int_t and fortran_bool_t should be identical, the unsigned is
+// required so overloads can distinguish between fortran_bool_t and fortran_int_t.
 #ifndef BIND_FORTRAN_INTEGER_8
 typedef unsigned int fortran_bool_t;
 #else

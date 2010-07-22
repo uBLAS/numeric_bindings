@@ -81,28 +81,28 @@ struct dispatch_select
 template<>
 struct dispatch_select<float>
 {
-  static logical_t my_select(float* w_real, float* w_imag) {
+  static fortran_bool_t my_select(float* w_real, float* w_imag) {
     return *w_real > std::abs(*w_imag);
   }
 };
 template<>
 struct dispatch_select<double>
 {
-  static logical_t my_select(double* w_real, double* w_imag) {
+  static fortran_bool_t my_select(double* w_real, double* w_imag) {
     return *w_real > std::abs(*w_imag);
   }
 };
 template<>
 struct dispatch_select<std::complex<float> >
 {
-  static logical_t my_select(std::complex<float>* w) {
+  static fortran_bool_t my_select(std::complex<float>* w) {
     return w->real() > std::abs(w->imag());
   }
 };
 template<>
 struct dispatch_select<std::complex<double> >
 {
-  static logical_t my_select(std::complex<double>* w) {
+  static fortran_bool_t my_select(std::complex<double>* w) {
     return w->real() > std::abs(w->imag());
   }
 };
@@ -150,7 +150,7 @@ int do_memory_type(int n, W workspace) {
 template <typename T>
 struct Workspace {
    typedef ublas::vector<T>                         array_type ;
-   typedef ublas::vector< logical_t >               bool_array_type ;
+   typedef ublas::vector< fortran_bool_t >               bool_array_type ;
    typedef lapack::detail::workspace2< array_type,bool_array_type > type ;
 
    Workspace(size_t n)
@@ -171,7 +171,7 @@ template <typename T>
 struct Workspace< std::complex<T> > {
    typedef ublas::vector<T>                                                 real_array_type ;
    typedef ublas::vector< std::complex<T> >                                 complex_array_type ;
-   typedef ublas::vector< logical_t >                                       bool_array_type ;
+   typedef ublas::vector< fortran_bool_t >                                       bool_array_type ;
    typedef lapack::detail::workspace3< complex_array_type,real_array_type,bool_array_type > type ;
 
    Workspace(size_t n)

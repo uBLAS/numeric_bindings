@@ -54,9 +54,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const logical_t* select, const fortran_int_t n,
-        float* a, const fortran_int_t lda, float* b, const fortran_int_t ldb,
+inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
+        const fortran_bool_t wantq, const fortran_bool_t wantz,
+        const fortran_bool_t* select, const fortran_int_t n, float* a,
+        const fortran_int_t lda, float* b, const fortran_int_t ldb,
         float* alphar, float* alphai, float* beta, float* q,
         const fortran_int_t ldq, float* z, const fortran_int_t ldz,
         fortran_int_t& m, float& pl, float& pr, float* dif, float* work,
@@ -74,14 +75,15 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const logical_t* select, const fortran_int_t n,
-        double* a, const fortran_int_t lda, double* b,
-        const fortran_int_t ldb, double* alphar, double* alphai, double* beta,
-        double* q, const fortran_int_t ldq, double* z,
-        const fortran_int_t ldz, fortran_int_t& m, double& pl, double& pr,
-        double* dif, double* work, const fortran_int_t lwork,
-        fortran_int_t* iwork, const fortran_int_t liwork ) {
+inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
+        const fortran_bool_t wantq, const fortran_bool_t wantz,
+        const fortran_bool_t* select, const fortran_int_t n, double* a,
+        const fortran_int_t lda, double* b, const fortran_int_t ldb,
+        double* alphar, double* alphai, double* beta, double* q,
+        const fortran_int_t ldq, double* z, const fortran_int_t ldz,
+        fortran_int_t& m, double& pl, double& pr, double* dif, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
             alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work,
@@ -94,8 +96,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const logical_t* select, const fortran_int_t n,
+inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
+        const fortran_bool_t wantq, const fortran_bool_t wantz,
+        const fortran_bool_t* select, const fortran_int_t n,
         std::complex<float>* a, const fortran_int_t lda,
         std::complex<float>* b, const fortran_int_t ldb,
         std::complex<float>* alpha, std::complex<float>* beta,
@@ -116,8 +119,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const logical_t* select, const fortran_int_t n,
+inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
+        const fortran_bool_t wantq, const fortran_bool_t wantz,
+        const fortran_bool_t* select, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda,
         std::complex<double>* b, const fortran_int_t ldb,
         std::complex<double>* alpha, std::complex<double>* beta,
@@ -161,7 +165,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixQ, typename MatrixZ, typename VectorDIF,
             typename WORK, typename IWORK >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const logical_t wantq, const logical_t wantz,
+            const fortran_bool_t wantq, const fortran_bool_t wantz,
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
@@ -254,7 +258,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
             typename MatrixQ, typename MatrixZ, typename VectorDIF >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const logical_t wantq, const logical_t wantz,
+            const fortran_bool_t wantq, const fortran_bool_t wantz,
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
@@ -279,7 +283,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
             typename MatrixQ, typename MatrixZ, typename VectorDIF >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const logical_t wantq, const logical_t wantz,
+            const fortran_bool_t wantq, const fortran_bool_t wantz,
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
@@ -348,7 +352,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixZ, typename VectorDIF, typename WORK,
             typename IWORK >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const logical_t wantq, const logical_t wantz,
+            const fortran_bool_t wantq, const fortran_bool_t wantz,
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             fortran_int_t& m, real_type& pl, real_type& pr,
@@ -429,7 +433,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorALPHA, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename VectorDIF >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const logical_t wantq, const logical_t wantz,
+            const fortran_bool_t wantq, const fortran_bool_t wantz,
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             fortran_int_t& m, real_type& pl, real_type& pr,
@@ -454,7 +458,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorALPHA, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename VectorDIF >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const logical_t wantq, const logical_t wantz,
+            const fortran_bool_t wantq, const fortran_bool_t wantz,
             const VectorSELECT& select, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             fortran_int_t& m, real_type& pl, real_type& pr,
@@ -528,8 +532,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -554,8 +558,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -581,14 +585,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, work );
@@ -607,14 +611,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -634,61 +638,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
-        const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif, Workspace work ) {
-    return tgsen_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
-            alphar, alphai, beta, q, z, m, pl, pr, dif, work );
-}
-
-//
-// Overloaded function for tgsen. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixA, typename MatrixB,
-        typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
-        typename MatrixQ, typename MatrixZ, typename VectorDIF >
-inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
-        std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
-        const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif ) {
-    return tgsen_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
-            alphar, alphai, beta, q, z, m, pl, pr, dif, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsen. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * MatrixQ&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixA, typename MatrixB,
-        typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
-        typename MatrixQ, typename MatrixZ, typename VectorDIF,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -702,7 +653,7 @@ tgsen( const fortran_int_t ijob, const logical_t wantq,
 
 //
 // Overloaded function for tgsen. Its overload differs for
-// * const MatrixA&
+// * MatrixA&
 // * const MatrixB&
 // * MatrixQ&
 // * MatrixZ&
@@ -713,8 +664,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -728,6 +679,59 @@ tgsen( const fortran_int_t ijob, const logical_t wantq,
 
 //
 // Overloaded function for tgsen. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
+        typename MatrixQ, typename MatrixZ, typename VectorDIF,
+        typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
+        typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
+    return tgsen_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
+            alphar, alphai, beta, q, z, m, pl, pr, dif, work );
+}
+
+//
+// Overloaded function for tgsen. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
+        typename MatrixQ, typename MatrixZ, typename VectorDIF >
+inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
+        std::ptrdiff_t >::type
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
+        typename remove_imaginary< typename bindings::value_type<
+        MatrixA >::type >::type& pr, VectorDIF& dif ) {
+    return tgsen_impl< typename bindings::value_type<
+            MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
+            alphar, alphai, beta, q, z, m, pl, pr, dif, optimal_workspace() );
+}
+
+//
+// Overloaded function for tgsen. Its overload differs for
 // * MatrixA&
 // * MatrixB&
 // * const MatrixQ&
@@ -740,8 +744,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -766,8 +770,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -793,14 +797,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, work );
@@ -819,14 +823,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -846,8 +850,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -872,8 +876,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -899,14 +903,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, work );
@@ -925,14 +929,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -952,8 +956,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -978,8 +982,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -1005,14 +1009,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, work );
@@ -1031,14 +1035,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -1058,8 +1062,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -1084,8 +1088,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -1111,14 +1115,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, work );
@@ -1137,14 +1141,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -1164,8 +1168,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         fortran_int_t& m, typename remove_imaginary<
@@ -1190,8 +1194,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         fortran_int_t& m, typename remove_imaginary<
@@ -1217,11 +1221,11 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        fortran_int_t& m, typename remove_imaginary<
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
@@ -1243,11 +1247,11 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        fortran_int_t& m, typename remove_imaginary<
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
@@ -1270,8 +1274,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         fortran_int_t& m, typename remove_imaginary<
@@ -1296,8 +1300,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
         fortran_int_t& m, typename remove_imaginary<
@@ -1323,11 +1327,11 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        fortran_int_t& m, typename remove_imaginary<
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
@@ -1349,11 +1353,11 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
-        fortran_int_t& m, typename remove_imaginary<
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
@@ -1374,8 +1378,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1399,8 +1403,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1424,13 +1428,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, work );
@@ -1449,13 +1454,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -1474,8 +1480,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1499,8 +1505,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1524,13 +1530,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, work );
@@ -1549,13 +1556,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -1574,8 +1582,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1599,8 +1607,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1624,13 +1632,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, work );
@@ -1649,13 +1658,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
-        MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -1674,8 +1684,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -1700,8 +1710,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -1726,10 +1736,10 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pr,
@@ -1752,10 +1762,10 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pr,
@@ -1778,8 +1788,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1803,8 +1813,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1828,13 +1838,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, work );
@@ -1853,13 +1864,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -1878,8 +1890,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1903,8 +1915,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
         const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -1928,13 +1940,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, work );
@@ -1953,13 +1966,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
-        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -1978,8 +1992,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -2003,8 +2017,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
         const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& pl,
@@ -2028,13 +2042,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, work );
@@ -2053,13 +2068,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
-        const MatrixZ& z, fortran_int_t& m, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pl,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pr, VectorDIF& dif ) {
+        MatrixA >::type >::type& pl, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pr,
+        VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, optimal_workspace() );
@@ -2078,8 +2094,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -2104,8 +2120,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, MatrixA& a,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select, MatrixA& a,
         const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
         typename remove_imaginary< typename bindings::value_type<
@@ -2130,14 +2146,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif, Workspace work ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, work );
@@ -2156,14 +2172,14 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixZ, typename VectorDIF >
 inline typename boost::disable_if< detail::is_workspace< VectorDIF >,
         std::ptrdiff_t >::type
-tgsen( const fortran_int_t ijob, const logical_t wantq,
-        const logical_t wantz, const VectorSELECT& select, const MatrixA& a,
-        const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        const MatrixQ& q, const MatrixZ& z, fortran_int_t& m,
+tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
+        const fortran_bool_t wantz, const VectorSELECT& select,
+        const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        fortran_int_t& m, typename remove_imaginary<
+        typename bindings::value_type< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& pl, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& pr,
-        VectorDIF& dif ) {
+        MatrixA >::type >::type& pr, VectorDIF& dif ) {
     return tgsen_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alpha, beta, q, z, m, pl, pr, dif, optimal_workspace() );

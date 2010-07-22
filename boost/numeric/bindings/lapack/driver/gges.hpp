@@ -60,7 +60,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
         fortran_int_t& sdim, float* alphar, float* alphai, float* beta,
         float* vsl, const fortran_int_t ldvsl, float* vsr,
         const fortran_int_t ldvsr, float* work, const fortran_int_t lwork,
-        logical_t* bwork ) {
+        fortran_bool_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_SGGES( &jobvsl, &jobvsr, &sort, selctg, &n, a, &lda, b, &ldb,
             &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr, work,
@@ -79,7 +79,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
         fortran_int_t& sdim, double* alphar, double* alphai, double* beta,
         double* vsl, const fortran_int_t ldvsl, double* vsr,
         const fortran_int_t ldvsr, double* work, const fortran_int_t lwork,
-        logical_t* bwork ) {
+        fortran_bool_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_DGGES( &jobvsl, &jobvsr, &sort, selctg, &n, a, &lda, b, &ldb,
             &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr, work,
@@ -100,7 +100,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
         std::complex<float>* vsl, const fortran_int_t ldvsl,
         std::complex<float>* vsr, const fortran_int_t ldvsr,
         std::complex<float>* work, const fortran_int_t lwork, float* rwork,
-        logical_t* bwork ) {
+        fortran_bool_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_CGGES( &jobvsl, &jobvsr, &sort, selctg, &n, a, &lda, b, &ldb,
             &sdim, alpha, beta, vsl, &ldvsl, vsr, &ldvsr, work, &lwork, rwork,
@@ -121,7 +121,7 @@ inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
         std::complex<double>* vsl, const fortran_int_t ldvsl,
         std::complex<double>* vsr, const fortran_int_t ldvsr,
         std::complex<double>* work, const fortran_int_t lwork, double* rwork,
-        logical_t* bwork ) {
+        fortran_bool_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_ZGGES( &jobvsl, &jobvsr, &sort, selctg, &n, a, &lda, b, &ldb,
             &sdim, alpha, beta, vsl, &ldvsl, vsr, &ldvsr, work, &lwork, rwork,
@@ -198,7 +198,7 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVSR >::value) );
         BOOST_ASSERT( bindings::size(alphai) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(alphar) >= bindings::size_column(a) );
-        BOOST_ASSERT( bindings::size(work.select(logical_t())) >=
+        BOOST_ASSERT( bindings::size(work.select(fortran_bool_t())) >=
                 min_size_bwork( bindings::size_column(a), sort ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_work( bindings::size_column(a) ));
@@ -228,7 +228,7 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 bindings::stride_major(vsr),
                 bindings::begin_value(work.select(real_type())),
                 bindings::size(work.select(real_type())),
-                bindings::begin_value(work.select(logical_t())) );
+                bindings::begin_value(work.select(fortran_bool_t())) );
     }
 
     //
@@ -249,7 +249,7 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 bindings::size_column(a) ) );
-        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork(
+        bindings::detail::array< fortran_bool_t > tmp_bwork( min_size_bwork(
                 bindings::size_column(a), sort ) );
         return invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alphar,
                 alphai, beta, vsl, vsr, workspace( tmp_work, tmp_bwork ) );
@@ -272,7 +272,7 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             MatrixVSR& vsr, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
-        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork(
+        bindings::detail::array< fortran_bool_t > tmp_bwork( min_size_bwork(
                 bindings::size_column(a), sort ) );
         detail::gges( jobvsl, jobvsr, sort, selctg,
                 bindings::size_column(a), bindings::begin_value(a),
@@ -369,7 +369,7 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVSR >::value) );
         BOOST_ASSERT( bindings::size(alpha) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(beta) >= bindings::size_column(a) );
-        BOOST_ASSERT( bindings::size(work.select(logical_t())) >=
+        BOOST_ASSERT( bindings::size(work.select(fortran_bool_t())) >=
                 min_size_bwork( bindings::size_column(a), sort ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_rwork( bindings::size_column(a) ));
@@ -401,7 +401,7 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 bindings::begin_value(work.select(value_type())),
                 bindings::size(work.select(value_type())),
                 bindings::begin_value(work.select(real_type())),
-                bindings::begin_value(work.select(logical_t())) );
+                bindings::begin_value(work.select(fortran_bool_t())) );
     }
 
     //
@@ -422,7 +422,7 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 bindings::size_column(a) ) );
-        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork(
+        bindings::detail::array< fortran_bool_t > tmp_bwork( min_size_bwork(
                 bindings::size_column(a), sort ) );
         return invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alpha, beta,
                 vsl, vsr, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
@@ -445,7 +445,7 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 bindings::size_column(a) ) );
-        bindings::detail::array< logical_t > tmp_bwork( min_size_bwork(
+        bindings::detail::array< fortran_bool_t > tmp_bwork( min_size_bwork(
                 bindings::size_column(a), sort ) );
         detail::gges( jobvsl, jobvsr, sort, selctg,
                 bindings::size_column(a), bindings::begin_value(a),

@@ -58,9 +58,9 @@ inline std::ptrdiff_t stemr( const char jobz, const char range,
         const fortran_int_t n, float* d, float* e, const float vl,
         const float vu, const fortran_int_t il, const fortran_int_t iu,
         fortran_int_t& m, float* w, float* z, const fortran_int_t ldz,
-        const fortran_int_t nzc, fortran_int_t* isuppz, logical_t& tryrac,
-        float* work, const fortran_int_t lwork, fortran_int_t* iwork,
-        const fortran_int_t liwork ) {
+        const fortran_int_t nzc, fortran_int_t* isuppz,
+        fortran_bool_t& tryrac, float* work, const fortran_int_t lwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
             &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );
@@ -76,9 +76,9 @@ inline std::ptrdiff_t stemr( const char jobz, const char range,
         const fortran_int_t n, double* d, double* e, const double vl,
         const double vu, const fortran_int_t il, const fortran_int_t iu,
         fortran_int_t& m, double* w, double* z, const fortran_int_t ldz,
-        const fortran_int_t nzc, fortran_int_t* isuppz, logical_t& tryrac,
-        double* work, const fortran_int_t lwork, fortran_int_t* iwork,
-        const fortran_int_t liwork ) {
+        const fortran_int_t nzc, fortran_int_t* isuppz,
+        fortran_bool_t& tryrac, double* work, const fortran_int_t lwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
             &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );
@@ -95,7 +95,7 @@ inline std::ptrdiff_t stemr( const char jobz, const char range,
         const float vu, const fortran_int_t il, const fortran_int_t iu,
         fortran_int_t& m, float* w, std::complex<float>* z,
         const fortran_int_t ldz, const fortran_int_t nzc,
-        fortran_int_t* isuppz, logical_t& tryrac, float* work,
+        fortran_int_t* isuppz, fortran_bool_t& tryrac, float* work,
         const fortran_int_t lwork, fortran_int_t* iwork,
         const fortran_int_t liwork ) {
     fortran_int_t info(0);
@@ -114,7 +114,7 @@ inline std::ptrdiff_t stemr( const char jobz, const char range,
         const double vu, const fortran_int_t il, const fortran_int_t iu,
         fortran_int_t& m, double* w, std::complex<double>* z,
         const fortran_int_t ldz, const fortran_int_t nzc,
-        fortran_int_t* isuppz, logical_t& tryrac, double* work,
+        fortran_int_t* isuppz, fortran_bool_t& tryrac, double* work,
         const fortran_int_t lwork, fortran_int_t* iwork,
         const fortran_int_t liwork ) {
     fortran_int_t info(0);
@@ -155,7 +155,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, detail::workspace2< WORK, IWORK > work ) {
+            fortran_bool_t& tryrac, detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -212,7 +212,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, minimal_workspace ) {
+            fortran_bool_t& tryrac, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
@@ -237,7 +237,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, optimal_workspace ) {
+            fortran_bool_t& tryrac, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
@@ -304,7 +304,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, detail::workspace2< WORK, IWORK > work ) {
+            fortran_bool_t& tryrac, detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -357,7 +357,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, minimal_workspace ) {
+            fortran_bool_t& tryrac, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
@@ -382,7 +382,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t il, const fortran_int_t iu,
             fortran_int_t& m, VectorW& w, MatrixZ& z,
             const fortran_int_t nzc, VectorISUPPZ& isuppz,
-            logical_t& tryrac, optimal_workspace ) {
+            fortran_bool_t& tryrac, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
@@ -439,7 +439,7 @@ struct stemr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 // Overloaded function for stemr. Its overload differs for
 // * MatrixZ&
-// * logical_t&
+// * fortran_bool_t&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -453,7 +453,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
         MatrixZ >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        logical_t& tryrac, Workspace work ) {
+        fortran_bool_t& tryrac, Workspace work ) {
     return stemr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             m, w, z, nzc, isuppz, tryrac, work );
@@ -462,7 +462,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
 //
 // Overloaded function for stemr. Its overload differs for
 // * MatrixZ&
-// * logical_t&
+// * fortran_bool_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -476,7 +476,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
         MatrixZ >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        logical_t& tryrac ) {
+        fortran_bool_t& tryrac ) {
     return stemr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             m, w, z, nzc, isuppz, tryrac, optimal_workspace() );
@@ -485,7 +485,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
 //
 // Overloaded function for stemr. Its overload differs for
 // * const MatrixZ&
-// * logical_t&
+// * fortran_bool_t&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -499,7 +499,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
         MatrixZ >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        logical_t& tryrac, Workspace work ) {
+        fortran_bool_t& tryrac, Workspace work ) {
     return stemr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             m, w, z, nzc, isuppz, tryrac, work );
@@ -508,7 +508,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
 //
 // Overloaded function for stemr. Its overload differs for
 // * const MatrixZ&
-// * logical_t&
+// * fortran_bool_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -522,7 +522,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
         MatrixZ >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        logical_t& tryrac ) {
+        fortran_bool_t& tryrac ) {
     return stemr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             m, w, z, nzc, isuppz, tryrac, optimal_workspace() );
@@ -531,7 +531,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
 //
 // Overloaded function for stemr. Its overload differs for
 // * MatrixZ&
-// * const logical_t&
+// * const fortran_bool_t&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -545,7 +545,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
         MatrixZ >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        const logical_t& tryrac, Workspace work ) {
+        const fortran_bool_t& tryrac, Workspace work ) {
     return stemr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             m, w, z, nzc, isuppz, tryrac, work );
@@ -554,7 +554,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
 //
 // Overloaded function for stemr. Its overload differs for
 // * MatrixZ&
-// * const logical_t&
+// * const fortran_bool_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -568,7 +568,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
         MatrixZ >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        const logical_t& tryrac ) {
+        const fortran_bool_t& tryrac ) {
     return stemr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             m, w, z, nzc, isuppz, tryrac, optimal_workspace() );
@@ -577,7 +577,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
 //
 // Overloaded function for stemr. Its overload differs for
 // * const MatrixZ&
-// * const logical_t&
+// * const fortran_bool_t&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -591,7 +591,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
         MatrixZ >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        const logical_t& tryrac, Workspace work ) {
+        const fortran_bool_t& tryrac, Workspace work ) {
     return stemr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             m, w, z, nzc, isuppz, tryrac, work );
@@ -600,7 +600,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
 //
 // Overloaded function for stemr. Its overload differs for
 // * const MatrixZ&
-// * const logical_t&
+// * const fortran_bool_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -614,7 +614,7 @@ stemr( const char jobz, const char range, const fortran_int_t n,
         MatrixZ >::type >::type vu, const fortran_int_t il,
         const fortran_int_t iu, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        const logical_t& tryrac ) {
+        const fortran_bool_t& tryrac ) {
     return stemr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             m, w, z, nzc, isuppz, tryrac, optimal_workspace() );

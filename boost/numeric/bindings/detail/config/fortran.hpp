@@ -65,15 +65,15 @@ typedef std::ptrdiff_t fortran_int_t;
 // Looks like fortran_int_t and logical_t should be identical, the unsigned is
 // required so overloads can distinguish between logical_t and fortran_int_t.
 #ifndef BIND_FORTRAN_INTEGER_8
-typedef unsigned int logical_t;
+typedef unsigned int fortran_bool_t;
 #else
-typedef std::size_t logical_t;
+typedef std::size_t fortran_bool_t;
 #endif
 
 // This definition of external_fp is identical to the definition of L_fp from
-// f2c, and it seems to work more or less. These functions return logical_t,
+// f2c, and it seems to work more or less. These functions return fortran_bool_t,
 // but they don't all take the same type of arguments. A reinterpret_cast will
 // probably work for most compilers to extend the allowed function signatures.
-typedef logical_t (*external_fp)(...);
+typedef fortran_bool_t (*external_fp)(...);
 
 #endif // BOOST_NUMERIC_BINDINGS_TRAITS_FORTRAN_H

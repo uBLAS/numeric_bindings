@@ -55,7 +55,7 @@ namespace detail {
 //
 template< typename Side >
 inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
-        const char initv, logical_t* select, const fortran_int_t n,
+        const char initv, fortran_bool_t* select, const fortran_int_t n,
         const float* h, const fortran_int_t ldh, float* wr, const float* wi,
         float* vl, const fortran_int_t ldvl, float* vr,
         const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
@@ -74,7 +74,7 @@ inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
 //
 template< typename Side >
 inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
-        const char initv, logical_t* select, const fortran_int_t n,
+        const char initv, fortran_bool_t* select, const fortran_int_t n,
         const double* h, const fortran_int_t ldh, double* wr,
         const double* wi, double* vl, const fortran_int_t ldvl, double* vr,
         const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
@@ -93,7 +93,7 @@ inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
 //
 template< typename Side >
 inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
-        const char initv, const logical_t* select, const fortran_int_t n,
+        const char initv, const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<float>* h, const fortran_int_t ldh,
         std::complex<float>* w, std::complex<float>* vl,
         const fortran_int_t ldvl, std::complex<float>* vr,
@@ -114,7 +114,7 @@ inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
 //
 template< typename Side >
 inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
-        const char initv, const logical_t* select, const fortran_int_t n,
+        const char initv, const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<double>* h, const fortran_int_t ldh,
         std::complex<double>* w, std::complex<double>* vl,
         const fortran_int_t ldvl, std::complex<double>* vr,

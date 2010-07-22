@@ -54,7 +54,7 @@ namespace detail {
 // * float value-type.
 //
 inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const logical_t* select, const fortran_int_t n, const float* t,
+        const fortran_bool_t* select, const fortran_int_t n, const float* t,
         const fortran_int_t ldt, const float* vl, const fortran_int_t ldvl,
         const float* vr, const fortran_int_t ldvr, float* s, float* sep,
         const fortran_int_t mm, fortran_int_t& m, float* work,
@@ -71,7 +71,7 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // * double value-type.
 //
 inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const logical_t* select, const fortran_int_t n, const double* t,
+        const fortran_bool_t* select, const fortran_int_t n, const double* t,
         const fortran_int_t ldt, const double* vl, const fortran_int_t ldvl,
         const double* vr, const fortran_int_t ldvr, double* s, double* sep,
         const fortran_int_t mm, fortran_int_t& m, double* work,
@@ -88,7 +88,7 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // * complex<float> value-type.
 //
 inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const logical_t* select, const fortran_int_t n,
+        const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<float>* t, const fortran_int_t ldt,
         const std::complex<float>* vl, const fortran_int_t ldvl,
         const std::complex<float>* vr, const fortran_int_t ldvr, float* s,
@@ -106,7 +106,7 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // * complex<double> value-type.
 //
 inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const logical_t* select, const fortran_int_t n,
+        const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<double>* t, const fortran_int_t ldt,
         const std::complex<double>* vl, const fortran_int_t ldvl,
         const std::complex<double>* vr, const fortran_int_t ldvr, double* s,

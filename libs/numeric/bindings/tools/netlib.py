@@ -26,7 +26,7 @@ fortran_complex_double_ptr = 'void'   # was dcomplex_t
 global_type_map = {
   'CHARACTER': 'char',
   'CHARACTER*1': 'char',
-  'LOGICAL': 'logical_t',
+  'LOGICAL': 'fortran_bool_t',
   'EXTERNAL': 'external_fp',
   'INTEGER': library_integer_type,
   'REAL': 'float',
@@ -557,10 +557,8 @@ def typedef_type( name, properties, arg_map ):
 def workspace_type( name, properties ):
   result = None
   if 'workspace' in properties[ 'io' ]:
-    if properties[ 'value_type' ] == 'INTEGER':
-      result = library_integer_type
-    elif properties[ 'value_type' ] == 'LOGICAL':
-      result = 'logical_t'
+    if properties[ 'value_type' ] == 'INTEGER' or properties[ 'value_type' ] == 'LOGICAL':
+      result = global_type_map[ properties[ 'value_type' ] ]
     elif properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
       result = 'real_type'
     else: 

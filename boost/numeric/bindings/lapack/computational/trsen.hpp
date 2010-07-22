@@ -52,7 +52,7 @@ namespace detail {
 // * complex<float> value-type.
 //
 inline std::ptrdiff_t trsen( const char job, const char compq,
-        const logical_t* select, const fortran_int_t n,
+        const fortran_bool_t* select, const fortran_int_t n,
         std::complex<float>* t, const fortran_int_t ldt,
         std::complex<float>* q, const fortran_int_t ldq,
         std::complex<float>* w, fortran_int_t& m, float& s, float& sep,
@@ -69,7 +69,7 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * complex<double> value-type.
 //
 inline std::ptrdiff_t trsen( const char job, const char compq,
-        const logical_t* select, const fortran_int_t n,
+        const fortran_bool_t* select, const fortran_int_t n,
         std::complex<double>* t, const fortran_int_t ldt,
         std::complex<double>* q, const fortran_int_t ldq,
         std::complex<double>* w, fortran_int_t& m, double& s, double& sep,

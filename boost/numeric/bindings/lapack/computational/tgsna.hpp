@@ -55,7 +55,7 @@ namespace detail {
 // * float value-type.
 //
 inline std::ptrdiff_t tgsna( const char job, const char howmny,
-        const logical_t* select, const fortran_int_t n, const float* a,
+        const fortran_bool_t* select, const fortran_int_t n, const float* a,
         const fortran_int_t lda, const float* b, const fortran_int_t ldb,
         const float* vl, const fortran_int_t ldvl, const float* vr,
         const fortran_int_t ldvr, float* s, float* dif,
@@ -73,7 +73,7 @@ inline std::ptrdiff_t tgsna( const char job, const char howmny,
 // * double value-type.
 //
 inline std::ptrdiff_t tgsna( const char job, const char howmny,
-        const logical_t* select, const fortran_int_t n, const double* a,
+        const fortran_bool_t* select, const fortran_int_t n, const double* a,
         const fortran_int_t lda, const double* b, const fortran_int_t ldb,
         const double* vl, const fortran_int_t ldvl, const double* vr,
         const fortran_int_t ldvr, double* s, double* dif,
@@ -91,7 +91,7 @@ inline std::ptrdiff_t tgsna( const char job, const char howmny,
 // * complex<float> value-type.
 //
 inline std::ptrdiff_t tgsna( const char job, const char howmny,
-        const logical_t* select, const fortran_int_t n,
+        const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<float>* a, const fortran_int_t lda,
         const std::complex<float>* b, const fortran_int_t ldb,
         const std::complex<float>* vl, const fortran_int_t ldvl,
@@ -111,7 +111,7 @@ inline std::ptrdiff_t tgsna( const char job, const char howmny,
 // * complex<double> value-type.
 //
 inline std::ptrdiff_t tgsna( const char job, const char howmny,
-        const logical_t* select, const fortran_int_t n,
+        const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<double>* a, const fortran_int_t lda,
         const std::complex<double>* b, const fortran_int_t ldb,
         const std::complex<double>* vl, const fortran_int_t ldvl,

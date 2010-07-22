@@ -83,6 +83,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/cungrq.f.html cungrq.f] and [@http://www.netlib.org/lapack/explore-html/zungrq.f.html zungrq.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cungrq.f cungrq.f] and [@http://www.netlib.org/lapack/complex16/zungrq.f zungrq.f] at Netlib.
 
 [endsect]

@@ -93,6 +93,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgees.f.html sgees.f], [@http://www.netlib.org/lapack/explore-html/dgees.f.html dgees.f], [@http://www.netlib.org/lapack/explore-html/cgees.f.html cgees.f], and [@http://www.netlib.org/lapack/explore-html/zgees.f.html zgees.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgees.f sgees.f], [@http://www.netlib.org/lapack/double/dgees.f dgees.f], [@http://www.netlib.org/lapack/complex/cgees.f cgees.f], and [@http://www.netlib.org/lapack/complex16/zgees.f zgees.f] at Netlib.
 
 [endsect]

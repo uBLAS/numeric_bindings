@@ -82,6 +82,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/chpcon.f.html chpcon.f] and [@http://www.netlib.org/lapack/explore-html/zhpcon.f.html zhpcon.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chpcon.f chpcon.f] and [@http://www.netlib.org/lapack/complex16/zhpcon.f zhpcon.f] at Netlib.
 
 [endsect]

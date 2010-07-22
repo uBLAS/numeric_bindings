@@ -111,6 +111,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sptsvx.f.html sptsvx.f], [@http://www.netlib.org/lapack/explore-html/dptsvx.f.html dptsvx.f], [@http://www.netlib.org/lapack/explore-html/cptsvx.f.html cptsvx.f], and [@http://www.netlib.org/lapack/explore-html/zptsvx.f.html zptsvx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sptsvx.f sptsvx.f], [@http://www.netlib.org/lapack/double/dptsvx.f dptsvx.f], [@http://www.netlib.org/lapack/complex/cptsvx.f cptsvx.f], and [@http://www.netlib.org/lapack/complex16/zptsvx.f zptsvx.f] at Netlib.
 
 [endsect]

@@ -79,6 +79,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgeqlf.f.html sgeqlf.f], [@http://www.netlib.org/lapack/explore-html/dgeqlf.f.html dgeqlf.f], [@http://www.netlib.org/lapack/explore-html/cgeqlf.f.html cgeqlf.f], and [@http://www.netlib.org/lapack/explore-html/zgeqlf.f.html zgeqlf.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgeqlf.f sgeqlf.f], [@http://www.netlib.org/lapack/double/dgeqlf.f dgeqlf.f], [@http://www.netlib.org/lapack/complex/cgeqlf.f cgeqlf.f], and [@http://www.netlib.org/lapack/complex16/zgeqlf.f zgeqlf.f] at Netlib.
 
 [endsect]

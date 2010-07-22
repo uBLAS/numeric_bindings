@@ -113,6 +113,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ssysvx.f.html ssysvx.f], [@http://www.netlib.org/lapack/explore-html/dsysvx.f.html dsysvx.f], [@http://www.netlib.org/lapack/explore-html/csysvx.f.html csysvx.f], and [@http://www.netlib.org/lapack/explore-html/zsysvx.f.html zsysvx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssysvx.f ssysvx.f], [@http://www.netlib.org/lapack/double/dsysvx.f dsysvx.f], [@http://www.netlib.org/lapack/complex/csysvx.f csysvx.f], and [@http://www.netlib.org/lapack/complex16/zsysvx.f zsysvx.f] at Netlib.
 
 [endsect]

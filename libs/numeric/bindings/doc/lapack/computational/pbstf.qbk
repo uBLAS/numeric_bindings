@@ -90,6 +90,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/spbstf.f.html spbstf.f], [@http://www.netlib.org/lapack/explore-html/dpbstf.f.html dpbstf.f], [@http://www.netlib.org/lapack/explore-html/cpbstf.f.html cpbstf.f], and [@http://www.netlib.org/lapack/explore-html/zpbstf.f.html zpbstf.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/spbstf.f spbstf.f], [@http://www.netlib.org/lapack/double/dpbstf.f dpbstf.f], [@http://www.netlib.org/lapack/complex/cpbstf.f cpbstf.f], and [@http://www.netlib.org/lapack/complex16/zpbstf.f zpbstf.f] at Netlib.
 
 [endsect]

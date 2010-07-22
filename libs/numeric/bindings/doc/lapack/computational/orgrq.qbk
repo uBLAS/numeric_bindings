@@ -83,6 +83,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sorgrq.f.html sorgrq.f] and [@http://www.netlib.org/lapack/explore-html/dorgrq.f.html dorgrq.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sorgrq.f sorgrq.f] and [@http://www.netlib.org/lapack/double/dorgrq.f dorgrq.f] at Netlib.
 
 [endsect]

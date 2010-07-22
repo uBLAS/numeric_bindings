@@ -104,6 +104,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sggrqf.f.html sggrqf.f], [@http://www.netlib.org/lapack/explore-html/dggrqf.f.html dggrqf.f], [@http://www.netlib.org/lapack/explore-html/cggrqf.f.html cggrqf.f], and [@http://www.netlib.org/lapack/explore-html/zggrqf.f.html zggrqf.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sggrqf.f sggrqf.f], [@http://www.netlib.org/lapack/double/dggrqf.f dggrqf.f], [@http://www.netlib.org/lapack/complex/cggrqf.f cggrqf.f], and [@http://www.netlib.org/lapack/complex16/zggrqf.f zggrqf.f] at Netlib.
 
 [endsect]

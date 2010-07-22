@@ -80,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slarnv.f.html slarnv.f], [@http://www.netlib.org/lapack/explore-html/dlarnv.f.html dlarnv.f], [@http://www.netlib.org/lapack/explore-html/clarnv.f.html clarnv.f], and [@http://www.netlib.org/lapack/explore-html/zlarnv.f.html zlarnv.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slarnv.f slarnv.f], [@http://www.netlib.org/lapack/double/dlarnv.f dlarnv.f], [@http://www.netlib.org/lapack/complex/clarnv.f clarnv.f], and [@http://www.netlib.org/lapack/complex16/zlarnv.f zlarnv.f] at Netlib.
 
 [endsect]

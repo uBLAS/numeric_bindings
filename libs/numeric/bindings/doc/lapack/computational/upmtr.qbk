@@ -90,6 +90,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/cupmtr.f.html cupmtr.f] and [@http://www.netlib.org/lapack/explore-html/zupmtr.f.html zupmtr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cupmtr.f cupmtr.f] and [@http://www.netlib.org/lapack/complex16/zupmtr.f zupmtr.f] at Netlib.
 
 [endsect]

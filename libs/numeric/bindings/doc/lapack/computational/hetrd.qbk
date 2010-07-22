@@ -78,6 +78,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/chetrd.f.html chetrd.f] and [@http://www.netlib.org/lapack/explore-html/zhetrd.f.html zhetrd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chetrd.f chetrd.f] and [@http://www.netlib.org/lapack/complex16/zhetrd.f zhetrd.f] at Netlib.
 
 [endsect]

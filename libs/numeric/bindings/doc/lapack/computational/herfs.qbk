@@ -79,6 +79,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/cherfs.f.html cherfs.f] and [@http://www.netlib.org/lapack/explore-html/zherfs.f.html zherfs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cherfs.f cherfs.f] and [@http://www.netlib.org/lapack/complex16/zherfs.f zherfs.f] at Netlib.
 
 [endsect]

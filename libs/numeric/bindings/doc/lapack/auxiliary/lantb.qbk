@@ -99,6 +99,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slantb.f.html slantb.f], [@http://www.netlib.org/lapack/explore-html/dlantb.f.html dlantb.f], [@http://www.netlib.org/lapack/explore-html/clantb.f.html clantb.f], and [@http://www.netlib.org/lapack/explore-html/zlantb.f.html zlantb.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slantb.f slantb.f], [@http://www.netlib.org/lapack/double/dlantb.f dlantb.f], [@http://www.netlib.org/lapack/complex/clantb.f clantb.f], and [@http://www.netlib.org/lapack/complex16/zlantb.f zlantb.f] at Netlib.
 
 [endsect]

@@ -135,6 +135,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/cheevr.f.html cheevr.f] and [@http://www.netlib.org/lapack/explore-html/zheevr.f.html zheevr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cheevr.f cheevr.f] and [@http://www.netlib.org/lapack/complex16/zheevr.f zheevr.f] at Netlib.
 
 [endsect]

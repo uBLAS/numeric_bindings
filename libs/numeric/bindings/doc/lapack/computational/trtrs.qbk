@@ -83,6 +83,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/strtrs.f.html strtrs.f], [@http://www.netlib.org/lapack/explore-html/dtrtrs.f.html dtrtrs.f], [@http://www.netlib.org/lapack/explore-html/ctrtrs.f.html ctrtrs.f], and [@http://www.netlib.org/lapack/explore-html/ztrtrs.f.html ztrtrs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/strtrs.f strtrs.f], [@http://www.netlib.org/lapack/double/dtrtrs.f dtrtrs.f], [@http://www.netlib.org/lapack/complex/ctrtrs.f ctrtrs.f], and [@http://www.netlib.org/lapack/complex16/ztrtrs.f ztrtrs.f] at Netlib.
 
 [endsect]

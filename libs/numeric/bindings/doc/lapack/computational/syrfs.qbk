@@ -81,6 +81,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ssyrfs.f.html ssyrfs.f], [@http://www.netlib.org/lapack/explore-html/dsyrfs.f.html dsyrfs.f], [@http://www.netlib.org/lapack/explore-html/csyrfs.f.html csyrfs.f], and [@http://www.netlib.org/lapack/explore-html/zsyrfs.f.html zsyrfs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssyrfs.f ssyrfs.f], [@http://www.netlib.org/lapack/double/dsyrfs.f dsyrfs.f], [@http://www.netlib.org/lapack/complex/csyrfs.f csyrfs.f], and [@http://www.netlib.org/lapack/complex16/zsyrfs.f zsyrfs.f] at Netlib.
 
 [endsect]

@@ -104,6 +104,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/strevc.f.html strevc.f], [@http://www.netlib.org/lapack/explore-html/dtrevc.f.html dtrevc.f], [@http://www.netlib.org/lapack/explore-html/ctrevc.f.html ctrevc.f], and [@http://www.netlib.org/lapack/explore-html/ztrevc.f.html ztrevc.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/strevc.f strevc.f], [@http://www.netlib.org/lapack/double/dtrevc.f dtrevc.f], [@http://www.netlib.org/lapack/complex/ctrevc.f ctrevc.f], and [@http://www.netlib.org/lapack/complex16/ztrevc.f ztrevc.f] at Netlib.
 
 [endsect]

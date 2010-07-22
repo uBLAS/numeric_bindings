@@ -103,6 +103,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/stgevc.f.html stgevc.f], [@http://www.netlib.org/lapack/explore-html/dtgevc.f.html dtgevc.f], [@http://www.netlib.org/lapack/explore-html/ctgevc.f.html ctgevc.f], and [@http://www.netlib.org/lapack/explore-html/ztgevc.f.html ztgevc.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/stgevc.f stgevc.f], [@http://www.netlib.org/lapack/double/dtgevc.f dtgevc.f], [@http://www.netlib.org/lapack/complex/ctgevc.f ctgevc.f], and [@http://www.netlib.org/lapack/complex16/ztgevc.f ztgevc.f] at Netlib.
 
 [endsect]

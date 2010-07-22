@@ -88,6 +88,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgeequ.f.html sgeequ.f], [@http://www.netlib.org/lapack/explore-html/dgeequ.f.html dgeequ.f], [@http://www.netlib.org/lapack/explore-html/cgeequ.f.html cgeequ.f], and [@http://www.netlib.org/lapack/explore-html/zgeequ.f.html zgeequ.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgeequ.f sgeequ.f], [@http://www.netlib.org/lapack/double/dgeequ.f dgeequ.f], [@http://www.netlib.org/lapack/complex/cgeequ.f cgeequ.f], and [@http://www.netlib.org/lapack/complex16/zgeequ.f zgeequ.f] at Netlib.
 
 [endsect]

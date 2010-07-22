@@ -157,6 +157,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sggsvd.f.html sggsvd.f], [@http://www.netlib.org/lapack/explore-html/dggsvd.f.html dggsvd.f], [@http://www.netlib.org/lapack/explore-html/cggsvd.f.html cggsvd.f], and [@http://www.netlib.org/lapack/explore-html/zggsvd.f.html zggsvd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sggsvd.f sggsvd.f], [@http://www.netlib.org/lapack/double/dggsvd.f dggsvd.f], [@http://www.netlib.org/lapack/complex/cggsvd.f cggsvd.f], and [@http://www.netlib.org/lapack/complex16/zggsvd.f zggsvd.f] at Netlib.
 
 [endsect]

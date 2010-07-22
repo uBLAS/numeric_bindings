@@ -90,6 +90,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sopmtr.f.html sopmtr.f] and [@http://www.netlib.org/lapack/explore-html/dopmtr.f.html dopmtr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sopmtr.f sopmtr.f] and [@http://www.netlib.org/lapack/double/dopmtr.f dopmtr.f] at Netlib.
 
 [endsect]

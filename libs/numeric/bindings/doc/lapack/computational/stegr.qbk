@@ -101,6 +101,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sstegr.f.html sstegr.f], [@http://www.netlib.org/lapack/explore-html/dstegr.f.html dstegr.f], [@http://www.netlib.org/lapack/explore-html/cstegr.f.html cstegr.f], and [@http://www.netlib.org/lapack/explore-html/zstegr.f.html zstegr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sstegr.f sstegr.f], [@http://www.netlib.org/lapack/double/dstegr.f dstegr.f], [@http://www.netlib.org/lapack/complex/cstegr.f cstegr.f], and [@http://www.netlib.org/lapack/complex16/zstegr.f zstegr.f] at Netlib.
 
 [endsect]

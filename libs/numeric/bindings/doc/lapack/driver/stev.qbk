@@ -78,6 +78,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sstev.f.html sstev.f] and [@http://www.netlib.org/lapack/explore-html/dstev.f.html dstev.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sstev.f sstev.f] and [@http://www.netlib.org/lapack/double/dstev.f dstev.f] at Netlib.
 
 [endsect]

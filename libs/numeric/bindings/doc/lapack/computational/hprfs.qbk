@@ -80,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/chprfs.f.html chprfs.f] and [@http://www.netlib.org/lapack/explore-html/zhprfs.f.html zhprfs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chprfs.f chprfs.f] and [@http://www.netlib.org/lapack/complex16/zhprfs.f zhprfs.f] at Netlib.
 
 [endsect]

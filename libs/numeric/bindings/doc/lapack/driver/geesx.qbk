@@ -102,6 +102,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgeesx.f.html sgeesx.f], [@http://www.netlib.org/lapack/explore-html/dgeesx.f.html dgeesx.f], [@http://www.netlib.org/lapack/explore-html/cgeesx.f.html cgeesx.f], and [@http://www.netlib.org/lapack/explore-html/zgeesx.f.html zgeesx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgeesx.f sgeesx.f], [@http://www.netlib.org/lapack/double/dgeesx.f dgeesx.f], [@http://www.netlib.org/lapack/complex/cgeesx.f cgeesx.f], and [@http://www.netlib.org/lapack/complex16/zgeesx.f zgeesx.f] at Netlib.
 
 [endsect]

@@ -83,6 +83,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/spocon.f.html spocon.f], [@http://www.netlib.org/lapack/explore-html/dpocon.f.html dpocon.f], [@http://www.netlib.org/lapack/explore-html/cpocon.f.html cpocon.f], and [@http://www.netlib.org/lapack/explore-html/zpocon.f.html zpocon.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/spocon.f spocon.f], [@http://www.netlib.org/lapack/double/dpocon.f dpocon.f], [@http://www.netlib.org/lapack/complex/cpocon.f cpocon.f], and [@http://www.netlib.org/lapack/complex16/zpocon.f zpocon.f] at Netlib.
 
 [endsect]

@@ -117,6 +117,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/stgsyl.f.html stgsyl.f], [@http://www.netlib.org/lapack/explore-html/dtgsyl.f.html dtgsyl.f], [@http://www.netlib.org/lapack/explore-html/ctgsyl.f.html ctgsyl.f], and [@http://www.netlib.org/lapack/explore-html/ztgsyl.f.html ztgsyl.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/stgsyl.f stgsyl.f], [@http://www.netlib.org/lapack/double/dtgsyl.f dtgsyl.f], [@http://www.netlib.org/lapack/complex/ctgsyl.f ctgsyl.f], and [@http://www.netlib.org/lapack/complex16/ztgsyl.f ztgsyl.f] at Netlib.
 
 [endsect]

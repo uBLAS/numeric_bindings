@@ -111,6 +111,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/chesvx.f.html chesvx.f] and [@http://www.netlib.org/lapack/explore-html/zhesvx.f.html zhesvx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chesvx.f chesvx.f] and [@http://www.netlib.org/lapack/complex16/zhesvx.f zhesvx.f] at Netlib.
 
 [endsect]

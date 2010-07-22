@@ -77,6 +77,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ssyev.f.html ssyev.f] and [@http://www.netlib.org/lapack/explore-html/dsyev.f.html dsyev.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssyev.f ssyev.f] and [@http://www.netlib.org/lapack/double/dsyev.f dsyev.f] at Netlib.
 
 [endsect]

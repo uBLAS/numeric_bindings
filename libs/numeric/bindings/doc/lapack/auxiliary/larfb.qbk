@@ -81,6 +81,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slarfb.f.html slarfb.f], [@http://www.netlib.org/lapack/explore-html/dlarfb.f.html dlarfb.f], [@http://www.netlib.org/lapack/explore-html/clarfb.f.html clarfb.f], and [@http://www.netlib.org/lapack/explore-html/zlarfb.f.html zlarfb.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slarfb.f slarfb.f], [@http://www.netlib.org/lapack/double/dlarfb.f dlarfb.f], [@http://www.netlib.org/lapack/complex/clarfb.f clarfb.f], and [@http://www.netlib.org/lapack/complex16/zlarfb.f zlarfb.f] at Netlib.
 
 [endsect]

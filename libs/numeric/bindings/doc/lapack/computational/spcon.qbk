@@ -84,6 +84,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sspcon.f.html sspcon.f], [@http://www.netlib.org/lapack/explore-html/dspcon.f.html dspcon.f], [@http://www.netlib.org/lapack/explore-html/cspcon.f.html cspcon.f], and [@http://www.netlib.org/lapack/explore-html/zspcon.f.html zspcon.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sspcon.f sspcon.f], [@http://www.netlib.org/lapack/double/dspcon.f dspcon.f], [@http://www.netlib.org/lapack/complex/cspcon.f cspcon.f], and [@http://www.netlib.org/lapack/complex16/zspcon.f zspcon.f] at Netlib.
 
 [endsect]

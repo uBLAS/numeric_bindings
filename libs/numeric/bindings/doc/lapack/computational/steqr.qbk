@@ -82,6 +82,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ssteqr.f.html ssteqr.f], [@http://www.netlib.org/lapack/explore-html/dsteqr.f.html dsteqr.f], [@http://www.netlib.org/lapack/explore-html/csteqr.f.html csteqr.f], and [@http://www.netlib.org/lapack/explore-html/zsteqr.f.html zsteqr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssteqr.f ssteqr.f], [@http://www.netlib.org/lapack/double/dsteqr.f dsteqr.f], [@http://www.netlib.org/lapack/complex/csteqr.f csteqr.f], and [@http://www.netlib.org/lapack/complex16/zsteqr.f zsteqr.f] at Netlib.
 
 [endsect]

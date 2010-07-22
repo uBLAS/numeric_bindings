@@ -82,6 +82,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgetri.f.html sgetri.f], [@http://www.netlib.org/lapack/explore-html/dgetri.f.html dgetri.f], [@http://www.netlib.org/lapack/explore-html/cgetri.f.html cgetri.f], and [@http://www.netlib.org/lapack/explore-html/zgetri.f.html zgetri.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgetri.f sgetri.f], [@http://www.netlib.org/lapack/double/dgetri.f dgetri.f], [@http://www.netlib.org/lapack/complex/cgetri.f cgetri.f], and [@http://www.netlib.org/lapack/complex16/zgetri.f zgetri.f] at Netlib.
 
 [endsect]

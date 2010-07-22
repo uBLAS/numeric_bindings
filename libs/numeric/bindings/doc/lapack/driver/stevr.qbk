@@ -119,6 +119,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sstevr.f.html sstevr.f] and [@http://www.netlib.org/lapack/explore-html/dstevr.f.html dstevr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sstevr.f sstevr.f] and [@http://www.netlib.org/lapack/double/dstevr.f dstevr.f] at Netlib.
 
 [endsect]

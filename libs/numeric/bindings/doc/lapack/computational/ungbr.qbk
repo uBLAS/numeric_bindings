@@ -95,6 +95,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/cungbr.f.html cungbr.f] and [@http://www.netlib.org/lapack/explore-html/zungbr.f.html zungbr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cungbr.f cungbr.f] and [@http://www.netlib.org/lapack/complex16/zungbr.f zungbr.f] at Netlib.
 
 [endsect]

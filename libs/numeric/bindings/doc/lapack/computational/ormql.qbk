@@ -89,6 +89,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sormql.f.html sormql.f] and [@http://www.netlib.org/lapack/explore-html/dormql.f.html dormql.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sormql.f sormql.f] and [@http://www.netlib.org/lapack/double/dormql.f dormql.f] at Netlib.
 
 [endsect]

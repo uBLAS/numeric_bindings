@@ -90,6 +90,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/strexc.f.html strexc.f], [@http://www.netlib.org/lapack/explore-html/dtrexc.f.html dtrexc.f], [@http://www.netlib.org/lapack/explore-html/ctrexc.f.html ctrexc.f], and [@http://www.netlib.org/lapack/explore-html/ztrexc.f.html ztrexc.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/strexc.f strexc.f], [@http://www.netlib.org/lapack/double/dtrexc.f dtrexc.f], [@http://www.netlib.org/lapack/complex/ctrexc.f ctrexc.f], and [@http://www.netlib.org/lapack/complex16/ztrexc.f ztrexc.f] at Netlib.
 
 [endsect]

@@ -107,6 +107,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/dsposv.f.html dsposv.f] and [@http://www.netlib.org/lapack/explore-html/zcposv.f.html zcposv.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/double/dsposv.f dsposv.f] and [@http://www.netlib.org/lapack/complex16/zcposv.f zcposv.f] at Netlib.
 
 [endsect]

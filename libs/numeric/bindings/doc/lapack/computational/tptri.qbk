@@ -79,6 +79,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/stptri.f.html stptri.f], [@http://www.netlib.org/lapack/explore-html/dtptri.f.html dtptri.f], [@http://www.netlib.org/lapack/explore-html/ctptri.f.html ctptri.f], and [@http://www.netlib.org/lapack/explore-html/ztptri.f.html ztptri.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/stptri.f stptri.f], [@http://www.netlib.org/lapack/double/dtptri.f dtptri.f], [@http://www.netlib.org/lapack/complex/ctptri.f ctptri.f], and [@http://www.netlib.org/lapack/complex16/ztptri.f ztptri.f] at Netlib.
 
 [endsect]

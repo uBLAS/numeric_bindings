@@ -82,6 +82,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/checon.f.html checon.f] and [@http://www.netlib.org/lapack/explore-html/zhecon.f.html zhecon.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/checon.f checon.f] and [@http://www.netlib.org/lapack/complex16/zhecon.f zhecon.f] at Netlib.
 
 [endsect]

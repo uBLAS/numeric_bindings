@@ -80,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ssytrs.f.html ssytrs.f], [@http://www.netlib.org/lapack/explore-html/dsytrs.f.html dsytrs.f], [@http://www.netlib.org/lapack/explore-html/csytrs.f.html csytrs.f], and [@http://www.netlib.org/lapack/explore-html/zsytrs.f.html zsytrs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssytrs.f ssytrs.f], [@http://www.netlib.org/lapack/double/dsytrs.f dsytrs.f], [@http://www.netlib.org/lapack/complex/csytrs.f csytrs.f], and [@http://www.netlib.org/lapack/complex16/zsytrs.f zsytrs.f] at Netlib.
 
 [endsect]

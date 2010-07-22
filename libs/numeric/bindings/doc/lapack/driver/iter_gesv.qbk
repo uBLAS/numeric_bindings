@@ -106,6 +106,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/dsgesv.f.html dsgesv.f] and [@http://www.netlib.org/lapack/explore-html/zcgesv.f.html zcgesv.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/double/dsgesv.f dsgesv.f] and [@http://www.netlib.org/lapack/complex16/zcgesv.f zcgesv.f] at Netlib.
 
 [endsect]

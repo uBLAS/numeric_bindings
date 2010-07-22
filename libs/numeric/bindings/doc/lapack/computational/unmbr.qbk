@@ -103,6 +103,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/cunmbr.f.html cunmbr.f] and [@http://www.netlib.org/lapack/explore-html/zunmbr.f.html zunmbr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cunmbr.f cunmbr.f] and [@http://www.netlib.org/lapack/complex16/zunmbr.f zunmbr.f] at Netlib.
 
 [endsect]

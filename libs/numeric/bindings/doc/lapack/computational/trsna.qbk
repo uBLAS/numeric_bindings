@@ -83,6 +83,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/strsna.f.html strsna.f], [@http://www.netlib.org/lapack/explore-html/dtrsna.f.html dtrsna.f], [@http://www.netlib.org/lapack/explore-html/ctrsna.f.html ctrsna.f], and [@http://www.netlib.org/lapack/explore-html/ztrsna.f.html ztrsna.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/strsna.f strsna.f], [@http://www.netlib.org/lapack/double/dtrsna.f dtrsna.f], [@http://www.netlib.org/lapack/complex/ctrsna.f ctrsna.f], and [@http://www.netlib.org/lapack/complex16/ztrsna.f ztrsna.f] at Netlib.
 
 [endsect]

@@ -85,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/spoequ.f.html spoequ.f], [@http://www.netlib.org/lapack/explore-html/dpoequ.f.html dpoequ.f], [@http://www.netlib.org/lapack/explore-html/cpoequ.f.html cpoequ.f], and [@http://www.netlib.org/lapack/explore-html/zpoequ.f.html zpoequ.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/spoequ.f spoequ.f], [@http://www.netlib.org/lapack/double/dpoequ.f dpoequ.f], [@http://www.netlib.org/lapack/complex/cpoequ.f cpoequ.f], and [@http://www.netlib.org/lapack/complex16/zpoequ.f zpoequ.f] at Netlib.
 
 [endsect]

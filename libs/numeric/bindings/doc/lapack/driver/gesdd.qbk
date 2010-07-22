@@ -99,6 +99,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgesdd.f.html sgesdd.f], [@http://www.netlib.org/lapack/explore-html/dgesdd.f.html dgesdd.f], [@http://www.netlib.org/lapack/explore-html/cgesdd.f.html cgesdd.f], and [@http://www.netlib.org/lapack/explore-html/zgesdd.f.html zgesdd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgesdd.f sgesdd.f], [@http://www.netlib.org/lapack/double/dgesdd.f dgesdd.f], [@http://www.netlib.org/lapack/complex/cgesdd.f cgesdd.f], and [@http://www.netlib.org/lapack/complex16/zgesdd.f zgesdd.f] at Netlib.
 
 [endsect]

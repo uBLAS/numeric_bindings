@@ -101,6 +101,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgels.f.html sgels.f], [@http://www.netlib.org/lapack/explore-html/dgels.f.html dgels.f], [@http://www.netlib.org/lapack/explore-html/cgels.f.html cgels.f], and [@http://www.netlib.org/lapack/explore-html/zgels.f.html zgels.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgels.f sgels.f], [@http://www.netlib.org/lapack/double/dgels.f dgels.f], [@http://www.netlib.org/lapack/complex/cgels.f cgels.f], and [@http://www.netlib.org/lapack/complex16/zgels.f zgels.f] at Netlib.
 
 [endsect]

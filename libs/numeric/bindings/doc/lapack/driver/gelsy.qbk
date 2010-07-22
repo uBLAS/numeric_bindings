@@ -114,6 +114,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgelsy.f.html sgelsy.f], [@http://www.netlib.org/lapack/explore-html/dgelsy.f.html dgelsy.f], [@http://www.netlib.org/lapack/explore-html/cgelsy.f.html cgelsy.f], and [@http://www.netlib.org/lapack/explore-html/zgelsy.f.html zgelsy.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgelsy.f sgelsy.f], [@http://www.netlib.org/lapack/double/dgelsy.f dgelsy.f], [@http://www.netlib.org/lapack/complex/cgelsy.f cgelsy.f], and [@http://www.netlib.org/lapack/complex16/zgelsy.f zgelsy.f] at Netlib.
 
 [endsect]

@@ -87,6 +87,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgesv.f.html sgesv.f], [@http://www.netlib.org/lapack/explore-html/dgesv.f.html dgesv.f], [@http://www.netlib.org/lapack/explore-html/cgesv.f.html cgesv.f], and [@http://www.netlib.org/lapack/explore-html/zgesv.f.html zgesv.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgesv.f sgesv.f], [@http://www.netlib.org/lapack/double/dgesv.f dgesv.f], [@http://www.netlib.org/lapack/complex/cgesv.f cgesv.f], and [@http://www.netlib.org/lapack/complex16/zgesv.f zgesv.f] at Netlib.
 
 [endsect]

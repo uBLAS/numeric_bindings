@@ -77,6 +77,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/chbev.f.html chbev.f] and [@http://www.netlib.org/lapack/explore-html/zhbev.f.html zhbev.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chbev.f chbev.f] and [@http://www.netlib.org/lapack/complex16/zhbev.f zhbev.f] at Netlib.
 
 [endsect]

@@ -98,6 +98,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slansp.f.html slansp.f], [@http://www.netlib.org/lapack/explore-html/dlansp.f.html dlansp.f], [@http://www.netlib.org/lapack/explore-html/clansp.f.html clansp.f], and [@http://www.netlib.org/lapack/explore-html/zlansp.f.html zlansp.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slansp.f slansp.f], [@http://www.netlib.org/lapack/double/dlansp.f dlansp.f], [@http://www.netlib.org/lapack/complex/clansp.f clansp.f], and [@http://www.netlib.org/lapack/complex16/zlansp.f zlansp.f] at Netlib.
 
 [endsect]

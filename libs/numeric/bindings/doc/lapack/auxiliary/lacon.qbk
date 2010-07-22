@@ -80,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slacon.f.html slacon.f], [@http://www.netlib.org/lapack/explore-html/dlacon.f.html dlacon.f], [@http://www.netlib.org/lapack/explore-html/clacon.f.html clacon.f], and [@http://www.netlib.org/lapack/explore-html/zlacon.f.html zlacon.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slacon.f slacon.f], [@http://www.netlib.org/lapack/double/dlacon.f dlacon.f], [@http://www.netlib.org/lapack/complex/clacon.f clacon.f], and [@http://www.netlib.org/lapack/complex16/zlacon.f zlacon.f] at Netlib.
 
 [endsect]

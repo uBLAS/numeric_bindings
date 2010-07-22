@@ -17,6 +17,12 @@ routine_value_type = \
       'D' : 'double',
       'S' : 'float' }
 
+lapack_value_type = \
+    { 'C' : 'complex',
+      'Z' : 'complex16', 
+      'D' : 'double',
+      'S' : 'single' }
+
 subroutine_value_type = \
     { 'complex,single' : 'complex<float>',
       'complex,double' : 'complex<double>', 
@@ -48,6 +54,67 @@ blas_op = \
       'R2K' : ' rank-2k update',
       'SV'  : ' solve system of equations'
     }
+
+# based on LAPACK Users' Guide, table 2.1
+matrix_structure_ge = \
+    { 'BD' : 'bidiagonal',
+      'DI' : 'diagonal',
+      'GB' : 'general band',
+      'GE' : 'general',
+      'GG' : 'general matrices, generalized problem',
+      'GT' : 'general tridiagonal',
+      'HG' : 'upper Hessenberg matrix, generalized problem',
+      'HS' : 'upper Hessenberg',
+      'LA' : 'LAPACK auxiliary routine',
+      'PB' : 'symmetric or Hermitian positive definite band',
+      'PO' : 'symmetric or Hermitian positive definite',
+      'PP' : 'symmetric or Hermitian positive definite, packed storage',
+      'PT' : 'symmetric or Hermitian positive definite tridiagonal',
+      'SP' : 'symmetric, packed storage',
+      'SY' : 'symmetric',
+      'TB' : 'triangular band',
+      'TG' : 'triangular matrices, generalized problem',
+      'TP' : 'triangular, packed storage',
+      'TR' : 'triangular',
+      'TZ' : 'trapezoidal'
+    }
+
+# based on LAPACK Users' Guide, table 2.1
+matrix_structure_real = \
+    { 'OP' : 'orthogonal, packed storage',
+      'OR' : 'orthogonal',
+      'SB' : 'symmetric band',
+      'ST' : 'symmetric tridiagonal'
+    }
+
+# based on LAPACK Users' Guide, table 2.1
+matrix_structure_cplx = \
+    { 'HB' : 'Hermitian band',
+      'HE' : 'Hermitian',
+      'HP' : 'Hermitian, packed storage',
+      'UN' : 'unitary',
+      'UP' : 'unitary, packed storage'
+    }
+
+lapack_problem_types = \
+    { 'SV' : 'linear equations',
+      'SVX' : 'linear equations, expert',
+      'LS' : 'linear least squares, full rank',
+      'LSY' : 'linear least squares, using COF',
+      'LSS' : 'linear least squares, using SVD',
+      'LSD' : 'linear least squares, using d&c SVD',
+      'LSE' : 'linear least squares, equality-constrained',
+      'GLM' : 'general (Gauss-Markov) linear model',
+      'EV' : 'eigen values',
+      'EVX' : 'eigen values, expert',
+      'EVD' : 'eigen values, d&c',
+      'EVR' : 'eigen values, RRR',
+      'ES' : 'schur decomposition',
+      'ESX' : 'schur decomposition, expert',
+      'SVD' : 'singular value decomposition',
+      'SDD' : 'singular value decomposition, d&c'
+    }
+
 
 number_to_text = \
     { 1 :    'one',
@@ -149,6 +216,35 @@ def blas_friendly_name( group_name, info_map, template_map ):
 
     return result
 
+def lapack_problem_type( group_name ):
+    if group_name[2:] in lapack_problem_types:
+       return lapack_problem_types[ group_name[2:] ]
+    else:
+       return "TODO"
+
+def lapack_friendly_name( group_name, info_map, template_map ):
+
+    possible_key = group_name.lower() + ".friendly_name"
+    if possible_key in template_map:
+        return template_map[ possible_key ].strip()
+
+    result = ""
+
+    if group_name[0:2] in matrix_structure_ge:
+        result += matrix_structure_ge[ group_name[0:2] ]
+        result += ', ' + lapack_problem_type( group_name )
+    elif group_name[0:2] in matrix_structure_real:
+        result += matrix_structure_real[ group_name[0:2] ]
+        result += ', ' + lapack_problem_type( group_name )
+        result += ", no complex version"
+    elif group_name[0:2] in matrix_structure_cplx:
+        result += matrix_structure_cplx[ group_name[0:2] ]
+        result += ', ' + lapack_problem_type( group_name )
+        result += ", only complex version"
+    else:
+        result += "TODO"
+
+    return result
 
 
 def combine_purposes( subroutines, info_map ):
@@ -209,8 +305,9 @@ def write_documentation( info_map, level, group, template_map, base_dir ):
                 originating_sources.append( "[@http://www.netlib.org/blas/" +
                     subroutine.lower() + ".f " + subroutine.lower() + ".f]" )
             if parsermode == 'lapack':
-                originating_sources.append( "[@http://www.netlib.org/lapack/explore-html/" +
-                    subroutine.lower() + ".f.html " + subroutine.lower() + ".f]" )
+                originating_sources.append( "[@http://www.netlib.org/lapack/" +
+                    lapack_value_type[subroutine[0]] + "/" +
+                    subroutine.lower() + ".f " + subroutine.lower() + ".f]" )
 
             level2_arg_list_pre = []
             for arg in info_map[ subroutine ][ 'arguments' ]:

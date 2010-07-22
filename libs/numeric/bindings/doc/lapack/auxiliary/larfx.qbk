@@ -92,6 +92,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slarfx.f.html slarfx.f], [@http://www.netlib.org/lapack/explore-html/dlarfx.f.html dlarfx.f], [@http://www.netlib.org/lapack/explore-html/clarfx.f.html clarfx.f], and [@http://www.netlib.org/lapack/explore-html/zlarfx.f.html zlarfx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slarfx.f slarfx.f], [@http://www.netlib.org/lapack/double/dlarfx.f dlarfx.f], [@http://www.netlib.org/lapack/complex/clarfx.f clarfx.f], and [@http://www.netlib.org/lapack/complex16/zlarfx.f zlarfx.f] at Netlib.
 
 [endsect]

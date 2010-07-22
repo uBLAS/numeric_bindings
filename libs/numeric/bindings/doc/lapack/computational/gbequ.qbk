@@ -88,6 +88,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgbequ.f.html sgbequ.f], [@http://www.netlib.org/lapack/explore-html/dgbequ.f.html dgbequ.f], [@http://www.netlib.org/lapack/explore-html/cgbequ.f.html cgbequ.f], and [@http://www.netlib.org/lapack/explore-html/zgbequ.f.html zgbequ.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgbequ.f sgbequ.f], [@http://www.netlib.org/lapack/double/dgbequ.f dgbequ.f], [@http://www.netlib.org/lapack/complex/cgbequ.f cgbequ.f], and [@http://www.netlib.org/lapack/complex16/zgbequ.f zgbequ.f] at Netlib.
 
 [endsect]

@@ -84,6 +84,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/strcon.f.html strcon.f], [@http://www.netlib.org/lapack/explore-html/dtrcon.f.html dtrcon.f], [@http://www.netlib.org/lapack/explore-html/ctrcon.f.html ctrcon.f], and [@http://www.netlib.org/lapack/explore-html/ztrcon.f.html ztrcon.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/strcon.f strcon.f], [@http://www.netlib.org/lapack/double/dtrcon.f dtrcon.f], [@http://www.netlib.org/lapack/complex/ctrcon.f ctrcon.f], and [@http://www.netlib.org/lapack/complex16/ztrcon.f ztrcon.f] at Netlib.
 
 [endsect]

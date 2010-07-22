@@ -88,6 +88,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/strsyl.f.html strsyl.f], [@http://www.netlib.org/lapack/explore-html/dtrsyl.f.html dtrsyl.f], [@http://www.netlib.org/lapack/explore-html/ctrsyl.f.html ctrsyl.f], and [@http://www.netlib.org/lapack/explore-html/ztrsyl.f.html ztrsyl.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/strsyl.f strsyl.f], [@http://www.netlib.org/lapack/double/dtrsyl.f dtrsyl.f], [@http://www.netlib.org/lapack/complex/ctrsyl.f ctrsyl.f], and [@http://www.netlib.org/lapack/complex16/ztrsyl.f ztrsyl.f] at Netlib.
 
 [endsect]

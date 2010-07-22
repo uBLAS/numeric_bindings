@@ -165,6 +165,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/stgsja.f.html stgsja.f], [@http://www.netlib.org/lapack/explore-html/dtgsja.f.html dtgsja.f], [@http://www.netlib.org/lapack/explore-html/ctgsja.f.html ctgsja.f], and [@http://www.netlib.org/lapack/explore-html/ztgsja.f.html ztgsja.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/stgsja.f stgsja.f], [@http://www.netlib.org/lapack/double/dtgsja.f dtgsja.f], [@http://www.netlib.org/lapack/complex/ctgsja.f ctgsja.f], and [@http://www.netlib.org/lapack/complex16/ztgsja.f ztgsja.f] at Netlib.
 
 [endsect]

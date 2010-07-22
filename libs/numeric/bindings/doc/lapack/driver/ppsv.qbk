@@ -88,6 +88,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sppsv.f.html sppsv.f], [@http://www.netlib.org/lapack/explore-html/dppsv.f.html dppsv.f], [@http://www.netlib.org/lapack/explore-html/cppsv.f.html cppsv.f], and [@http://www.netlib.org/lapack/explore-html/zppsv.f.html zppsv.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sppsv.f sppsv.f], [@http://www.netlib.org/lapack/double/dppsv.f dppsv.f], [@http://www.netlib.org/lapack/complex/cppsv.f cppsv.f], and [@http://www.netlib.org/lapack/complex16/zppsv.f zppsv.f] at Netlib.
 
 [endsect]

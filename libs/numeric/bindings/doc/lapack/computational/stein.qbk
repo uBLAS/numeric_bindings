@@ -91,6 +91,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sstein.f.html sstein.f], [@http://www.netlib.org/lapack/explore-html/dstein.f.html dstein.f], [@http://www.netlib.org/lapack/explore-html/cstein.f.html cstein.f], and [@http://www.netlib.org/lapack/explore-html/zstein.f.html zstein.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sstein.f sstein.f], [@http://www.netlib.org/lapack/double/dstein.f dstein.f], [@http://www.netlib.org/lapack/complex/cstein.f cstein.f], and [@http://www.netlib.org/lapack/complex16/zstein.f zstein.f] at Netlib.
 
 [endsect]

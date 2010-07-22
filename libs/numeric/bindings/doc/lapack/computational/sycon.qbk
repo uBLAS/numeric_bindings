@@ -84,6 +84,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ssycon.f.html ssycon.f], [@http://www.netlib.org/lapack/explore-html/dsycon.f.html dsycon.f], [@http://www.netlib.org/lapack/explore-html/csycon.f.html csycon.f], and [@http://www.netlib.org/lapack/explore-html/zsycon.f.html zsycon.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssycon.f ssycon.f], [@http://www.netlib.org/lapack/double/dsycon.f dsycon.f], [@http://www.netlib.org/lapack/complex/csycon.f csycon.f], and [@http://www.netlib.org/lapack/complex16/zsycon.f zsycon.f] at Netlib.
 
 [endsect]

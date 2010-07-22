@@ -117,6 +117,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgeevx.f.html sgeevx.f], [@http://www.netlib.org/lapack/explore-html/dgeevx.f.html dgeevx.f], [@http://www.netlib.org/lapack/explore-html/cgeevx.f.html cgeevx.f], and [@http://www.netlib.org/lapack/explore-html/zgeevx.f.html zgeevx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgeevx.f sgeevx.f], [@http://www.netlib.org/lapack/double/dgeevx.f dgeevx.f], [@http://www.netlib.org/lapack/complex/cgeevx.f cgeevx.f], and [@http://www.netlib.org/lapack/complex16/zgeevx.f zgeevx.f] at Netlib.
 
 [endsect]

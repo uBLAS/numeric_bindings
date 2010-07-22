@@ -85,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/stbrfs.f.html stbrfs.f], [@http://www.netlib.org/lapack/explore-html/dtbrfs.f.html dtbrfs.f], [@http://www.netlib.org/lapack/explore-html/ctbrfs.f.html ctbrfs.f], and [@http://www.netlib.org/lapack/explore-html/ztbrfs.f.html ztbrfs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/stbrfs.f stbrfs.f], [@http://www.netlib.org/lapack/double/dtbrfs.f dtbrfs.f], [@http://www.netlib.org/lapack/complex/ctbrfs.f ctbrfs.f], and [@http://www.netlib.org/lapack/complex16/ztbrfs.f ztbrfs.f] at Netlib.
 
 [endsect]

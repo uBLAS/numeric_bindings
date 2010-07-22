@@ -98,6 +98,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slansy.f.html slansy.f], [@http://www.netlib.org/lapack/explore-html/dlansy.f.html dlansy.f], [@http://www.netlib.org/lapack/explore-html/clansy.f.html clansy.f], and [@http://www.netlib.org/lapack/explore-html/zlansy.f.html zlansy.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slansy.f slansy.f], [@http://www.netlib.org/lapack/double/dlansy.f dlansy.f], [@http://www.netlib.org/lapack/complex/clansy.f clansy.f], and [@http://www.netlib.org/lapack/complex16/zlansy.f zlansy.f] at Netlib.
 
 [endsect]

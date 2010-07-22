@@ -94,6 +94,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slarre.f.html slarre.f] and [@http://www.netlib.org/lapack/explore-html/dlarre.f.html dlarre.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slarre.f slarre.f] and [@http://www.netlib.org/lapack/double/dlarre.f dlarre.f] at Netlib.
 
 [endsect]

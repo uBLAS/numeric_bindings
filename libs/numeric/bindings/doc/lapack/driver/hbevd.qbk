@@ -85,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/chbevd.f.html chbevd.f] and [@http://www.netlib.org/lapack/explore-html/zhbevd.f.html zhbevd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chbevd.f chbevd.f] and [@http://www.netlib.org/lapack/complex16/zhbevd.f zhbevd.f] at Netlib.
 
 [endsect]

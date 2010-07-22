@@ -77,6 +77,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/clacgv.f.html clacgv.f] and [@http://www.netlib.org/lapack/explore-html/zlacgv.f.html zlacgv.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/clacgv.f clacgv.f] and [@http://www.netlib.org/lapack/complex16/zlacgv.f zlacgv.f] at Netlib.
 
 [endsect]

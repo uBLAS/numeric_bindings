@@ -83,6 +83,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sopgtr.f.html sopgtr.f] and [@http://www.netlib.org/lapack/explore-html/dopgtr.f.html dopgtr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sopgtr.f sopgtr.f] and [@http://www.netlib.org/lapack/double/dopgtr.f dopgtr.f] at Netlib.
 
 [endsect]

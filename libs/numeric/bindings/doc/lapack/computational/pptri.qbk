@@ -80,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/spptri.f.html spptri.f], [@http://www.netlib.org/lapack/explore-html/dpptri.f.html dpptri.f], [@http://www.netlib.org/lapack/explore-html/cpptri.f.html cpptri.f], and [@http://www.netlib.org/lapack/explore-html/zpptri.f.html zpptri.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/spptri.f spptri.f], [@http://www.netlib.org/lapack/double/dpptri.f dpptri.f], [@http://www.netlib.org/lapack/complex/cpptri.f cpptri.f], and [@http://www.netlib.org/lapack/complex16/zpptri.f zpptri.f] at Netlib.
 
 [endsect]

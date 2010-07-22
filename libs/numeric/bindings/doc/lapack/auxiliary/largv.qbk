@@ -91,6 +91,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slargv.f.html slargv.f], [@http://www.netlib.org/lapack/explore-html/dlargv.f.html dlargv.f], [@http://www.netlib.org/lapack/explore-html/clargv.f.html clargv.f], and [@http://www.netlib.org/lapack/explore-html/zlargv.f.html zlargv.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slargv.f slargv.f], [@http://www.netlib.org/lapack/double/dlargv.f dlargv.f], [@http://www.netlib.org/lapack/complex/clargv.f clargv.f], and [@http://www.netlib.org/lapack/complex16/zlargv.f zlargv.f] at Netlib.
 
 [endsect]

@@ -13,7 +13,8 @@ stemr( const char jobz, const char range, const int_t n,
         VectorD& d, VectorE& e, const Scalar >, const Scalar >,
         const int_t il, const int_t iu,
         int_t& m, VectorW& w, MatrixZ& z,
-        const int_t nzc, VectorISUPPZ& isuppz, logical_t& tryrac );
+        const int_t nzc, VectorISUPPZ& isuppz,
+        fortran_bool_t& tryrac );
 ``
 
 
@@ -148,6 +149,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sstemr.f.html sstemr.f], [@http://www.netlib.org/lapack/explore-html/dstemr.f.html dstemr.f], [@http://www.netlib.org/lapack/explore-html/cstemr.f.html cstemr.f], and [@http://www.netlib.org/lapack/explore-html/zstemr.f.html zstemr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sstemr.f sstemr.f], [@http://www.netlib.org/lapack/double/dstemr.f dstemr.f], [@http://www.netlib.org/lapack/complex/cstemr.f cstemr.f], and [@http://www.netlib.org/lapack/complex16/zstemr.f zstemr.f] at Netlib.
 
 [endsect]

@@ -103,6 +103,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgghrd.f.html sgghrd.f], [@http://www.netlib.org/lapack/explore-html/dgghrd.f.html dgghrd.f], [@http://www.netlib.org/lapack/explore-html/cgghrd.f.html cgghrd.f], and [@http://www.netlib.org/lapack/explore-html/zgghrd.f.html zgghrd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgghrd.f sgghrd.f], [@http://www.netlib.org/lapack/double/dgghrd.f dgghrd.f], [@http://www.netlib.org/lapack/complex/cgghrd.f cgghrd.f], and [@http://www.netlib.org/lapack/complex16/zgghrd.f zgghrd.f] at Netlib.
 
 [endsect]

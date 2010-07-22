@@ -85,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ctrsen.f.html ctrsen.f] and [@http://www.netlib.org/lapack/explore-html/ztrsen.f.html ztrsen.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/ctrsen.f ctrsen.f] and [@http://www.netlib.org/lapack/complex16/ztrsen.f ztrsen.f] at Netlib.
 
 [endsect]

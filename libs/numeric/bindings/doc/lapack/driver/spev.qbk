@@ -77,6 +77,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sspev.f.html sspev.f] and [@http://www.netlib.org/lapack/explore-html/dspev.f.html dspev.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sspev.f sspev.f] and [@http://www.netlib.org/lapack/double/dspev.f dspev.f] at Netlib.
 
 [endsect]

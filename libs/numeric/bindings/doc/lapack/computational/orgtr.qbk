@@ -82,6 +82,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sorgtr.f.html sorgtr.f] and [@http://www.netlib.org/lapack/explore-html/dorgtr.f.html dorgtr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sorgtr.f sorgtr.f] and [@http://www.netlib.org/lapack/double/dorgtr.f dorgtr.f] at Netlib.
 
 [endsect]

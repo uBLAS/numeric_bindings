@@ -112,6 +112,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgelsd.f.html sgelsd.f], [@http://www.netlib.org/lapack/explore-html/dgelsd.f.html dgelsd.f], [@http://www.netlib.org/lapack/explore-html/cgelsd.f.html cgelsd.f], and [@http://www.netlib.org/lapack/explore-html/zgelsd.f.html zgelsd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgelsd.f sgelsd.f], [@http://www.netlib.org/lapack/double/dgelsd.f dgelsd.f], [@http://www.netlib.org/lapack/complex/cgelsd.f cgelsd.f], and [@http://www.netlib.org/lapack/complex16/zgelsd.f zgelsd.f] at Netlib.
 
 [endsect]

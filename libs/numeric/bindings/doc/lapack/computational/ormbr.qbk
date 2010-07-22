@@ -103,6 +103,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sormbr.f.html sormbr.f] and [@http://www.netlib.org/lapack/explore-html/dormbr.f.html dormbr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sormbr.f sormbr.f] and [@http://www.netlib.org/lapack/double/dormbr.f dormbr.f] at Netlib.
 
 [endsect]

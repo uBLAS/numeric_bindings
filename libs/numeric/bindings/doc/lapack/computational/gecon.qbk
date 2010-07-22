@@ -84,6 +84,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sgecon.f.html sgecon.f], [@http://www.netlib.org/lapack/explore-html/dgecon.f.html dgecon.f], [@http://www.netlib.org/lapack/explore-html/cgecon.f.html cgecon.f], and [@http://www.netlib.org/lapack/explore-html/zgecon.f.html zgecon.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sgecon.f sgecon.f], [@http://www.netlib.org/lapack/double/dgecon.f dgecon.f], [@http://www.netlib.org/lapack/complex/cgecon.f cgecon.f], and [@http://www.netlib.org/lapack/complex16/zgecon.f zgecon.f] at Netlib.
 
 [endsect]

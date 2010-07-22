@@ -83,6 +83,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/cupgtr.f.html cupgtr.f] and [@http://www.netlib.org/lapack/explore-html/zupgtr.f.html zupgtr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cupgtr.f cupgtr.f] and [@http://www.netlib.org/lapack/complex16/zupgtr.f zupgtr.f] at Netlib.
 
 [endsect]

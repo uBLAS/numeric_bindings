@@ -86,6 +86,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ssptrf.f.html ssptrf.f], [@http://www.netlib.org/lapack/explore-html/dsptrf.f.html dsptrf.f], [@http://www.netlib.org/lapack/explore-html/csptrf.f.html csptrf.f], and [@http://www.netlib.org/lapack/explore-html/zsptrf.f.html zsptrf.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssptrf.f ssptrf.f], [@http://www.netlib.org/lapack/double/dsptrf.f dsptrf.f], [@http://www.netlib.org/lapack/complex/csptrf.f csptrf.f], and [@http://www.netlib.org/lapack/complex16/zsptrf.f zsptrf.f] at Netlib.
 
 [endsect]

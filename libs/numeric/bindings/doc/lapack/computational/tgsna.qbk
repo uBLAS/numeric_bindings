@@ -85,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/stgsna.f.html stgsna.f], [@http://www.netlib.org/lapack/explore-html/dtgsna.f.html dtgsna.f], [@http://www.netlib.org/lapack/explore-html/ctgsna.f.html ctgsna.f], and [@http://www.netlib.org/lapack/explore-html/ztgsna.f.html ztgsna.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/stgsna.f stgsna.f], [@http://www.netlib.org/lapack/double/dtgsna.f dtgsna.f], [@http://www.netlib.org/lapack/complex/ctgsna.f ctgsna.f], and [@http://www.netlib.org/lapack/complex16/ztgsna.f ztgsna.f] at Netlib.
 
 [endsect]

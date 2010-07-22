@@ -117,6 +117,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/slaebz.f.html slaebz.f] and [@http://www.netlib.org/lapack/explore-html/dlaebz.f.html dlaebz.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/slaebz.f slaebz.f] and [@http://www.netlib.org/lapack/double/dlaebz.f dlaebz.f] at Netlib.
 
 [endsect]

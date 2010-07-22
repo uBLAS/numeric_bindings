@@ -92,6 +92,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sstebz.f.html sstebz.f] and [@http://www.netlib.org/lapack/explore-html/dstebz.f.html dstebz.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sstebz.f sstebz.f] and [@http://www.netlib.org/lapack/double/dstebz.f dstebz.f] at Netlib.
 
 [endsect]

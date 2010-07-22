@@ -94,6 +94,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/spteqr.f.html spteqr.f], [@http://www.netlib.org/lapack/explore-html/dpteqr.f.html dpteqr.f], [@http://www.netlib.org/lapack/explore-html/cpteqr.f.html cpteqr.f], and [@http://www.netlib.org/lapack/explore-html/zpteqr.f.html zpteqr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/spteqr.f spteqr.f], [@http://www.netlib.org/lapack/double/dpteqr.f dpteqr.f], [@http://www.netlib.org/lapack/complex/cpteqr.f cpteqr.f], and [@http://www.netlib.org/lapack/complex16/zpteqr.f zpteqr.f] at Netlib.
 
 [endsect]

@@ -107,6 +107,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sbdsqr.f.html sbdsqr.f], [@http://www.netlib.org/lapack/explore-html/dbdsqr.f.html dbdsqr.f], [@http://www.netlib.org/lapack/explore-html/cbdsqr.f.html cbdsqr.f], and [@http://www.netlib.org/lapack/explore-html/zbdsqr.f.html zbdsqr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sbdsqr.f sbdsqr.f], [@http://www.netlib.org/lapack/double/dbdsqr.f dbdsqr.f], [@http://www.netlib.org/lapack/complex/cbdsqr.f cbdsqr.f], and [@http://www.netlib.org/lapack/complex16/zbdsqr.f zbdsqr.f] at Netlib.
 
 [endsect]

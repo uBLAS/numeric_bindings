@@ -83,6 +83,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sggbak.f.html sggbak.f], [@http://www.netlib.org/lapack/explore-html/dggbak.f.html dggbak.f], [@http://www.netlib.org/lapack/explore-html/cggbak.f.html cggbak.f], and [@http://www.netlib.org/lapack/explore-html/zggbak.f.html zggbak.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sggbak.f sggbak.f], [@http://www.netlib.org/lapack/double/dggbak.f dggbak.f], [@http://www.netlib.org/lapack/complex/cggbak.f cggbak.f], and [@http://www.netlib.org/lapack/complex16/zggbak.f zggbak.f] at Netlib.
 
 [endsect]

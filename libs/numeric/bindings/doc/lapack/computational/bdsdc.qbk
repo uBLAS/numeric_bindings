@@ -95,6 +95,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/sbdsdc.f.html sbdsdc.f] and [@http://www.netlib.org/lapack/explore-html/dbdsdc.f.html dbdsdc.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sbdsdc.f sbdsdc.f] and [@http://www.netlib.org/lapack/double/dbdsdc.f dbdsdc.f] at Netlib.
 
 [endsect]

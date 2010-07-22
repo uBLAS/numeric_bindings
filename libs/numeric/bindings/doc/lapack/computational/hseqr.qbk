@@ -93,6 +93,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/shseqr.f.html shseqr.f], [@http://www.netlib.org/lapack/explore-html/dhseqr.f.html dhseqr.f], [@http://www.netlib.org/lapack/explore-html/chseqr.f.html chseqr.f], and [@http://www.netlib.org/lapack/explore-html/zhseqr.f.html zhseqr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/shseqr.f shseqr.f], [@http://www.netlib.org/lapack/double/dhseqr.f dhseqr.f], [@http://www.netlib.org/lapack/complex/chseqr.f chseqr.f], and [@http://www.netlib.org/lapack/complex16/zhseqr.f zhseqr.f] at Netlib.
 
 [endsect]

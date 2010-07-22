@@ -78,6 +78,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ssytrd.f.html ssytrd.f] and [@http://www.netlib.org/lapack/explore-html/dsytrd.f.html dsytrd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssytrd.f ssytrd.f] and [@http://www.netlib.org/lapack/double/dsytrd.f dsytrd.f] at Netlib.
 
 [endsect]

@@ -79,6 +79,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/ssbtrd.f.html ssbtrd.f] and [@http://www.netlib.org/lapack/explore-html/dsbtrd.f.html dsbtrd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssbtrd.f ssbtrd.f] and [@http://www.netlib.org/lapack/double/dsbtrd.f dsbtrd.f] at Netlib.
 
 [endsect]

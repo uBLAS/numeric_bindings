@@ -97,6 +97,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/shsein.f.html shsein.f], [@http://www.netlib.org/lapack/explore-html/dhsein.f.html dhsein.f], [@http://www.netlib.org/lapack/explore-html/chsein.f.html chsein.f], and [@http://www.netlib.org/lapack/explore-html/zhsein.f.html zhsein.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/shsein.f shsein.f], [@http://www.netlib.org/lapack/double/dhsein.f dhsein.f], [@http://www.netlib.org/lapack/complex/chsein.f chsein.f], and [@http://www.netlib.org/lapack/complex16/zhsein.f zhsein.f] at Netlib.
 
 [endsect]

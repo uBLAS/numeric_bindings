@@ -96,6 +96,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/clanhp.f.html clanhp.f] and [@http://www.netlib.org/lapack/explore-html/zlanhp.f.html zlanhp.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/complex/clanhp.f clanhp.f] and [@http://www.netlib.org/lapack/complex16/zlanhp.f zlanhp.f] at Netlib.
 
 [endsect]

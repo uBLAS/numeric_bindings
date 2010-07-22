@@ -128,6 +128,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/explore-html/shgeqz.f.html shgeqz.f], [@http://www.netlib.org/lapack/explore-html/dhgeqz.f.html dhgeqz.f], [@http://www.netlib.org/lapack/explore-html/chgeqz.f.html chgeqz.f], and [@http://www.netlib.org/lapack/explore-html/zhgeqz.f.html zhgeqz.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/shgeqz.f shgeqz.f], [@http://www.netlib.org/lapack/double/dhgeqz.f dhgeqz.f], [@http://www.netlib.org/lapack/complex/chgeqz.f chgeqz.f], and [@http://www.netlib.org/lapack/complex16/zhgeqz.f zhgeqz.f] at Netlib.
 
 [endsect]

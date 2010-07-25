@@ -15,12 +15,7 @@ $TEMPLATE[lapack.h]
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_H
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_H
 
-#include <boost/numeric/bindings/traits/type.h>
 #include <boost/numeric/bindings/lapack/detail/lapack_names.h>
-
-#ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
-#  define BOOST_NUMERIC_BINDINGS_FORTRAN
-#endif 
 
 extern "C" {
 
@@ -56,11 +51,7 @@ $TEMPLATE[lapack_names.h]
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_NAMES_H
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_NAMES_H
 
-#ifndef BOOST_NUMERIC_BINDINGS_USE_CLAPACK
-#  include <boost/numeric/bindings/detail/config/fortran.hpp>
-#else
-#  define FORTRAN_ID( id ) id##_
-#endif
+#include <boost/numeric/bindings/detail/config/fortran.hpp>
 
 $CONTENT//
 // LAPACK auxiliary routines

@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2002, 2003 Si-Lab b.v.b.a., Toon Knapen and Kresimir Fresl
+//                2010 Thomas Klimpel
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -14,15 +15,14 @@
 // lib compiled with gcc from MSVC
 #else
 
-// First we need to know what the conventions for linking
-// C with Fortran is on this platform/toolset
-#if defined(__GNUC__) || defined(__ICC) || defined(__sgi) || defined(__COMO__) || defined(__KCC)
+// We have no chance of determining the conventions for linking C with Fortran
+// here, because they only depend on the fortran compiler and it's command line
+// switches, but not on the C++ compiler which compiles these lines.
+
+// We default to lowercase underscore, because this is much more common than
+// the other option. (The previous automatic configuration only selected the
+// other option in case of "defined(__IBMCPP__) || defined(_MSC_VER)".)
 #define BIND_FORTRAN_LOWERCASE_UNDERSCORE
-#elif defined(__IBMCPP__) || defined(_MSC_VER)
-#define BIND_FORTRAN_LOWERCASE
-#else
-#error do not know how to link with fortran for the given platform
-#endif
 
 #endif
 
@@ -37,15 +37,18 @@
 #endif
 
 
+#ifdef BIND_FORTRAN_F2C_RETURN_CONVENTIONS
 // "g77" or clapack or "gfortran -ff2c"
-//#define BIND_FORTRAN_F2C_RETURN_CONVENTIONS
+#define BIND_FORTRAN_RETURN_REAL_DOUBLE
+#define BIND_FORTRAN_RETURN_COMPLEX_FIRST_ARG
+#elif BIND_FORTRAN_MKL_RETURN_CONVENTIONS
+// mkl
+#define BIND_FORTRAN_RETURN_COMPLEX_FIRST_ARG
+#elif BIND_FORTRAN_OSX_RETURN_CONVENTIONS
+// OS X
+#define BIND_FORTRAN_RETURN_COMPLEX_LAST_ARG
+#else
 // "g77 -fno-f2c" or "gfortran"
-//#define BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS
-
-// As long as f2c return conventions are the common case,
-// we turn them on unless requested otherwise.
-#ifndef BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS
-#define BIND_FORTRAN_F2C_RETURN_CONVENTIONS
 #endif
 
 

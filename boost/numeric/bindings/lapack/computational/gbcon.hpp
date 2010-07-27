@@ -143,7 +143,6 @@ struct gbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ab) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( bindings::size_column(ab) ));
@@ -153,14 +152,16 @@ struct gbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
                 bindings::stride_minor(ab) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >=
-                2*bindings::bandwidth_lower(ab)+bindings::bandwidth_upper(ab)+
-                1 );
+                2*bindings::bandwidth_lower(ab)+(bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab))+1 );
+        BOOST_ASSERT( (bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab)) >= 0 );
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         return detail::gbcon( norm, bindings::size_column(ab),
-                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab),
-                bindings::begin_value(ab), bindings::stride_major(ab),
-                bindings::begin_value(ipiv), anorm, rcond,
-                bindings::begin_value(work.select(real_type())),
+                bindings::bandwidth_lower(ab), (bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab)), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(ipiv),
+                anorm, rcond, bindings::begin_value(work.select(real_type())),
                 bindings::begin_value(work.select(fortran_int_t())) );
     }
 
@@ -238,7 +239,6 @@ struct gbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
         BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ab) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_rwork( bindings::size_column(ab) ));
@@ -248,13 +248,16 @@ struct gbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
                 bindings::stride_minor(ab) == 1 );
         BOOST_ASSERT( bindings::stride_major(ab) >=
-                2*bindings::bandwidth_lower(ab)+bindings::bandwidth_upper(ab)+
-                1 );
+                2*bindings::bandwidth_lower(ab)+(bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab))+1 );
+        BOOST_ASSERT( (bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab)) >= 0 );
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         return detail::gbcon( norm, bindings::size_column(ab),
-                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab),
-                bindings::begin_value(ab), bindings::stride_major(ab),
-                bindings::begin_value(ipiv), anorm, rcond,
+                bindings::bandwidth_lower(ab), (bindings::bandwidth_upper(ab)-
+                bindings::bandwidth_lower(ab)), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(ipiv),
+                anorm, rcond,
                 bindings::begin_value(work.select(value_type())),
                 bindings::begin_value(work.select(real_type())) );
     }

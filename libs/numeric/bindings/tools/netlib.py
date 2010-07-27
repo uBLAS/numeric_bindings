@@ -1290,7 +1290,7 @@ def parse_file( filename, template_map ):
         #
         # Try to detect fastest cases first (cheapest traits)
         #
-        match_matrix_traits = re.compile( '(sub|super|rows|columns|order)([\-]?diagonals|with|in|of|the|band|input|\s)+(matrix|matrices|\s)+' + \
+        match_matrix_traits = re.compile( '(sub|super|rows|columns|order)([\-]?diagonals|with|in|of|the|band|input|\s)+(matrix|pencil \(|matrices|\s)+' + \
             '([A-Z]+\s+and\s+[A-Z]+|[A-Z]+)', re.M | re.S ).findall( comment_block )
         match_banded_uplo = re.compile( '(number|of|sub|super|\s)+diagonals(if|\s)+UPLO', re.M | re.S ).findall( comment_block )
         if len( match_matrix_traits ) == 1:

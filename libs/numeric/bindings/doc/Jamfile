@@ -30,6 +30,6 @@ boostbook standalone
         <xsl:param>annotation.support=1
     ;
 
-stage html : $(BOOST_ROOT)/doc/html/boostbook.css ;
-stage html/images : [ path.glob $(BOOST_ROOT)/doc/html/images : *.png ] ;
+stage html : $(BOOST_ROOT)/doc/src/boostbook.css ;
+stage html/images : [ path.glob $(BOOST_ROOT)/doc/src/images : *.png ] ;
 

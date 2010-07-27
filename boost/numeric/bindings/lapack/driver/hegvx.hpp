@@ -163,8 +163,8 @@ struct hegvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixZ, typename VectorIFAIL, typename WORK,
             typename IWORK >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const char jobz, const char range, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, const real_type vl, const real_type vu,
+            const char jobz, const char range, MatrixA& a, MatrixB& b,
+            const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
@@ -191,11 +191,12 @@ struct hegvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAIL >::value) );
-        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(w) >= bindings::size_column(a) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
+                min_size_iwork( bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( n ));
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
         BOOST_ASSERT( bindings::size_minor(b) == 1 ||
@@ -203,17 +204,17 @@ struct hegvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                n) );
+                bindings::size_column(a)) );
         BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                n) );
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        return detail::hegvx( itype, jobz, range, uplo(), n,
-                bindings::begin_value(a), bindings::stride_major(a),
-                bindings::begin_value(b), bindings::stride_major(b), vl, vu,
-                il, iu, abstol, m, bindings::begin_value(w),
-                bindings::begin_value(z), bindings::stride_major(z),
+        return detail::hegvx( itype, jobz, range, uplo(),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), vl, vu, il, iu, abstol, m,
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z),
                 bindings::begin_value(work.select(real_type())),
                 bindings::size(work.select(real_type())),
                 bindings::begin_value(work.select(fortran_int_t())),
@@ -230,18 +231,19 @@ struct hegvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const char jobz, const char range, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, const real_type vl, const real_type vu,
+            const char jobz, const char range, MatrixA& a, MatrixB& b,
+            const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                bindings::size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        return invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m,
-                w, z, ifail, workspace( tmp_work, tmp_iwork ) );
+                min_size_iwork( bindings::size_column(a) ) );
+        return invoke( itype, jobz, range, a, b, vl, vu, il, iu, abstol, m, w,
+                z, ifail, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -254,8 +256,8 @@ struct hegvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const char jobz, const char range, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, const real_type vl, const real_type vu,
+            const char jobz, const char range, MatrixA& a, MatrixB& b,
+            const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, optimal_workspace ) {
@@ -263,18 +265,19 @@ struct hegvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        detail::hegvx( itype, jobz, range, uplo(), n,
-                bindings::begin_value(a), bindings::stride_major(a),
-                bindings::begin_value(b), bindings::stride_major(b), vl, vu,
-                il, iu, abstol, m, bindings::begin_value(w),
-                bindings::begin_value(z), bindings::stride_major(z),
-                &opt_size_work, -1, bindings::begin_value(tmp_iwork),
+                min_size_iwork( bindings::size_column(a) ) );
+        detail::hegvx( itype, jobz, range, uplo(),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), vl, vu, il, iu, abstol, m,
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z), &opt_size_work, -1,
+                bindings::begin_value(tmp_iwork),
                 bindings::begin_value(ifail) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        return invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m,
-                w, z, ifail, workspace( tmp_work, tmp_iwork ) );
+        return invoke( itype, jobz, range, a, b, vl, vu, il, iu, abstol, m, w,
+                z, ifail, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -468,405 +471,6 @@ struct hegvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // prototypes which are very similar.
 //
 
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixA& a, MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hegvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hegvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, range, n, a, b, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
 //
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&

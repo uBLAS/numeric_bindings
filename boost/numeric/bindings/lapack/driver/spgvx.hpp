@@ -105,12 +105,12 @@ struct spgvx_impl {
             typename MatrixZ, typename VectorIFAIL, typename WORK,
             typename IWORK >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const char jobz, const char range, const fortran_int_t n,
-            MatrixAP& ap, MatrixBP& bp, const real_type vl,
-            const real_type vu, const fortran_int_t il,
-            const fortran_int_t iu, const real_type abstol,
-            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-            detail::workspace2< WORK, IWORK > work ) {
+            const char jobz, const char range, MatrixAP& ap, MatrixBP& bp,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
+            IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixZ >::value) );
@@ -131,20 +131,21 @@ struct spgvx_impl {
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAIL >::value) );
-        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(w) >= bindings::size_column(ap) );
         BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
+                min_size_iwork( bindings::size_column(ap) ));
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( n ));
+                min_size_work( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
         BOOST_ASSERT( bindings::size_minor(z) == 1 ||
                 bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        return detail::spgvx( itype, jobz, range, uplo(), n,
-                bindings::begin_value(ap), bindings::begin_value(bp), vl, vu,
-                il, iu, abstol, m, bindings::begin_value(w),
-                bindings::begin_value(z), bindings::stride_major(z),
+        return detail::spgvx( itype, jobz, range, uplo(),
+                bindings::size_column(ap), bindings::begin_value(ap),
+                bindings::begin_value(bp), vl, vu, il, iu, abstol, m,
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z),
                 bindings::begin_value(work.select(real_type())),
                 bindings::begin_value(work.select(fortran_int_t())),
                 bindings::begin_value(ifail) );
@@ -160,19 +161,19 @@ struct spgvx_impl {
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const char jobz, const char range, const fortran_int_t n,
-            MatrixAP& ap, MatrixBP& bp, const real_type vl,
-            const real_type vu, const fortran_int_t il,
-            const fortran_int_t iu, const real_type abstol,
-            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-            minimal_workspace ) {
+            const char jobz, const char range, MatrixAP& ap, MatrixBP& bp,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                bindings::size_column(ap) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        return invoke( itype, jobz, range, n, ap, bp, vl, vu, il, iu, abstol,
-                m, w, z, ifail, workspace( tmp_work, tmp_iwork ) );
+                min_size_iwork( bindings::size_column(ap) ) );
+        return invoke( itype, jobz, range, ap, bp, vl, vu, il, iu, abstol, m,
+                w, z, ifail, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -185,16 +186,15 @@ struct spgvx_impl {
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const char jobz, const char range, const fortran_int_t n,
-            MatrixAP& ap, MatrixBP& bp, const real_type vl,
-            const real_type vu, const fortran_int_t il,
-            const fortran_int_t iu, const real_type abstol,
-            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-            optimal_workspace ) {
+            const char jobz, const char range, MatrixAP& ap, MatrixBP& bp,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
-        return invoke( itype, jobz, range, n, ap, bp, vl, vu, il, iu, abstol,
-                m, w, z, ifail, minimal_workspace() );
+        return invoke( itype, jobz, range, ap, bp, vl, vu, il, iu, abstol, m,
+                w, z, ifail, minimal_workspace() );
     }
 
     //
@@ -236,7 +236,154 @@ template< typename MatrixAP, typename MatrixBP, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
+        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * MatrixAP&
+// * MatrixBP&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * const MatrixAP&
+// * const MatrixBP&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename bindings::value_type< MatrixAP >::type >::type vu,
@@ -245,14 +392,14 @@ spgvx( const fortran_int_t itype, const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
             il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
 // Overloaded function for spgvx. Its overload differs for
-// * MatrixAP&
-// * MatrixBP&
+// * const MatrixAP&
+// * const MatrixBP&
 // * MatrixZ&
 // * Default workspace-type (optimal)
 //
@@ -261,7 +408,7 @@ template< typename MatrixAP, typename MatrixBP, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
+        const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename bindings::value_type< MatrixAP >::type >::type vu,
@@ -270,157 +417,7 @@ spgvx( const fortran_int_t itype, const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * const MatrixAP&
-// * const MatrixBP&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * const MatrixAP&
-// * const MatrixBP&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
             il, iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 
@@ -436,7 +433,157 @@ template< typename MatrixAP, typename MatrixBP, typename VectorW,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
+        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * MatrixAP&
+// * MatrixBP&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * const MatrixAP&
+// * MatrixBP&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const MatrixAP& ap, MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, work );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * MatrixAP&
+// * const MatrixBP&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL >
+inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        MatrixAP& ap, const MatrixBP& bp, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type vl,
+        const typename remove_imaginary< typename bindings::value_type<
+        MatrixAP >::type >::type vu, const fortran_int_t il,
+        const fortran_int_t iu, const typename remove_imaginary<
+        typename bindings::value_type< MatrixAP >::type >::type abstol,
+        fortran_int_t& m, VectorW& w, const MatrixZ& z,
+        VectorIFAIL& ifail ) {
+    return spgvx_impl< typename bindings::value_type<
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
+            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
+}
+
+//
+// Overloaded function for spgvx. Its overload differs for
+// * const MatrixAP&
+// * const MatrixBP&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL, typename Workspace >
+inline typename boost::enable_if< detail::is_workspace< Workspace >,
+        std::ptrdiff_t >::type
+spgvx( const fortran_int_t itype, const char jobz, const char range,
+        const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename bindings::value_type< MatrixAP >::type >::type vu,
@@ -445,157 +592,7 @@ spgvx( const fortran_int_t itype, const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * MatrixAP&
-// * MatrixBP&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap, MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * const MatrixAP&
-// * MatrixBP&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap, MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * MatrixAP&
-// * const MatrixBP&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap, const MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
-            il, iu, abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for spgvx. Its overload differs for
-// * const MatrixAP&
-// * const MatrixBP&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixBP, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
             il, iu, abstol, m, w, z, ifail, work );
 }
 
@@ -611,7 +608,7 @@ template< typename MatrixAP, typename MatrixBP, typename VectorW,
 inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
         std::ptrdiff_t >::type
 spgvx( const fortran_int_t itype, const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap, const MatrixBP& bp,
+        const MatrixAP& ap, const MatrixBP& bp,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename bindings::value_type< MatrixAP >::type >::type vu,
@@ -620,7 +617,7 @@ spgvx( const fortran_int_t itype, const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return spgvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( itype, jobz, range, n, ap, bp, vl, vu,
+            MatrixAP >::type >::invoke( itype, jobz, range, ap, bp, vl, vu,
             il, iu, abstol, m, w, z, ifail, optimal_workspace() );
 }
 

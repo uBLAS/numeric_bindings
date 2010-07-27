@@ -20,7 +20,7 @@ hbgvx( const char jobz, const char range, MatrixAB& ab, MatrixBB& bb,
 [heading Description]
 
 `hbgvx` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHBGVX and ZHBGVX. 
+interface to LAPACK routines SSBGVX, DSBGVX, CHBGVX, and ZHBGVX. 
 `hbgvx` computes all the eigenvalues, and optionally, the eigenvectors
 of a complex generalized Hermitian-definite banded eigenproblem, of
 the form A*x=(lambda)*B*x. Here A and B are assumed to be Hermitian
@@ -37,6 +37,8 @@ the code path will be generated.
 
 [table Dispatching of hbgvx
 [  [ Value type of MatrixAB ] [LAPACK routine] ]
+[  [`float`][SSBGVX] ]
+[  [`double`][DSBGVX] ]
 [  [`complex<float>`][CHBGVX] ]
 [  [`complex<double>`][ZHBGVX] ]
 
@@ -85,6 +87,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chbgvx.f chbgvx.f] and [@http://www.netlib.org/lapack/complex16/zhbgvx.f zhbgvx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssbgvx.f ssbgvx.f], [@http://www.netlib.org/lapack/double/dsbgvx.f dsbgvx.f], [@http://www.netlib.org/lapack/complex/chbgvx.f chbgvx.f], and [@http://www.netlib.org/lapack/complex16/zhbgvx.f zhbgvx.f] at Netlib.
 
 [endsect]

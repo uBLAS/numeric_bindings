@@ -19,7 +19,7 @@ heevr( const char jobz, const char range, MatrixA& a, const Scalar >,
 [heading Description]
 
 `heevr` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHEEVR and ZHEEVR. 
+interface to LAPACK routines SSYEVR, DSYEVR, CHEEVR, and ZHEEVR. 
 `heevr` computes selected eigenvalues and, optionally, eigenvectors
 of a complex Hermitian matrix A. Eigenvalues and eigenvectors can
 be selected by specifying either a range of values or a range of
@@ -87,6 +87,8 @@ the code path will be generated.
 
 [table Dispatching of heevr
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYEVR] ]
+[  [`double`][DSYEVR] ]
 [  [`complex<float>`][CHEEVR] ]
 [  [`complex<double>`][ZHEEVR] ]
 
@@ -135,6 +137,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cheevr.f cheevr.f] and [@http://www.netlib.org/lapack/complex16/zheevr.f zheevr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssyevr.f ssyevr.f], [@http://www.netlib.org/lapack/double/dsyevr.f dsyevr.f], [@http://www.netlib.org/lapack/complex/cheevr.f cheevr.f], and [@http://www.netlib.org/lapack/complex16/zheevr.f zheevr.f] at Netlib.
 
 [endsect]

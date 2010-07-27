@@ -16,7 +16,7 @@ hegst( const int_t itype, MatrixA& a, const MatrixB& b );
 [heading Description]
 
 `hegst` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHEGST and ZHEGST. 
+interface to LAPACK routines SSYGST, DSYGST, CHEGST, and ZHEGST. 
 `hegst` reduces a complex Hermitian-definite generalized
 eigenproblem to standard form.
 
@@ -37,6 +37,8 @@ the code path will be generated.
 
 [table Dispatching of hegst
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYGST] ]
+[  [`double`][DSYGST] ]
 [  [`complex<float>`][CHEGST] ]
 [  [`complex<double>`][ZHEGST] ]
 
@@ -85,6 +87,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chegst.f chegst.f] and [@http://www.netlib.org/lapack/complex16/zhegst.f zhegst.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssygst.f ssygst.f], [@http://www.netlib.org/lapack/double/dsygst.f dsygst.f], [@http://www.netlib.org/lapack/complex/chegst.f chegst.f], and [@http://www.netlib.org/lapack/complex16/zhegst.f zhegst.f] at Netlib.
 
 [endsect]

@@ -16,7 +16,7 @@ hbev( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z );
 [heading Description]
 
 `hbev` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHBEV and ZHBEV. 
+interface to LAPACK routines SSBEV, DSBEV, CHBEV, and ZHBEV. 
 `hbev` computes all the eigenvalues and, optionally, eigenvectors of
 a complex Hermitian band matrix A.
 
@@ -29,6 +29,8 @@ the code path will be generated.
 
 [table Dispatching of hbev
 [  [ Value type of MatrixAB ] [LAPACK routine] ]
+[  [`float`][SSBEV] ]
+[  [`double`][DSBEV] ]
 [  [`complex<float>`][CHBEV] ]
 [  [`complex<double>`][ZHBEV] ]
 
@@ -77,6 +79,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chbev.f chbev.f] and [@http://www.netlib.org/lapack/complex16/zhbev.f zhbev.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssbev.f ssbev.f], [@http://www.netlib.org/lapack/double/dsbev.f dsbev.f], [@http://www.netlib.org/lapack/complex/chbev.f chbev.f], and [@http://www.netlib.org/lapack/complex16/zhbev.f zhbev.f] at Netlib.
 
 [endsect]

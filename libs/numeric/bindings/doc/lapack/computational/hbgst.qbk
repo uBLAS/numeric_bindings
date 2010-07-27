@@ -16,7 +16,7 @@ hbgst( const char vect, MatrixAB& ab, const MatrixBB& bb, MatrixX& x );
 [heading Description]
 
 `hbgst` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHBGST and ZHBGST. 
+interface to LAPACK routines SSBGST, DSBGST, CHBGST, and ZHBGST. 
 `hbgst` reduces a complex Hermitian-definite banded generalized
 eigenproblem A*x = lambda*B*x to standard form C*y = lambda*y,
 such that C has the same bandwidth as A.
@@ -35,6 +35,8 @@ the code path will be generated.
 
 [table Dispatching of hbgst
 [  [ Value type of MatrixAB ] [LAPACK routine] ]
+[  [`float`][SSBGST] ]
+[  [`double`][DSBGST] ]
 [  [`complex<float>`][CHBGST] ]
 [  [`complex<double>`][ZHBGST] ]
 
@@ -83,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chbgst.f chbgst.f] and [@http://www.netlib.org/lapack/complex16/zhbgst.f zhbgst.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssbgst.f ssbgst.f], [@http://www.netlib.org/lapack/double/dsbgst.f dsbgst.f], [@http://www.netlib.org/lapack/complex/chbgst.f chbgst.f], and [@http://www.netlib.org/lapack/complex16/zhbgst.f zhbgst.f] at Netlib.
 
 [endsect]

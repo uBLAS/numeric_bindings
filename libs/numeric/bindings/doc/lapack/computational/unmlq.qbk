@@ -17,7 +17,7 @@ unmlq( const Side side, const int_t k, const MatrixA& a,
 [heading Description]
 
 `unmlq` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNMLQ and ZUNMLQ. 
+interface to LAPACK routines SORMLQ, DORMLQ, CUNMLQ, and ZUNMLQ. 
 `unmlq` overwrites the general complex M-by-N matrix C with
 
 SIDE = 'L' SIDE = 'R'
@@ -41,6 +41,8 @@ the code path will be generated.
 
 [table Dispatching of unmlq
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORMLQ] ]
+[  [`double`][DORMLQ] ]
 [  [`complex<float>`][CUNMLQ] ]
 [  [`complex<double>`][ZUNMLQ] ]
 
@@ -89,6 +91,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cunmlq.f cunmlq.f] and [@http://www.netlib.org/lapack/complex16/zunmlq.f zunmlq.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sormlq.f sormlq.f], [@http://www.netlib.org/lapack/double/dormlq.f dormlq.f], [@http://www.netlib.org/lapack/complex/cunmlq.f cunmlq.f], and [@http://www.netlib.org/lapack/complex16/zunmlq.f zunmlq.f] at Netlib.
 
 [endsect]

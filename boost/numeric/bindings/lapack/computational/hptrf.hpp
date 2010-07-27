@@ -46,6 +46,32 @@ namespace detail {
 //
 // Overloaded function for dispatching to
 // * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
+//
+template< typename UpLo >
+inline std::ptrdiff_t hptrf( const UpLo uplo, const fortran_int_t n, float* ap,
+        fortran_int_t* ipiv ) {
+    fortran_int_t info(0);
+    LAPACK_SSPTRF( &lapack_option< UpLo >::value, &n, ap, ipiv, &info );
+    return info;
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
+//
+template< typename UpLo >
+inline std::ptrdiff_t hptrf( const UpLo uplo, const fortran_int_t n,
+        double* ap, fortran_int_t* ipiv ) {
+    fortran_int_t info(0);
+    LAPACK_DSPTRF( &lapack_option< UpLo >::value, &n, ap, ipiv, &info );
+    return info;
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
 template< typename UpLo >

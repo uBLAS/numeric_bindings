@@ -18,7 +18,7 @@ hpsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
 [heading Description]
 
 `hpsvx` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHPSVX and ZHPSVX. 
+interface to LAPACK routines SSPSVX, DSPSVX, CHPSVX, and ZHPSVX. 
 `hpsvx` uses the diagonal pivoting factorization A = U*D*U**H or
 A = L*D*L**H to compute the solution to a complex system of linear
 equations A * X = B, where A is an N-by-N Hermitian matrix stored
@@ -62,6 +62,8 @@ the code path will be generated.
 
 [table Dispatching of hpsvx
 [  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`float`][SSPSVX] ]
+[  [`double`][DSPSVX] ]
 [  [`complex<float>`][CHPSVX] ]
 [  [`complex<double>`][ZHPSVX] ]
 
@@ -110,6 +112,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chpsvx.f chpsvx.f] and [@http://www.netlib.org/lapack/complex16/zhpsvx.f zhpsvx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sspsvx.f sspsvx.f], [@http://www.netlib.org/lapack/double/dspsvx.f dspsvx.f], [@http://www.netlib.org/lapack/complex/chpsvx.f chpsvx.f], and [@http://www.netlib.org/lapack/complex16/zhpsvx.f zhpsvx.f] at Netlib.
 
 [endsect]

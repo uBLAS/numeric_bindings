@@ -17,7 +17,7 @@ unmtr( const Side side, const MatrixA& a, const VectorTAU& tau,
 [heading Description]
 
 `unmtr` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNMTR and ZUNMTR. 
+interface to LAPACK routines SORMTR, DORMTR, CUNMTR, and ZUNMTR. 
 `unmtr` overwrites the general complex M-by-N matrix C with
 
 SIDE = 'L' SIDE = 'R'
@@ -41,6 +41,8 @@ the code path will be generated.
 
 [table Dispatching of unmtr
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORMTR] ]
+[  [`double`][DORMTR] ]
 [  [`complex<float>`][CUNMTR] ]
 [  [`complex<double>`][ZUNMTR] ]
 
@@ -89,6 +91,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cunmtr.f cunmtr.f] and [@http://www.netlib.org/lapack/complex16/zunmtr.f zunmtr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sormtr.f sormtr.f], [@http://www.netlib.org/lapack/double/dormtr.f dormtr.f], [@http://www.netlib.org/lapack/complex/cunmtr.f cunmtr.f], and [@http://www.netlib.org/lapack/complex16/zunmtr.f zunmtr.f] at Netlib.
 
 [endsect]

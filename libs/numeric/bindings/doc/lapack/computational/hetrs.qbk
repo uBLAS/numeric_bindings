@@ -16,7 +16,7 @@ hetrs( const MatrixA& a, const VectorIPIV& ipiv, MatrixB& b );
 [heading Description]
 
 `hetrs` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHETRS and ZHETRS. 
+interface to LAPACK routines SSYTRS, DSYTRS, CHETRS, and ZHETRS. 
 `hetrs` solves a system of linear equations A*X = B with a complex
 Hermitian matrix A using the factorization A = U*D*U**H or
 A = L*D*L**H computed by ZHETRF.
@@ -30,6 +30,8 @@ the code path will be generated.
 
 [table Dispatching of hetrs
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYTRS] ]
+[  [`double`][DSYTRS] ]
 [  [`complex<float>`][CHETRS] ]
 [  [`complex<double>`][ZHETRS] ]
 
@@ -78,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chetrs.f chetrs.f] and [@http://www.netlib.org/lapack/complex16/zhetrs.f zhetrs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssytrs.f ssytrs.f], [@http://www.netlib.org/lapack/double/dsytrs.f dsytrs.f], [@http://www.netlib.org/lapack/complex/chetrs.f chetrs.f], and [@http://www.netlib.org/lapack/complex16/zhetrs.f zhetrs.f] at Netlib.
 
 [endsect]

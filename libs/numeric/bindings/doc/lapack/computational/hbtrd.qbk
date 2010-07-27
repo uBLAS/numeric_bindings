@@ -17,7 +17,7 @@ hbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
 [heading Description]
 
 `hbtrd` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHBTRD and ZHBTRD. 
+interface to LAPACK routines SSBTRD, DSBTRD, CHBTRD, and ZHBTRD. 
 `hbtrd` reduces a complex Hermitian band matrix A to real symmetric
 tridiagonal form T by a unitary similarity transformation:
 Q**H * A * Q = T.
@@ -31,6 +31,8 @@ the code path will be generated.
 
 [table Dispatching of hbtrd
 [  [ Value type of MatrixAB ] [LAPACK routine] ]
+[  [`float`][SSBTRD] ]
+[  [`double`][DSBTRD] ]
 [  [`complex<float>`][CHBTRD] ]
 [  [`complex<double>`][ZHBTRD] ]
 
@@ -79,6 +81,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chbtrd.f chbtrd.f] and [@http://www.netlib.org/lapack/complex16/zhbtrd.f zhbtrd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssbtrd.f ssbtrd.f], [@http://www.netlib.org/lapack/double/dsbtrd.f dsbtrd.f], [@http://www.netlib.org/lapack/complex/chbtrd.f chbtrd.f], and [@http://www.netlib.org/lapack/complex16/zhbtrd.f zhbtrd.f] at Netlib.
 
 [endsect]

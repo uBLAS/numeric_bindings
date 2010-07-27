@@ -16,7 +16,7 @@ ungqr( MatrixA& a, const VectorTAU& tau );
 [heading Description]
 
 `ungqr` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNGQR and ZUNGQR. 
+interface to LAPACK routines SORGQR, DORGQR, CUNGQR, and ZUNGQR. 
 `ungqr` generates an M-by-N complex matrix Q with orthonormal columns,
 which is defined as the first N columns of a product of K elementary
 reflectors of order M
@@ -34,6 +34,8 @@ the code path will be generated.
 
 [table Dispatching of ungqr
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORGQR] ]
+[  [`double`][DORGQR] ]
 [  [`complex<float>`][CUNGQR] ]
 [  [`complex<double>`][ZUNGQR] ]
 
@@ -82,6 +84,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cungqr.f cungqr.f] and [@http://www.netlib.org/lapack/complex16/zungqr.f zungqr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sorgqr.f sorgqr.f], [@http://www.netlib.org/lapack/double/dorgqr.f dorgqr.f], [@http://www.netlib.org/lapack/complex/cungqr.f cungqr.f], and [@http://www.netlib.org/lapack/complex16/zungqr.f zungqr.f] at Netlib.
 
 [endsect]

@@ -17,7 +17,7 @@ hbgvd( const char jobz, MatrixAB& ab, MatrixBB& bb, VectorW& w,
 [heading Description]
 
 `hbgvd` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHBGVD and ZHBGVD. 
+interface to LAPACK routines SSBGVD, DSBGVD, CHBGVD, and ZHBGVD. 
 `hbgvd` computes all the eigenvalues, and optionally, the eigenvectors
 of a complex generalized Hermitian-definite banded eigenproblem, of
 the form A*x=(lambda)*B*x. Here A and B are assumed to be Hermitian
@@ -40,6 +40,8 @@ the code path will be generated.
 
 [table Dispatching of hbgvd
 [  [ Value type of MatrixAB ] [LAPACK routine] ]
+[  [`float`][SSBGVD] ]
+[  [`double`][DSBGVD] ]
 [  [`complex<float>`][CHBGVD] ]
 [  [`complex<double>`][ZHBGVD] ]
 
@@ -88,6 +90,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chbgvd.f chbgvd.f] and [@http://www.netlib.org/lapack/complex16/zhbgvd.f zhbgvd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssbgvd.f ssbgvd.f], [@http://www.netlib.org/lapack/double/dsbgvd.f dsbgvd.f], [@http://www.netlib.org/lapack/complex/chbgvd.f chbgvd.f], and [@http://www.netlib.org/lapack/complex16/zhbgvd.f zhbgvd.f] at Netlib.
 
 [endsect]

@@ -16,7 +16,7 @@ hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b );
 [heading Description]
 
 `hesv` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHESV and ZHESV. 
+interface to LAPACK routines SSYSV, DSYSV, CHESV, and ZHESV. 
 `hesv` computes the solution to a complex system of linear equations
 A * X = B,
 where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
@@ -39,6 +39,8 @@ the code path will be generated.
 
 [table Dispatching of hesv
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYSV] ]
+[  [`double`][DSYSV] ]
 [  [`complex<float>`][CHESV] ]
 [  [`complex<double>`][ZHESV] ]
 
@@ -87,6 +89,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chesv.f chesv.f] and [@http://www.netlib.org/lapack/complex16/zhesv.f zhesv.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssysv.f ssysv.f], [@http://www.netlib.org/lapack/double/dsysv.f dsysv.f], [@http://www.netlib.org/lapack/complex/chesv.f chesv.f], and [@http://www.netlib.org/lapack/complex16/zhesv.f zhesv.f] at Netlib.
 
 [endsect]

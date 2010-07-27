@@ -120,6 +120,9 @@ def write_by_value_type( properties, template_map ):
   for g in group_keys:
     content += '// Value-type variants of ' + g.lower() + '\n'
     for k in properties[ g ]:
+      # avoid duplicate definitions for real matrices occuring in more than one group
+      if (k[0] == 'S' or k[0] == 'D') and '_' not in g and g not in k:
+          continue
       template = template_map[ template_map[ 'PARSERMODE' ].lower() + '_names.h_function' ]
       template = template.replace( '$SUBROUTINE', k )
       template = template.replace( '$subroutine', k.lower() )
@@ -170,6 +173,9 @@ def write_header_part( global_info_map, properties, template_map ):
   for g in group_keys:
     content += '// Value-type variants of ' + g.lower() + '\n'
     for k in properties[ g ]:
+      # avoid duplicate definitions for real matrices occuring in more than one group
+      if (k[0] == 'S' or k[0] == 'D') and '_' not in g and g not in k:
+          continue
 
       template = template_map[ parsermode + '.h_function' ]
       arg_list = []

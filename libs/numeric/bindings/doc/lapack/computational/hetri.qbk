@@ -16,7 +16,7 @@ hetri( MatrixA& a, const VectorIPIV& ipiv );
 [heading Description]
 
 `hetri` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHETRI and ZHETRI. 
+interface to LAPACK routines SSYTRI, DSYTRI, CHETRI, and ZHETRI. 
 `hetri` computes the inverse of a complex Hermitian indefinite matrix
 A using the factorization A = U*D*U**H or A = L*D*L**H computed by
 ZHETRF.
@@ -30,6 +30,8 @@ the code path will be generated.
 
 [table Dispatching of hetri
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYTRI] ]
+[  [`double`][DSYTRI] ]
 [  [`complex<float>`][CHETRI] ]
 [  [`complex<double>`][ZHETRI] ]
 
@@ -78,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chetri.f chetri.f] and [@http://www.netlib.org/lapack/complex16/zhetri.f zhetri.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssytri.f ssytri.f], [@http://www.netlib.org/lapack/double/dsytri.f dsytri.f], [@http://www.netlib.org/lapack/complex/chetri.f chetri.f], and [@http://www.netlib.org/lapack/complex16/zhetri.f zhetri.f] at Netlib.
 
 [endsect]

@@ -19,7 +19,7 @@ heevx( const char jobz, const char range, MatrixA& a, const Scalar >,
 [heading Description]
 
 `heevx` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHEEVX and ZHEEVX. 
+interface to LAPACK routines SSYEVX, DSYEVX, CHEEVX, and ZHEEVX. 
 `heevx` computes selected eigenvalues and, optionally, eigenvectors
 of a complex Hermitian matrix A. Eigenvalues and eigenvectors can
 be selected by specifying either a range of values or a range of
@@ -34,6 +34,8 @@ the code path will be generated.
 
 [table Dispatching of heevx
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYEVX] ]
+[  [`double`][DSYEVX] ]
 [  [`complex<float>`][CHEEVX] ]
 [  [`complex<double>`][ZHEEVX] ]
 
@@ -82,6 +84,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cheevx.f cheevx.f] and [@http://www.netlib.org/lapack/complex16/zheevx.f zheevx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssyevx.f ssyevx.f], [@http://www.netlib.org/lapack/double/dsyevx.f dsyevx.f], [@http://www.netlib.org/lapack/complex/cheevx.f cheevx.f], and [@http://www.netlib.org/lapack/complex16/zheevx.f zheevx.f] at Netlib.
 
 [endsect]

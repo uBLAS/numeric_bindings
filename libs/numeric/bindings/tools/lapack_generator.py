@@ -39,6 +39,28 @@ def group_by_value_type( global_info_map ):
               insert_at = i+1
       group_map[ subroutine_group_name ].insert( insert_at, subroutine_name )
 
+# add real symmetric or orthogonal matrices as special cases
+# of complex hermitian or unitary matrices.
+  real_as_complex_matrix = \
+    { 'OR' : 'UN',
+      'OP' : 'UP',
+      'SB' : 'HB',
+      'SP' : 'HP',
+      'SY' : 'HE' }
+  for subroutine_name in global_info_map.keys():
+    subroutine_group_name = global_info_map[ subroutine_name ][ 'group_name' ]
+    if global_info_map[ subroutine_name ][ 'value_type' ] == 'real' and \
+        subroutine_group_name[0:2] in real_as_complex_matrix:
+      complex_group_name = real_as_complex_matrix[ subroutine_group_name[0:2] ] + subroutine_group_name[2:]
+      if group_map.has_key( complex_group_name ):
+        insert_at = 0
+        for i in range( 0, len(group_map[ complex_group_name ]) ):
+            if bindings.subroutine_less( subroutine_name,
+                                group_map[ complex_group_name ][ i ],
+                                global_info_map ):
+                insert_at = i+1
+        group_map[ complex_group_name ].insert( insert_at, subroutine_name )
+
   return group_map
 
 
@@ -77,8 +99,10 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/type_traits/remove_const.hpp>',
       '#include <boost/static_assert.hpp>' ]
 
-    if template_map.has_key( group_name.lower() + '.includes' ):
-      includes += template_map[ group_name.lower() + '.includes' ].splitlines()
+    for subroutine in subroutines:
+      group_name_l = info_map[ subroutine ][ 'group_name' ].lower()
+      if template_map.has_key( group_name_l + '.includes' ):
+        includes += template_map[ group_name_l + '.includes' ].splitlines()
 
     #
     # LEVEL 0 HANDLING
@@ -197,6 +221,7 @@ def write_functions( info_map, group, template_map, base_dir ):
 
       # take this subroutine for arguments etc.
       subroutine = case_map[ 'subroutines' ][ 0 ]
+      group_name_l = info_map[ subroutine ][ 'group_name' ].lower()
       print "taking",subroutine
 
       level1_template = ''
@@ -210,7 +235,7 @@ def write_functions( info_map, group, template_map, base_dir ):
 
       # include templates come before anything else; they can hold any
       # $ID
-      my_include_key = group_name.lower() + '.' + value_type + '.include_templates'
+      my_include_key = group_name_l + '.' + value_type + '.include_templates'
       if netlib.my_has_key( my_include_key, template_map ):
         include_template_list = template_map[ netlib.my_has_key( my_include_key, template_map ) ].strip().replace(' ','').split(",")
         include_templates = ''
@@ -321,7 +346,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         # So, MatrixB should be column_major although it is determining the order. 
         # I.e., the order should be column_major. Look in the template system for these overrides.
         for matrix_arg in matrix_wo_trans_arg_removed:
-            my_key = group_name.lower() + '.' + value_type + '.' + matrix_arg + '.is_column_major'
+            my_key = group_name_l + '.' + value_type + '.' + matrix_arg + '.is_column_major'
             print "Looking for column_major override ", my_key
             if netlib.my_has_key( my_key, template_map ):
                 assert_line = 'BOOST_STATIC_ASSERT( (bindings::is_column_major< ' + \
@@ -564,7 +589,7 @@ def write_functions( info_map, group, template_map, base_dir ):
           # first: user-defined stuff (overrules any auto-detected stuff)
 
           resulting_code = ''
-          my_key = group_name.lower() + '.' + value_type + '.min_size_' + name.lower()
+          my_key = group_name_l + '.' + value_type + '.min_size_' + name.lower()
           if netlib.my_has_key( my_key, template_map ):
             resulting_code = indent_lines( template_map[ netlib.my_has_key( my_key, template_map ) ].rstrip(), 8 )
 

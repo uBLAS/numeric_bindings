@@ -16,7 +16,7 @@ hetrf( MatrixA& a, VectorIPIV& ipiv );
 [heading Description]
 
 `hetrf` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHETRF and ZHETRF. 
+interface to LAPACK routines SSYTRF, DSYTRF, CHETRF, and ZHETRF. 
 `hetrf` computes the factorization of a complex Hermitian matrix A
 using the Bunch-Kaufman diagonal pivoting method. The form of the
 factorization is
@@ -38,6 +38,8 @@ the code path will be generated.
 
 [table Dispatching of hetrf
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYTRF] ]
+[  [`double`][DSYTRF] ]
 [  [`complex<float>`][CHETRF] ]
 [  [`complex<double>`][ZHETRF] ]
 
@@ -86,6 +88,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chetrf.f chetrf.f] and [@http://www.netlib.org/lapack/complex16/zhetrf.f zhetrf.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssytrf.f ssytrf.f], [@http://www.netlib.org/lapack/double/dsytrf.f dsytrf.f], [@http://www.netlib.org/lapack/complex/chetrf.f chetrf.f], and [@http://www.netlib.org/lapack/complex16/zhetrf.f zhetrf.f] at Netlib.
 
 [endsect]

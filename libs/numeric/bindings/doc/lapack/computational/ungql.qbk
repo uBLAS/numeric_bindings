@@ -17,7 +17,7 @@ ungql( const int_t m, const int_t n,
 [heading Description]
 
 `ungql` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNGQL and ZUNGQL. 
+interface to LAPACK routines SORGQL, DORGQL, CUNGQL, and ZUNGQL. 
 `ungql` generates an M-by-N complex matrix Q with orthonormal columns,
 which is defined as the last N columns of a product of K elementary
 reflectors of order M
@@ -35,6 +35,8 @@ the code path will be generated.
 
 [table Dispatching of ungql
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORGQL] ]
+[  [`double`][DORGQL] ]
 [  [`complex<float>`][CUNGQL] ]
 [  [`complex<double>`][ZUNGQL] ]
 
@@ -83,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cungql.f cungql.f] and [@http://www.netlib.org/lapack/complex16/zungql.f zungql.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sorgql.f sorgql.f], [@http://www.netlib.org/lapack/double/dorgql.f dorgql.f], [@http://www.netlib.org/lapack/complex/cungql.f cungql.f], and [@http://www.netlib.org/lapack/complex16/zungql.f zungql.f] at Netlib.
 
 [endsect]

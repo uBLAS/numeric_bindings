@@ -29,41 +29,6 @@ namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
 namespace bindings = boost::numeric::bindings;
 
-struct apply_real {
-  template< typename MatrixAB, typename MatrixQ, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-  static inline std::ptrdiff_t hbevx(
-        const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
-        const typename bindings::remove_imaginary< typename bindings::value_type<
-        MatrixAB >::type >::type vl, const typename bindings::remove_imaginary<
-        typename bindings::value_type< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename bindings::remove_imaginary< typename bindings::value_type<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return lapack::sbevx( jobz, range, ab, q, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-  }
-};
-
-struct apply_complex {
-  template< typename MatrixAB, typename MatrixQ, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-  static inline std::ptrdiff_t hbevx(
-        const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
-        const typename bindings::remove_imaginary< typename bindings::value_type<
-        MatrixAB >::type >::type vl, const typename bindings::remove_imaginary<
-        typename bindings::value_type< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename bindings::remove_imaginary< typename bindings::value_type<
-        MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return lapack::hbevx( jobz, range, ab, q, vl, vu,
-            il, iu, abstol, m, w, z, ifail, work );
-  }
-};
-
-
 template <typename U>
 int lower() {
    return 0;
@@ -84,7 +49,6 @@ int upper<ublas::upper>() { return 2; }
 
 template <typename T, typename W, typename UPLO, typename Orientation>
 int do_memory_uplo(int n, W& workspace ) {
-   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    typedef typename bindings::remove_imaginary<T>::type real_type ;
 
    typedef ublas::banded_matrix<T, Orientation>      banded_type ;
@@ -108,12 +72,12 @@ int do_memory_uplo(int n, W& workspace ) {
 
 
    // Compute Schur decomposition.
-   apply_t::hbevx( 'V', 'A',
+   lapack::hbevx( 'V', 'A',
      h, q, vl, vu, il, iu, abstol, m, e1, z, ifail, workspace ) ;
 
    if (check_residual( h2, e1, z )) return 255 ;
 
-   apply_t::hbevx( 'N', 'A',
+   lapack::hbevx( 'N', 'A',
      h2, q, vl, vu, il, iu, abstol, m, e2, z, ifail, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
@@ -129,7 +93,7 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::matrix_range< matrix_type> z_r( z, r, r );
    ublas::vector<fortran_int_t> ifail_r(n-2);
 
-   apply_t::hbevx( 'V', 'A',
+   lapack::hbevx( 'V', 'A',
      h_r, q, vl, vu, il, iu, abstol, m, e_r, z_r, ifail_r, workspace ) ;
 
    banded_range a2_r( a2, r, r );

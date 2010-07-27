@@ -18,7 +18,9 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -28,6 +30,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+#include <boost/utility/enable_if.hpp>
 
 //
 // The LAPACK-backend for hecon is the netlib-compatible backend.
@@ -45,6 +48,37 @@ namespace lapack {
 // dispatch to the appropriate back-end LAPACK-routine.
 //
 namespace detail {
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
+//
+template< typename UpLo >
+inline std::ptrdiff_t hecon( const UpLo uplo, const fortran_int_t n,
+        const float* a, const fortran_int_t lda, const fortran_int_t* ipiv,
+        const float anorm, float& rcond, float* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
+    LAPACK_SSYCON( &lapack_option< UpLo >::value, &n, a, &lda, ipiv, &anorm,
+            &rcond, work, iwork, &info );
+    return info;
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
+//
+template< typename UpLo >
+inline std::ptrdiff_t hecon( const UpLo uplo, const fortran_int_t n,
+        const double* a, const fortran_int_t lda, const fortran_int_t* ipiv,
+        const double anorm, double& rcond, double* work,
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
+    LAPACK_DSYCON( &lapack_option< UpLo >::value, &n, a, &lda, ipiv, &anorm,
+            &rcond, work, iwork, &info );
+    return info;
+}
 
 //
 // Overloaded function for dispatching to
@@ -84,8 +118,105 @@ inline std::ptrdiff_t hecon( const UpLo uplo, const fortran_int_t n,
 // Value-type based template class. Use this class if you need a type
 // for dispatching to hecon.
 //
+template< typename Value, typename Enable = void >
+struct hecon_impl {};
+
+//
+// This implementation is enabled if Value is a real type.
+//
 template< typename Value >
-struct hecon_impl {
+struct hecon_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
+
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
+    template< typename MatrixA, typename VectorIPIV, typename WORK,
+            typename IWORK >
+    static std::ptrdiff_t invoke( const MatrixA& a, const VectorIPIV& ipiv,
+            const real_type anorm, real_type& rcond, detail::workspace2< WORK,
+            IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::hecon( uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(ipiv), anorm, rcond,
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
+    }
+
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
+    template< typename MatrixA, typename VectorIPIV >
+    static std::ptrdiff_t invoke( const MatrixA& a, const VectorIPIV& ipiv,
+            const real_type anorm, real_type& rcond, minimal_workspace ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                bindings::size_column(a) ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( bindings::size_column(a) ) );
+        return invoke( a, ipiv, anorm, rcond, workspace( tmp_work,
+                tmp_iwork ) );
+    }
+
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
+    template< typename MatrixA, typename VectorIPIV >
+    static std::ptrdiff_t invoke( const MatrixA& a, const VectorIPIV& ipiv,
+            const real_type anorm, real_type& rcond, optimal_workspace ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::uplo_tag< MatrixA >::type uplo;
+        return invoke( a, ipiv, anorm, rcond, minimal_workspace() );
+    }
+
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+        return 2*n;
+    }
+
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t n ) {
+        return n;
+    }
+};
+
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct hecon_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;

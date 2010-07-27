@@ -16,7 +16,7 @@ hetrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau );
 [heading Description]
 
 `hetrd` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHETRD and ZHETRD. 
+interface to LAPACK routines SSYTRD, DSYTRD, CHETRD, and ZHETRD. 
 `hetrd` reduces a complex Hermitian matrix A to real symmetric
 tridiagonal form T by a unitary similarity transformation:
 Q**H * A * Q = T.
@@ -30,6 +30,8 @@ the code path will be generated.
 
 [table Dispatching of hetrd
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYTRD] ]
+[  [`double`][DSYTRD] ]
 [  [`complex<float>`][CHETRD] ]
 [  [`complex<double>`][ZHETRD] ]
 
@@ -78,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chetrd.f chetrd.f] and [@http://www.netlib.org/lapack/complex16/zhetrd.f zhetrd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssytrd.f ssytrd.f], [@http://www.netlib.org/lapack/double/dsytrd.f dsytrd.f], [@http://www.netlib.org/lapack/complex/chetrd.f chetrd.f], and [@http://www.netlib.org/lapack/complex16/zhetrd.f zhetrd.f] at Netlib.
 
 [endsect]

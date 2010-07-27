@@ -16,7 +16,7 @@ heev( const char jobz, MatrixA& a, VectorW& w );
 [heading Description]
 
 `heev` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHEEV and ZHEEV. 
+interface to LAPACK routines SSYEV, DSYEV, CHEEV, and ZHEEV. 
 `heev` computes all eigenvalues and, optionally, eigenvectors of a
 complex Hermitian matrix A.
 
@@ -29,6 +29,8 @@ the code path will be generated.
 
 [table Dispatching of heev
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYEV] ]
+[  [`double`][DSYEV] ]
 [  [`complex<float>`][CHEEV] ]
 [  [`complex<double>`][ZHEEV] ]
 
@@ -77,6 +79,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cheev.f cheev.f] and [@http://www.netlib.org/lapack/complex16/zheev.f zheev.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssyev.f ssyev.f], [@http://www.netlib.org/lapack/double/dsyev.f dsyev.f], [@http://www.netlib.org/lapack/complex/cheev.f cheev.f], and [@http://www.netlib.org/lapack/complex16/zheev.f zheev.f] at Netlib.
 
 [endsect]

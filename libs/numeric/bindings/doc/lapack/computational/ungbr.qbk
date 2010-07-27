@@ -18,7 +18,7 @@ ungbr( const char vect, const int_t m,
 [heading Description]
 
 `ungbr` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNGBR and ZUNGBR. 
+interface to LAPACK routines SORGBR, DORGBR, CUNGBR, and ZUNGBR. 
 `ungbr` generates one of the complex unitary matrices Q or P**H
 determined by ZGEBRD when reducing a complex matrix A to bidiagonal
 form: A = Q * B * P**H. Q and P**H are defined as products of
@@ -47,6 +47,8 @@ the code path will be generated.
 
 [table Dispatching of ungbr
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORGBR] ]
+[  [`double`][DORGBR] ]
 [  [`complex<float>`][CUNGBR] ]
 [  [`complex<double>`][ZUNGBR] ]
 
@@ -95,6 +97,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cungbr.f cungbr.f] and [@http://www.netlib.org/lapack/complex16/zungbr.f zungbr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sorgbr.f sorgbr.f], [@http://www.netlib.org/lapack/double/dorgbr.f dorgbr.f], [@http://www.netlib.org/lapack/complex/cungbr.f cungbr.f], and [@http://www.netlib.org/lapack/complex16/zungbr.f zungbr.f] at Netlib.
 
 [endsect]

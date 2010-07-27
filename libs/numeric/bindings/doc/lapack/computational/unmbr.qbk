@@ -17,7 +17,7 @@ unmbr( const char vect, const Side side, const int_t k,
 [heading Description]
 
 `unmbr` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNMBR and ZUNMBR. 
+interface to LAPACK routines SORMBR, DORMBR, CUNMBR, and ZUNMBR. 
 If VECT = 'Q', `unmbr` overwrites the general complex M-by-N matrix C
 with
 SIDE = 'L' SIDE = 'R'
@@ -55,6 +55,8 @@ the code path will be generated.
 
 [table Dispatching of unmbr
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORMBR] ]
+[  [`double`][DORMBR] ]
 [  [`complex<float>`][CUNMBR] ]
 [  [`complex<double>`][ZUNMBR] ]
 
@@ -103,6 +105,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cunmbr.f cunmbr.f] and [@http://www.netlib.org/lapack/complex16/zunmbr.f zunmbr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sormbr.f sormbr.f], [@http://www.netlib.org/lapack/double/dormbr.f dormbr.f], [@http://www.netlib.org/lapack/complex/cunmbr.f cunmbr.f], and [@http://www.netlib.org/lapack/complex16/zunmbr.f zunmbr.f] at Netlib.
 
 [endsect]

@@ -16,7 +16,7 @@ hptrf( MatrixAP& ap, VectorIPIV& ipiv );
 [heading Description]
 
 `hptrf` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHPTRF and ZHPTRF. 
+interface to LAPACK routines SSPTRF, DSPTRF, CHPTRF, and ZHPTRF. 
 `hptrf` computes the factorization of a complex Hermitian packed
 matrix A using the Bunch-Kaufman diagonal pivoting method:
 
@@ -35,6 +35,8 @@ the code path will be generated.
 
 [table Dispatching of hptrf
 [  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`float`][SSPTRF] ]
+[  [`double`][DSPTRF] ]
 [  [`complex<float>`][CHPTRF] ]
 [  [`complex<double>`][ZHPTRF] ]
 
@@ -83,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chptrf.f chptrf.f] and [@http://www.netlib.org/lapack/complex16/zhptrf.f zhptrf.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssptrf.f ssptrf.f], [@http://www.netlib.org/lapack/double/dsptrf.f dsptrf.f], [@http://www.netlib.org/lapack/complex/chptrf.f chptrf.f], and [@http://www.netlib.org/lapack/complex16/zhptrf.f zhptrf.f] at Netlib.
 
 [endsect]

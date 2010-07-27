@@ -17,7 +17,7 @@ unmqr( const Side side, const MatrixA& a, const VectorTAU& tau,
 [heading Description]
 
 `unmqr` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNMQR and ZUNMQR. 
+interface to LAPACK routines SORMQR, DORMQR, CUNMQR, and ZUNMQR. 
 `unmqr` overwrites the general complex M-by-N matrix C with
 
 SIDE = 'L' SIDE = 'R'
@@ -41,6 +41,8 @@ the code path will be generated.
 
 [table Dispatching of unmqr
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORMQR] ]
+[  [`double`][DORMQR] ]
 [  [`complex<float>`][CUNMQR] ]
 [  [`complex<double>`][ZUNMQR] ]
 
@@ -89,6 +91,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cunmqr.f cunmqr.f] and [@http://www.netlib.org/lapack/complex16/zunmqr.f zunmqr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sormqr.f sormqr.f], [@http://www.netlib.org/lapack/double/dormqr.f dormqr.f], [@http://www.netlib.org/lapack/complex/cunmqr.f cunmqr.f], and [@http://www.netlib.org/lapack/complex16/zunmqr.f zunmqr.f] at Netlib.
 
 [endsect]

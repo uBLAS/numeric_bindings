@@ -16,7 +16,7 @@ hptrs( const MatrixAP& ap, const VectorIPIV& ipiv, MatrixB& b );
 [heading Description]
 
 `hptrs` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHPTRS and ZHPTRS. 
+interface to LAPACK routines SSPTRS, DSPTRS, CHPTRS, and ZHPTRS. 
 `hptrs` solves a system of linear equations A*X = B with a complex
 Hermitian matrix A stored in packed format using the factorization
 A = U*D*U**H or A = L*D*L**H computed by ZHPTRF.
@@ -30,6 +30,8 @@ the code path will be generated.
 
 [table Dispatching of hptrs
 [  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`float`][SSPTRS] ]
+[  [`double`][DSPTRS] ]
 [  [`complex<float>`][CHPTRS] ]
 [  [`complex<double>`][ZHPTRS] ]
 
@@ -78,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chptrs.f chptrs.f] and [@http://www.netlib.org/lapack/complex16/zhptrs.f zhptrs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssptrs.f ssptrs.f], [@http://www.netlib.org/lapack/double/dsptrs.f dsptrs.f], [@http://www.netlib.org/lapack/complex/chptrs.f chptrs.f], and [@http://www.netlib.org/lapack/complex16/zhptrs.f zhptrs.f] at Netlib.
 
 [endsect]

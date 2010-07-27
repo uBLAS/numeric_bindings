@@ -17,7 +17,7 @@ ungrq( const int_t m, const int_t n,
 [heading Description]
 
 `ungrq` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNGRQ and ZUNGRQ. 
+interface to LAPACK routines SORGRQ, DORGRQ, CUNGRQ, and ZUNGRQ. 
 `ungrq` generates an M-by-N complex matrix Q with orthonormal rows,
 which is defined as the last M rows of a product of K elementary
 reflectors of order N
@@ -35,6 +35,8 @@ the code path will be generated.
 
 [table Dispatching of ungrq
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORGRQ] ]
+[  [`double`][DORGRQ] ]
 [  [`complex<float>`][CUNGRQ] ]
 [  [`complex<double>`][ZUNGRQ] ]
 
@@ -83,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cungrq.f cungrq.f] and [@http://www.netlib.org/lapack/complex16/zungrq.f zungrq.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sorgrq.f sorgrq.f], [@http://www.netlib.org/lapack/double/dorgrq.f dorgrq.f], [@http://www.netlib.org/lapack/complex/cungrq.f cungrq.f], and [@http://www.netlib.org/lapack/complex16/zungrq.f zungrq.f] at Netlib.
 
 [endsect]

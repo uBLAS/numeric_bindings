@@ -17,7 +17,7 @@ hegvd( const int_t itype, const char jobz, MatrixA& a,
 [heading Description]
 
 `hegvd` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHEGVD and ZHEGVD. 
+interface to LAPACK routines SSYGVD, DSYGVD, CHEGVD, and ZHEGVD. 
 `hegvd` computes all the eigenvalues, and optionally, the eigenvectors
 of a complex generalized Hermitian-definite eigenproblem, of the form
 A*x=(lambda)*B*x, A*Bx=(lambda)*x, or B*A*x=(lambda)*x. Here A and
@@ -40,6 +40,8 @@ the code path will be generated.
 
 [table Dispatching of hegvd
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYGVD] ]
+[  [`double`][DSYGVD] ]
 [  [`complex<float>`][CHEGVD] ]
 [  [`complex<double>`][ZHEGVD] ]
 
@@ -88,6 +90,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chegvd.f chegvd.f] and [@http://www.netlib.org/lapack/complex16/zhegvd.f zhegvd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssygvd.f ssygvd.f], [@http://www.netlib.org/lapack/double/dsygvd.f dsygvd.f], [@http://www.netlib.org/lapack/complex/chegvd.f chegvd.f], and [@http://www.netlib.org/lapack/complex16/zhegvd.f zhegvd.f] at Netlib.
 
 [endsect]

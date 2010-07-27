@@ -16,7 +16,7 @@ hpev( const char jobz, MatrixAP& ap, VectorW& w, MatrixZ& z );
 [heading Description]
 
 `hpev` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHPEV and ZHPEV. 
+interface to LAPACK routines SSPEV, DSPEV, CHPEV, and ZHPEV. 
 `hpev` computes all the eigenvalues and, optionally, eigenvectors of a
 complex Hermitian matrix in packed storage.
 
@@ -29,6 +29,8 @@ the code path will be generated.
 
 [table Dispatching of hpev
 [  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`float`][SSPEV] ]
+[  [`double`][DSPEV] ]
 [  [`complex<float>`][CHPEV] ]
 [  [`complex<double>`][ZHPEV] ]
 
@@ -77,6 +79,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chpev.f chpev.f] and [@http://www.netlib.org/lapack/complex16/zhpev.f zhpev.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sspev.f sspev.f], [@http://www.netlib.org/lapack/double/dspev.f dspev.f], [@http://www.netlib.org/lapack/complex/chpev.f chpev.f], and [@http://www.netlib.org/lapack/complex16/zhpev.f zhpev.f] at Netlib.
 
 [endsect]

@@ -17,7 +17,7 @@ unglq( const int_t m, const int_t n,
 [heading Description]
 
 `unglq` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNGLQ and ZUNGLQ. 
+interface to LAPACK routines SORGLQ, DORGLQ, CUNGLQ, and ZUNGLQ. 
 `unglq` generates an M-by-N complex matrix Q with orthonormal rows,
 which is defined as the first M rows of a product of K elementary
 reflectors of order N
@@ -35,6 +35,8 @@ the code path will be generated.
 
 [table Dispatching of unglq
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORGLQ] ]
+[  [`double`][DORGLQ] ]
 [  [`complex<float>`][CUNGLQ] ]
 [  [`complex<double>`][ZUNGLQ] ]
 
@@ -83,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cunglq.f cunglq.f] and [@http://www.netlib.org/lapack/complex16/zunglq.f zunglq.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sorglq.f sorglq.f], [@http://www.netlib.org/lapack/double/dorglq.f dorglq.f], [@http://www.netlib.org/lapack/complex/cunglq.f cunglq.f], and [@http://www.netlib.org/lapack/complex16/zunglq.f zunglq.f] at Netlib.
 
 [endsect]

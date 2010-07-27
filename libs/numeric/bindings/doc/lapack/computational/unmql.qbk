@@ -17,7 +17,7 @@ unmql( const Side side, const int_t k, const MatrixA& a,
 [heading Description]
 
 `unmql` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNMQL and ZUNMQL. 
+interface to LAPACK routines SORMQL, DORMQL, CUNMQL, and ZUNMQL. 
 `unmql` overwrites the general complex M-by-N matrix C with
 
 SIDE = 'L' SIDE = 'R'
@@ -41,6 +41,8 @@ the code path will be generated.
 
 [table Dispatching of unmql
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORMQL] ]
+[  [`double`][DORMQL] ]
 [  [`complex<float>`][CUNMQL] ]
 [  [`complex<double>`][ZUNMQL] ]
 
@@ -89,6 +91,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cunmql.f cunmql.f] and [@http://www.netlib.org/lapack/complex16/zunmql.f zunmql.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sormql.f sormql.f], [@http://www.netlib.org/lapack/double/dormql.f dormql.f], [@http://www.netlib.org/lapack/complex/cunmql.f cunmql.f], and [@http://www.netlib.org/lapack/complex16/zunmql.f zunmql.f] at Netlib.
 
 [endsect]

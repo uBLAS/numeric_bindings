@@ -17,7 +17,7 @@ unghr( const int_t n, const int_t ilo,
 [heading Description]
 
 `unghr` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNGHR and ZUNGHR. 
+interface to LAPACK routines SORGHR, DORGHR, CUNGHR, and ZUNGHR. 
 `unghr` generates a complex unitary matrix Q which is defined as the
 product of IHI-ILO elementary reflectors of order N, as returned by
 ZGEHRD:
@@ -33,6 +33,8 @@ the code path will be generated.
 
 [table Dispatching of unghr
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORGHR] ]
+[  [`double`][DORGHR] ]
 [  [`complex<float>`][CUNGHR] ]
 [  [`complex<double>`][ZUNGHR] ]
 
@@ -81,6 +83,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cunghr.f cunghr.f] and [@http://www.netlib.org/lapack/complex16/zunghr.f zunghr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sorghr.f sorghr.f], [@http://www.netlib.org/lapack/double/dorghr.f dorghr.f], [@http://www.netlib.org/lapack/complex/cunghr.f cunghr.f], and [@http://www.netlib.org/lapack/complex16/zunghr.f zunghr.f] at Netlib.
 
 [endsect]

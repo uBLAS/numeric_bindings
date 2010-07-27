@@ -17,7 +17,7 @@ upgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
 [heading Description]
 
 `upgtr` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUPGTR and ZUPGTR. 
+interface to LAPACK routines SOPGTR, DOPGTR, CUPGTR, and ZUPGTR. 
 `upgtr` generates a complex unitary matrix Q which is defined as the
 product of n-1 elementary reflectors H(i) of order n, as returned by
 ZHPTRD using packed storage:
@@ -35,6 +35,8 @@ the code path will be generated.
 
 [table Dispatching of upgtr
 [  [ Value type of VectorAP ] [LAPACK routine] ]
+[  [`float`][SOPGTR] ]
+[  [`double`][DOPGTR] ]
 [  [`complex<float>`][CUPGTR] ]
 [  [`complex<double>`][ZUPGTR] ]
 
@@ -83,6 +85,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cupgtr.f cupgtr.f] and [@http://www.netlib.org/lapack/complex16/zupgtr.f zupgtr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sopgtr.f sopgtr.f], [@http://www.netlib.org/lapack/double/dopgtr.f dopgtr.f], [@http://www.netlib.org/lapack/complex/cupgtr.f cupgtr.f], and [@http://www.netlib.org/lapack/complex16/zupgtr.f zupgtr.f] at Netlib.
 
 [endsect]

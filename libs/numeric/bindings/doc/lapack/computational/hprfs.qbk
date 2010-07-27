@@ -17,7 +17,7 @@ hprfs( const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
 [heading Description]
 
 `hprfs` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHPRFS and ZHPRFS. 
+interface to LAPACK routines SSPRFS, DSPRFS, CHPRFS, and ZHPRFS. 
 `hprfs` improves the computed solution to a system of linear
 equations when the coefficient matrix is Hermitian indefinite
 and packed, and provides error bounds and backward error estimates
@@ -32,6 +32,8 @@ the code path will be generated.
 
 [table Dispatching of hprfs
 [  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`float`][SSPRFS] ]
+[  [`double`][DSPRFS] ]
 [  [`complex<float>`][CHPRFS] ]
 [  [`complex<double>`][ZHPRFS] ]
 
@@ -80,6 +82,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chprfs.f chprfs.f] and [@http://www.netlib.org/lapack/complex16/zhprfs.f zhprfs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssprfs.f ssprfs.f], [@http://www.netlib.org/lapack/double/dsprfs.f dsprfs.f], [@http://www.netlib.org/lapack/complex/chprfs.f chprfs.f], and [@http://www.netlib.org/lapack/complex16/zhprfs.f zhprfs.f] at Netlib.
 
 [endsect]

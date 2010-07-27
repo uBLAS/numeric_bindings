@@ -19,7 +19,9 @@
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/detail/if_left.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -29,6 +31,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+#include <boost/utility/enable_if.hpp>
 
 //
 // The LAPACK-backend for upmtr is the netlib-compatible backend.
@@ -46,6 +49,38 @@ namespace lapack {
 // dispatch to the appropriate back-end LAPACK-routine.
 //
 namespace detail {
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
+//
+template< typename Side, typename Trans >
+inline std::ptrdiff_t upmtr( const Side side, const char uplo,
+        const Trans trans, const fortran_int_t m, const fortran_int_t n,
+        const float* ap, const float* tau, float* c, const fortran_int_t ldc,
+        float* work ) {
+    fortran_int_t info(0);
+    LAPACK_SOPMTR( &lapack_option< Side >::value, &uplo, &lapack_option<
+            Trans >::value, &m, &n, ap, tau, c, &ldc, work, &info );
+    return info;
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
+//
+template< typename Side, typename Trans >
+inline std::ptrdiff_t upmtr( const Side side, const char uplo,
+        const Trans trans, const fortran_int_t m, const fortran_int_t n,
+        const double* ap, const double* tau, double* c,
+        const fortran_int_t ldc, double* work ) {
+    fortran_int_t info(0);
+    LAPACK_DOPMTR( &lapack_option< Side >::value, &uplo, &lapack_option<
+            Trans >::value, &m, &n, ap, tau, c, &ldc, work, &info );
+    return info;
+}
 
 //
 // Overloaded function for dispatching to
@@ -87,8 +122,112 @@ inline std::ptrdiff_t upmtr( const Side side, const char uplo,
 // Value-type based template class. Use this class if you need a type
 // for dispatching to upmtr.
 //
+template< typename Value, typename Enable = void >
+struct upmtr_impl {};
+
+//
+// This implementation is enabled if Value is a real type.
+//
 template< typename Value >
-struct upmtr_impl {
+struct upmtr_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
+
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
+    template< typename Side, typename VectorAP, typename VectorTAU,
+            typename MatrixC, typename WORK >
+    static std::ptrdiff_t invoke( const Side side, const char uplo,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+            detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorAP, order >::type trans;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename bindings::value_type< VectorAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorTAU >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename bindings::value_type< VectorAP >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( side, bindings::size_row(c),
+                bindings::size_column(c) ));
+        BOOST_ASSERT( bindings::size_column(c) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::size_row(c) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(c)) );
+        return detail::upmtr( side, uplo, trans(), bindings::size_row(c),
+                bindings::size_column(c), bindings::begin_value(ap),
+                bindings::begin_value(tau), bindings::begin_value(c),
+                bindings::stride_major(c),
+                bindings::begin_value(work.select(real_type())) );
+    }
+
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
+    template< typename Side, typename VectorAP, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const char uplo,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+            minimal_workspace ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorAP, order >::type trans;
+        bindings::detail::array< real_type > tmp_work( min_size_work( side,
+                bindings::size_row(c), bindings::size_column(c) ) );
+        return invoke( side, uplo, ap, tau, c, workspace( tmp_work ) );
+    }
+
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
+    template< typename Side, typename VectorAP, typename VectorTAU,
+            typename MatrixC >
+    static std::ptrdiff_t invoke( const Side side, const char uplo,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+            optimal_workspace ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef tag::column_major order;
+        typedef typename result_of::trans_tag< VectorAP, order >::type trans;
+        return invoke( side, uplo, ap, tau, c, minimal_workspace() );
+    }
+
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    template< typename Side >
+    static std::ptrdiff_t min_size_work( const Side side,
+            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
+                n, m ) );
+    }
+};
+
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct upmtr_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;

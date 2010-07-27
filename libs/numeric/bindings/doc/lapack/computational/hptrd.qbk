@@ -16,7 +16,7 @@ hptrd( MatrixAP& ap, VectorD& d, VectorE& e, VectorTAU& tau );
 [heading Description]
 
 `hptrd` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHPTRD and ZHPTRD. 
+interface to LAPACK routines SSPTRD, DSPTRD, CHPTRD, and ZHPTRD. 
 `hptrd` reduces a complex Hermitian matrix A stored in packed form to
 real symmetric tridiagonal form T by a unitary similarity
 transformation: Q**H * A * Q = T.
@@ -30,6 +30,8 @@ the code path will be generated.
 
 [table Dispatching of hptrd
 [  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`float`][SSPTRD] ]
+[  [`double`][DSPTRD] ]
 [  [`complex<float>`][CHPTRD] ]
 [  [`complex<double>`][ZHPTRD] ]
 
@@ -78,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chptrd.f chptrd.f] and [@http://www.netlib.org/lapack/complex16/zhptrd.f zhptrd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssptrd.f ssptrd.f], [@http://www.netlib.org/lapack/double/dsptrd.f dsptrd.f], [@http://www.netlib.org/lapack/complex/chptrd.f chptrd.f], and [@http://www.netlib.org/lapack/complex16/zhptrd.f zhptrd.f] at Netlib.
 
 [endsect]

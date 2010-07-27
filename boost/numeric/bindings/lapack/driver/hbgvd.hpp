@@ -19,7 +19,9 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -30,6 +32,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+#include <boost/utility/enable_if.hpp>
 
 //
 // The LAPACK-backend for hbgvd is the netlib-compatible backend.
@@ -47,6 +50,44 @@ namespace lapack {
 // dispatch to the appropriate back-end LAPACK-routine.
 //
 namespace detail {
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
+//
+template< typename UpLo >
+inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
+        float* ab, const fortran_int_t ldab, float* bb,
+        const fortran_int_t ldbb, float* w, float* z, const fortran_int_t ldz,
+        float* work, const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
+    fortran_int_t info(0);
+    LAPACK_SSBGVD( &jobz, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,
+            &ldab, bb, &ldbb, w, z, &ldz, work, &lwork, iwork, &liwork,
+            &info );
+    return info;
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
+//
+template< typename UpLo >
+inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
+        const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
+        double* ab, const fortran_int_t ldab, double* bb,
+        const fortran_int_t ldbb, double* w, double* z,
+        const fortran_int_t ldz, double* work, const fortran_int_t lwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
+    fortran_int_t info(0);
+    LAPACK_DSBGVD( &jobz, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,
+            &ldab, bb, &ldbb, w, z, &ldz, work, &lwork, iwork, &liwork,
+            &info );
+    return info;
+}
 
 //
 // Overloaded function for dispatching to
@@ -96,8 +137,161 @@ inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
 // Value-type based template class. Use this class if you need a type
 // for dispatching to hbgvd.
 //
+template< typename Value, typename Enable = void >
+struct hbgvd_impl {};
+
+//
+// This implementation is enabled if Value is a real type.
+//
 template< typename Value >
-struct hbgvd_impl {
+struct hbgvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
+
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
+    template< typename MatrixAB, typename MatrixBB, typename VectorW,
+            typename MatrixZ, typename WORK, typename IWORK >
+    static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, MatrixBB& bb,
+            VectorW& w, MatrixZ& z, detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixBB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixBB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                VectorW >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename bindings::value_type< MatrixAB >::type >::type,
+                typename remove_const< typename bindings::value_type<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixBB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::bandwidth(ab, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth(bb, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( jobz, bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( jobz, bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_minor(bb) == 1 ||
+                bindings::stride_minor(bb) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= bindings::bandwidth(ab,
+                uplo())+1 );
+        BOOST_ASSERT( bindings::stride_major(bb) >= bindings::bandwidth(bb,
+                uplo())+1 );
+        BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
+        return detail::hbgvd( jobz, uplo(), bindings::size_column(ab),
+                bindings::bandwidth(ab, uplo()), bindings::bandwidth(bb,
+                uplo()), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(bb),
+                bindings::stride_major(bb), bindings::begin_value(w),
+                bindings::begin_value(z), bindings::stride_major(z),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::size(work.select(fortran_int_t())) );
+    }
+
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
+    template< typename MatrixAB, typename MatrixBB, typename VectorW,
+            typename MatrixZ >
+    static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, MatrixBB& bb,
+            VectorW& w, MatrixZ& z, minimal_workspace ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        bindings::detail::array< real_type > tmp_work( min_size_work( jobz,
+                bindings::size_column(ab) ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( jobz, bindings::size_column(ab) ) );
+        return invoke( jobz, ab, bb, w, z, workspace( tmp_work, tmp_iwork ) );
+    }
+
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
+    template< typename MatrixAB, typename MatrixBB, typename VectorW,
+            typename MatrixZ >
+    static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, MatrixBB& bb,
+            VectorW& w, MatrixZ& z, optimal_workspace ) {
+        namespace bindings = ::boost::numeric::bindings;
+        typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
+        real_type opt_size_work;
+        fortran_int_t opt_size_iwork;
+        detail::hbgvd( jobz, uplo(), bindings::size_column(ab),
+                bindings::bandwidth(ab, uplo()), bindings::bandwidth(bb,
+                uplo()), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(bb),
+                bindings::stride_major(bb), bindings::begin_value(w),
+                bindings::begin_value(z), bindings::stride_major(z),
+                &opt_size_work, -1, &opt_size_iwork, -1 );
+        bindings::detail::array< real_type > tmp_work(
+                traits::detail::to_int( opt_size_work ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                opt_size_iwork );
+        return invoke( jobz, ab, bb, w, z, workspace( tmp_work, tmp_iwork ) );
+    }
+
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const char jobz,
+            const std::ptrdiff_t n ) {
+        if ( n < 2 )
+            return 1;
+        else {
+            if ( jobz == 'N' )
+                return 3*n;
+            else
+                return 1 + 5*n + 2*n*n;
+        }
+    }
+
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const char jobz,
+            const std::ptrdiff_t n ) {
+        if ( jobz == 'N' || n < 2 )
+            return 1;
+        else
+            return 3 + 5*n;
+    }
+};
+
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct hbgvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;

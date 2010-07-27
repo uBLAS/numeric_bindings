@@ -27,27 +27,6 @@ namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
 namespace bindings = boost::numeric::bindings;
 
-struct apply_real {
-  template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-  static inline std::ptrdiff_t hbev( const char jobz, 
-        MatrixAB& ab, VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return lapack::sbev( jobz, ab, w, z, work );
-  }
-};
-
-struct apply_complex {
-  template< typename MatrixAB, typename VectorW, typename MatrixZ,
-        typename Workspace >
-  static inline std::ptrdiff_t hbev( const char jobz, 
-        MatrixAB& ab, VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return lapack::hbev( jobz, ab, w, z, work );
-  }
-};
-
-
 template <typename U>
 int lower() {
    return 0;
@@ -68,7 +47,6 @@ int upper<ublas::upper>() { return 2; }
 
 template <typename T, typename W, typename UPLO, typename Orientation>
 int do_memory_uplo(int n, W& workspace ) {
-   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    typedef typename bindings::remove_imaginary<T>::type real_type ;
 
    typedef ublas::banded_matrix<T, Orientation>      banded_type ;
@@ -87,13 +65,13 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::hermitian_adaptor<banded_type, UPLO> h( a ), h2( a2 );
 
    // Compute Schur decomposition.
-   apply_t::hbev( 'V', 
+   lapack::hbev( 'V', 
      h, e1, z, workspace ) ;
 
    if (check_residual( h2, e1, z )) return 255 ;
 
    matrix_type dummy_z( n, n );
-   apply_t::hbev( 'N',
+   lapack::hbev( 'N',
      h2, e2, dummy_z, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
@@ -108,7 +86,7 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::vector_range< vector_type> e_r( e1, r );
    ublas::matrix_range< matrix_type> z_r( z, r, r );
 
-   apply_t::hbev( 'V',  
+   lapack::hbev( 'V',  
      h_r, e_r, z_r, workspace );
 
    banded_range a2_r( a2, r, r );

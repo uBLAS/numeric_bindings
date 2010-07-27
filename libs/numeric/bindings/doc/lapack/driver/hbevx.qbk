@@ -19,7 +19,7 @@ hbevx( const char jobz, const char range, MatrixAB& ab, MatrixQ& q,
 [heading Description]
 
 `hbevx` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHBEVX and ZHBEVX. 
+interface to LAPACK routines SSBEVX, DSBEVX, CHBEVX, and ZHBEVX. 
 `hbevx` computes selected eigenvalues and, optionally, eigenvectors
 of a complex Hermitian band matrix A. Eigenvalues and eigenvectors
 can be selected by specifying either a range of values or a range of
@@ -34,6 +34,8 @@ the code path will be generated.
 
 [table Dispatching of hbevx
 [  [ Value type of MatrixAB ] [LAPACK routine] ]
+[  [`float`][SSBEVX] ]
+[  [`double`][DSBEVX] ]
 [  [`complex<float>`][CHBEVX] ]
 [  [`complex<double>`][ZHBEVX] ]
 
@@ -82,6 +84,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chbevx.f chbevx.f] and [@http://www.netlib.org/lapack/complex16/zhbevx.f zhbevx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssbevx.f ssbevx.f], [@http://www.netlib.org/lapack/double/dsbevx.f dsbevx.f], [@http://www.netlib.org/lapack/complex/chbevx.f chbevx.f], and [@http://www.netlib.org/lapack/complex16/zhbevx.f zhbevx.f] at Netlib.
 
 [endsect]

@@ -32,35 +32,6 @@ namespace lapack = boost::numeric::bindings::lapack;
 namespace bindings = boost::numeric::bindings;
 namespace tag = boost::numeric::bindings::tag;
 
-struct apply_real {
-  template< typename MatrixA, typename VectorTAU, typename Workspace >
-  static inline std::ptrdiff_t orgqr(  MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return lapack::orgqr( a, tau, work );
-  }
-  template< typename Side, typename MatrixA, typename VectorTAU, typename MatrixC,
-        typename Workspace >
-  static inline std::ptrdiff_t ormqr( const Side side, 
-        const MatrixA& a, const VectorTAU& tau, MatrixC& c,
-        Workspace work ) {
-    return lapack::ormqr( side, a, tau, c, work );
-  }
-};
-
-struct apply_complex {
-  template< typename MatrixA, typename VectorTAU, typename Workspace >
-  static inline std::ptrdiff_t orgqr( MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return lapack::ungqr( a, tau, work );
-  }
-  template< typename Side, typename MatrixA, typename VectorTAU, typename MatrixC,
-        typename Workspace >
-  static inline std::ptrdiff_t ormqr( const Side side, 
-        const MatrixA& a, const VectorTAU& tau, MatrixC& c,
-        Workspace work ) {
-    return lapack::unmqr( side, a, tau, c, work );
-  }
-};
-
-
 // Randomize a matrix
 template <typename M>
 void randomize(M& m) {
@@ -84,7 +55,6 @@ ublas::triangular_adaptor<const M, ublas::upper> upper_part(const M& m) {
 
 template <typename T, typename W>
 int do_memory_type(int n, W workspace) {
-   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    typedef typename bindings::remove_imaginary<T>::type real_type ;
    typedef std::complex< real_type >                                            complex_type ;
 
@@ -104,9 +74,9 @@ int do_memory_type(int n, W workspace) {
 
    // Apply the orthogonal transformations to a2
    if( boost::is_complex<T>::value ) {
-        apply_t::ormqr( tag::left(), bindings::conj( a ), tau, a2, workspace );
+        lapack::unmqr( tag::left(), bindings::conj( a ), tau, a2, workspace );
    } else {
-        apply_t::ormqr( tag::left(), bindings::trans( a ), tau, a2, workspace );
+        lapack::unmqr( tag::left(), bindings::trans( a ), tau, a2, workspace );
    }
 
    // The upper triangular parts of a and a2 must be equal.
@@ -114,7 +84,7 @@ int do_memory_type(int n, W workspace) {
             > std::numeric_limits<real_type>::epsilon() * 10.0 * norm_frobenius( upper_part( a ) ) ) return 255 ;
 
    // Generate orthogonal matrix
-   apply_t::orgqr( a, tau, workspace );
+   lapack::ungqr( a, tau, workspace );
 
    // The result of lapack::ormqr and the equivalent matrix product must be equal.
    if (norm_frobenius( a2 - prod(herm(a), a3) )

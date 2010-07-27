@@ -16,7 +16,7 @@ hptri( MatrixAP& ap, const VectorIPIV& ipiv );
 [heading Description]
 
 `hptri` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHPTRI and ZHPTRI. 
+interface to LAPACK routines SSPTRI, DSPTRI, CHPTRI, and ZHPTRI. 
 `hptri` computes the inverse of a complex Hermitian indefinite matrix
 A in packed storage using the factorization A = U*D*U**H or
 A = L*D*L**H computed by ZHPTRF.
@@ -30,6 +30,8 @@ the code path will be generated.
 
 [table Dispatching of hptri
 [  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`float`][SSPTRI] ]
+[  [`double`][DSPTRI] ]
 [  [`complex<float>`][CHPTRI] ]
 [  [`complex<double>`][ZHPTRI] ]
 
@@ -78,6 +80,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chptri.f chptri.f] and [@http://www.netlib.org/lapack/complex16/zhptri.f zhptri.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssptri.f ssptri.f], [@http://www.netlib.org/lapack/double/dsptri.f dsptri.f], [@http://www.netlib.org/lapack/complex/chptri.f chptri.f], and [@http://www.netlib.org/lapack/complex16/zhptri.f zhptri.f] at Netlib.
 
 [endsect]

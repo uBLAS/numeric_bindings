@@ -26,30 +26,8 @@ namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
 namespace bindings = boost::numeric::bindings;
 
-struct apply_real {
-  template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename Workspace >
-  static inline std::ptrdiff_t hegv( const fortran_int_t itype, const char jobz,
-        MatrixA& a, MatrixB& b, VectorW& w,
-        Workspace work ) {
-    return lapack::sygv( itype, jobz, a, b, w, work );
-  }
-};
-
-struct apply_complex {
-  template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename Workspace >
-  static inline std::ptrdiff_t hegv( const fortran_int_t itype, const char jobz,
-        MatrixA& a, MatrixB& b, VectorW& w,
-        Workspace work ) {
-    return lapack::hegv( itype, jobz, a, b, w, work );
-  }
-};
-
-
 template <typename T, typename W, typename UPLO>
 int do_memory_uplo(int n, W& workspace ) {
-   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    typedef typename bindings::remove_imaginary<T>::type real_type ;
 
    typedef ublas::matrix<T, ublas::column_major>     matrix_type ;
@@ -69,12 +47,12 @@ int do_memory_uplo(int n, W& workspace ) {
 
    // Compute eigen decomposition.
    hermitian_type h_a( a );
-   apply_t::hegv( 1, 'V', h_a, b, e1, workspace ) ;
+   lapack::hegv( 1, 'V', h_a, b, e1, workspace ) ;
 
    if (check_residual( a2, e1, a )) return 255 ;
 
    hermitian_type h_a2( a2 );
-   apply_t::hegv( 1, 'N', h_a2 , b, e2, workspace ) ;
+   lapack::hegv( 1, 'N', h_a2 , b, e2, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
    // Test for a matrix range
@@ -89,7 +67,7 @@ int do_memory_uplo(int n, W& workspace ) {
    matrix_range b_r( b, r, r );
 
    hermitian_range_type h_a_r( a_r );
-   apply_t::hegv(1, 'V', h_a_r, b_r, e_r, workspace );
+   lapack::hegv(1, 'V', h_a_r, b_r, e_r, workspace );
 
    matrix_range a2_r( a2, r, r );
    if (check_residual( a2_r, e_r, a_r )) return 255 ;

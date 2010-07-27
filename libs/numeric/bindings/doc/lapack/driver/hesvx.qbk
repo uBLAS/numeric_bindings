@@ -18,7 +18,7 @@ hesvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
 [heading Description]
 
 `hesvx` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHESVX and ZHESVX. 
+interface to LAPACK routines SSYSVX, DSYSVX, CHESVX, and ZHESVX. 
 `hesvx` uses the diagonal pivoting factorization to compute the
 solution to a complex system of linear equations A * X = B,
 where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
@@ -63,6 +63,8 @@ the code path will be generated.
 
 [table Dispatching of hesvx
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYSVX] ]
+[  [`double`][DSYSVX] ]
 [  [`complex<float>`][CHESVX] ]
 [  [`complex<double>`][ZHESVX] ]
 
@@ -111,6 +113,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chesvx.f chesvx.f] and [@http://www.netlib.org/lapack/complex16/zhesvx.f zhesvx.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssysvx.f ssysvx.f], [@http://www.netlib.org/lapack/double/dsysvx.f dsysvx.f], [@http://www.netlib.org/lapack/complex/chesvx.f chesvx.f], and [@http://www.netlib.org/lapack/complex16/zhesvx.f zhesvx.f] at Netlib.
 
 [endsect]

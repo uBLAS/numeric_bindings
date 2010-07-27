@@ -17,7 +17,7 @@ herfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
 [heading Description]
 
 `herfs` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHERFS and ZHERFS. 
+interface to LAPACK routines SSYRFS, DSYRFS, CHERFS, and ZHERFS. 
 `herfs` improves the computed solution to a system of linear
 equations when the coefficient matrix is Hermitian indefinite, and
 provides error bounds and backward error estimates for the solution.
@@ -31,6 +31,8 @@ the code path will be generated.
 
 [table Dispatching of herfs
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SSYRFS] ]
+[  [`double`][DSYRFS] ]
 [  [`complex<float>`][CHERFS] ]
 [  [`complex<double>`][ZHERFS] ]
 
@@ -79,6 +81,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cherfs.f cherfs.f] and [@http://www.netlib.org/lapack/complex16/zherfs.f zherfs.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/ssyrfs.f ssyrfs.f], [@http://www.netlib.org/lapack/double/dsyrfs.f dsyrfs.f], [@http://www.netlib.org/lapack/complex/cherfs.f cherfs.f], and [@http://www.netlib.org/lapack/complex16/zherfs.f zherfs.f] at Netlib.
 
 [endsect]

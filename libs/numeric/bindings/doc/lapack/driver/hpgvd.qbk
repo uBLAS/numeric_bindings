@@ -17,7 +17,7 @@ hpgvd( const int_t itype, const char jobz, MatrixAP& ap,
 [heading Description]
 
 `hpgvd` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHPGVD and ZHPGVD. 
+interface to LAPACK routines SSPGVD, DSPGVD, CHPGVD, and ZHPGVD. 
 `hpgvd` computes all the eigenvalues and, optionally, the eigenvectors
 of a complex generalized Hermitian-definite eigenproblem, of the form
 A*x=(lambda)*B*x, A*Bx=(lambda)*x, or B*A*x=(lambda)*x. Here A and
@@ -41,6 +41,8 @@ the code path will be generated.
 
 [table Dispatching of hpgvd
 [  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`float`][SSPGVD] ]
+[  [`double`][DSPGVD] ]
 [  [`complex<float>`][CHPGVD] ]
 [  [`complex<double>`][ZHPGVD] ]
 
@@ -89,6 +91,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chpgvd.f chpgvd.f] and [@http://www.netlib.org/lapack/complex16/zhpgvd.f zhpgvd.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sspgvd.f sspgvd.f], [@http://www.netlib.org/lapack/double/dspgvd.f dspgvd.f], [@http://www.netlib.org/lapack/complex/chpgvd.f chpgvd.f], and [@http://www.netlib.org/lapack/complex16/zhpgvd.f zhpgvd.f] at Netlib.
 
 [endsect]

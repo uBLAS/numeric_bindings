@@ -16,7 +16,7 @@ hpsv( MatrixAP& ap, VectorIPIV& ipiv, MatrixB& b );
 [heading Description]
 
 `hpsv` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CHPSV and ZHPSV. 
+interface to LAPACK routines SSPSV, DSPSV, CHPSV, and ZHPSV. 
 `hpsv` computes the solution to a complex system of linear equations
 A * X = B,
 where A is an N-by-N Hermitian matrix stored in packed format and X
@@ -39,6 +39,8 @@ the code path will be generated.
 
 [table Dispatching of hpsv
 [  [ Value type of MatrixAP ] [LAPACK routine] ]
+[  [`float`][SSPSV] ]
+[  [`double`][DSPSV] ]
 [  [`complex<float>`][CHPSV] ]
 [  [`complex<double>`][ZHPSV] ]
 
@@ -87,6 +89,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/chpsv.f chpsv.f] and [@http://www.netlib.org/lapack/complex16/zhpsv.f zhpsv.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sspsv.f sspsv.f], [@http://www.netlib.org/lapack/double/dspsv.f dspsv.f], [@http://www.netlib.org/lapack/complex/chpsv.f chpsv.f], and [@http://www.netlib.org/lapack/complex16/zhpsv.f zhpsv.f] at Netlib.
 
 [endsect]

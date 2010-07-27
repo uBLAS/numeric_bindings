@@ -17,7 +17,7 @@ unmrq( const Side side, const int_t k, const MatrixA& a,
 [heading Description]
 
 `unmrq` (short for $FRIENDLY_NAME) provides a C++
-interface to LAPACK routines CUNMRQ and ZUNMRQ. 
+interface to LAPACK routines SORMRQ, DORMRQ, CUNMRQ, and ZUNMRQ. 
 `unmrq` overwrites the general complex M-by-N matrix C with
 
 SIDE = 'L' SIDE = 'R'
@@ -41,6 +41,8 @@ the code path will be generated.
 
 [table Dispatching of unmrq
 [  [ Value type of MatrixA ] [LAPACK routine] ]
+[  [`float`][SORMRQ] ]
+[  [`double`][DORMRQ] ]
 [  [`complex<float>`][CUNMRQ] ]
 [  [`complex<double>`][ZUNMRQ] ]
 
@@ -89,6 +91,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/lapack/complex/cunmrq.f cunmrq.f] and [@http://www.netlib.org/lapack/complex16/zunmrq.f zunmrq.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/lapack/single/sormrq.f sormrq.f], [@http://www.netlib.org/lapack/double/dormrq.f dormrq.f], [@http://www.netlib.org/lapack/complex/cunmrq.f cunmrq.f], and [@http://www.netlib.org/lapack/complex16/zunmrq.f zunmrq.f] at Netlib.
 
 [endsect]

@@ -70,9 +70,8 @@ def indent_lines( source_text, indent_size = 8 ):
   for i in range(indent_size):
     indent_string += ' '
   return indent_string.join( source_text.splitlines() )
-  
 
-  
+
 #
 # Write the (many) driver routine file(s).
 #
@@ -105,10 +104,13 @@ def write_functions( info_map, group, template_map, base_dir ):
         includes += template_map[ group_name_l + '.includes' ].splitlines()
 
     #
+    #
     # LEVEL 0 HANDLING
+    #
     #
     # If the first subroutine has a clapack_ routine, assume we are going
     # to provide specialisations
+    #
     provide_clapack_backend = 'clapack_routine' in info_map[ subroutines[0] ]
     overloads = ''
     backend_includes = ''
@@ -213,7 +215,9 @@ def write_functions( info_map, group, template_map, base_dir ):
             type_selector_candidates += [ arg ]
 
     #
+    #
     # LEVEL 1 and 2 HANDLING
+    #
     #
     level1_map = {}
     level2_map = {}
@@ -381,7 +385,9 @@ def write_functions( info_map, group, template_map, base_dir ):
                 ' >::value) );'
             level1_static_assert_list += [ assert_line ]
 
+      #
       # Make sure the mutable stuff is mutable
+      #
       if 'output' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ]:
         for arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'output' ]:
           if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] != None:
@@ -389,7 +395,9 @@ def write_functions( info_map, group, template_map, base_dir ):
                 info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_static_assert' ] + ' >::value) );'
             level1_static_assert_list += [ assert_line ]
 
+      #
       # import the code, by argument
+      #
       for arg in info_map[ subroutine ][ 'arguments' ]:
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_0' ] != None:
           level0_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_0' ] ]
@@ -432,12 +440,16 @@ def write_functions( info_map, group, template_map, base_dir ):
           if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'user_defined_init' ] != None:
             user_defined_opt_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'user_defined_init' ] ]
 
+      #
       # Insert the order_type() if appropriate
+      #
       if "has_clapack_order_arg" in info_map[ subroutine ]:
           level0_arg_list.insert( 0, "order()" )
           workspace_query_arg_list.insert( 0, "order()" )
 
-      # Level 1 replacements
+      #
+      # LEVEL 1 REPLACEMENTS
+      #
       level1_template = level1_template.replace( "$TYPEDEFS", "\n        ".join( typedef_list ) )
       level1_template = level1_template.replace( "$CALL_LEVEL0", ", ".join( level0_arg_list ) )
       level1_template = level1_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
@@ -456,10 +468,13 @@ def write_functions( info_map, group, template_map, base_dir ):
       else:
         level1_template = level1_template.replace( "\n        $INIT_USER_DEFINED_VARIABLES", "" )
 
-      # Level 2 replacements
+      #
+      # LEVEL 2 REPLACEMENTS
+      #
       # some special stuff is done here, such as replacing real_type with a 
       # type-traits deduction, etc..
       # more important: all non-const and const variants of functions are written here
+      #
       level2_functions = []
       level2_arg_lists, level2_comments = \
             bindings.generate_const_variants( \
@@ -475,7 +490,9 @@ def write_functions( info_map, group, template_map, base_dir ):
       level2_template = "\n".join( level2_functions )
       level2_template = level2_template.replace( "$COMMENTS\n", "" )
 
+      #
       # Determine a right type to select for real or complex variants
+      #
       first_typename = ''
       print "Type selectors: ", type_selector_candidates
       if len( type_selector_candidates ) > 0:

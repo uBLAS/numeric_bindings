@@ -102,8 +102,7 @@ struct sbevd_impl {
     template< typename MatrixAB, typename VectorW, typename MatrixZ,
             typename WORK, typename IWORK >
     static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, VectorW& w,
-            MatrixZ& z, const fortran_int_t liwork, detail::workspace2<
-            WORK, IWORK > work ) {
+            MatrixZ& z, detail::workspace2< WORK, IWORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixAB >::value) );
@@ -139,7 +138,7 @@ struct sbevd_impl {
                 bindings::begin_value(work.select(real_type())),
                 bindings::size(work.select(real_type())),
                 bindings::begin_value(work.select(fortran_int_t())),
-                liwork );
+                bindings::size(work.select(fortran_int_t())) );
     }
 
     //
@@ -151,15 +150,14 @@ struct sbevd_impl {
     //
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, VectorW& w,
-            MatrixZ& z, const fortran_int_t liwork, minimal_workspace ) {
+            MatrixZ& z, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work( jobz,
                 bindings::size_column(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( jobz, bindings::size_column(ab) ) );
-        return invoke( jobz, ab, w, z, liwork, workspace( tmp_work,
-                tmp_iwork ) );
+        return invoke( jobz, ab, w, z, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -171,7 +169,7 @@ struct sbevd_impl {
     //
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, VectorW& w,
-            MatrixZ& z, const fortran_int_t liwork, optimal_workspace ) {
+            MatrixZ& z, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::uplo_tag< MatrixAB >::type uplo;
         real_type opt_size_work;
@@ -185,8 +183,7 @@ struct sbevd_impl {
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        return invoke( jobz, ab, w, z, liwork, workspace( tmp_work,
-                tmp_iwork ) );
+        return invoke( jobz, ab, w, z, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -239,9 +236,9 @@ template< typename MatrixAB, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbevd( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z,
-        const fortran_int_t liwork, Workspace work ) {
+        Workspace work ) {
     return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork, work );
+            MatrixAB >::type >::invoke( jobz, ab, w, z, work );
 }
 
 //
@@ -253,11 +250,9 @@ sbevd( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z,
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-sbevd( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z,
-        const fortran_int_t liwork ) {
+sbevd( const char jobz, MatrixAB& ab, VectorW& w, MatrixZ& z ) {
     return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork,
-            optimal_workspace() );
+            MatrixAB >::type >::invoke( jobz, ab, w, z, optimal_workspace() );
 }
 
 //
@@ -271,9 +266,9 @@ template< typename MatrixAB, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbevd( const char jobz, const MatrixAB& ab, VectorW& w, MatrixZ& z,
-        const fortran_int_t liwork, Workspace work ) {
+        Workspace work ) {
     return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork, work );
+            MatrixAB >::type >::invoke( jobz, ab, w, z, work );
 }
 
 //
@@ -285,11 +280,9 @@ sbevd( const char jobz, const MatrixAB& ab, VectorW& w, MatrixZ& z,
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-sbevd( const char jobz, const MatrixAB& ab, VectorW& w, MatrixZ& z,
-        const fortran_int_t liwork ) {
+sbevd( const char jobz, const MatrixAB& ab, VectorW& w, MatrixZ& z ) {
     return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork,
-            optimal_workspace() );
+            MatrixAB >::type >::invoke( jobz, ab, w, z, optimal_workspace() );
 }
 
 //
@@ -303,9 +296,9 @@ template< typename MatrixAB, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbevd( const char jobz, MatrixAB& ab, VectorW& w, const MatrixZ& z,
-        const fortran_int_t liwork, Workspace work ) {
+        Workspace work ) {
     return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork, work );
+            MatrixAB >::type >::invoke( jobz, ab, w, z, work );
 }
 
 //
@@ -317,11 +310,9 @@ sbevd( const char jobz, MatrixAB& ab, VectorW& w, const MatrixZ& z,
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-sbevd( const char jobz, MatrixAB& ab, VectorW& w, const MatrixZ& z,
-        const fortran_int_t liwork ) {
+sbevd( const char jobz, MatrixAB& ab, VectorW& w, const MatrixZ& z ) {
     return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork,
-            optimal_workspace() );
+            MatrixAB >::type >::invoke( jobz, ab, w, z, optimal_workspace() );
 }
 
 //
@@ -335,9 +326,9 @@ template< typename MatrixAB, typename VectorW, typename MatrixZ,
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
 sbevd( const char jobz, const MatrixAB& ab, VectorW& w, const MatrixZ& z,
-        const fortran_int_t liwork, Workspace work ) {
+        Workspace work ) {
     return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork, work );
+            MatrixAB >::type >::invoke( jobz, ab, w, z, work );
 }
 
 //
@@ -349,11 +340,10 @@ sbevd( const char jobz, const MatrixAB& ab, VectorW& w, const MatrixZ& z,
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
-sbevd( const char jobz, const MatrixAB& ab, VectorW& w, const MatrixZ& z,
-        const fortran_int_t liwork ) {
+sbevd( const char jobz, const MatrixAB& ab, VectorW& w,
+        const MatrixZ& z ) {
     return sbevd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( jobz, ab, w, z, liwork,
-            optimal_workspace() );
+            MatrixAB >::type >::invoke( jobz, ab, w, z, optimal_workspace() );
 }
 
 } // namespace lapack

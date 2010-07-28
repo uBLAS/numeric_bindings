@@ -18,4 +18,6 @@ else {
 }
 $TEMPLATE[sbevd.all.UPLO.trait_of]
 AB
+$TEMPLATE[sbevd.all.LIWORK.trait]
+size,IWORK
 $TEMPLATE[end]

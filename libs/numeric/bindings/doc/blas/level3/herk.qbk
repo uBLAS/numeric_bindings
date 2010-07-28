@@ -16,7 +16,7 @@ herk( const Scalar >, const MatrixA& a, const Scalar >, MatrixC& c );
 [heading Description]
 
 `herk` (short for hermitian rank-k update) provides a C++
-interface to BLAS routines CHERK and ZHERK. 
+interface to BLAS routines SSYRK, DSYRK, CHERK, and ZHERK. 
 `herk` performs one of the hermitian rank k operations
 
 C := alpha*A*conjg( A' ) + beta*C,
@@ -37,12 +37,14 @@ Table X below illustrates to which specific routine this dispatching will take p
 
 [table Dispatching of herk.
 [  [ Value type of MatrixA ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
+[  [`float`][SSYRK][cblas_ssyrk][cublasSsyrk] ]
+[  [`double`][DSYRK][cblas_dsyrk][cublasDsyrk] ]
 [  [`complex<float>`][CHERK][cblas_cherk][cublasCherk] ]
 [  [`complex<double>`][ZHERK][cblas_zherk][Unavailable] ]
 
 ]
 
-The original routines CHERK and ZHERK have ten arguments,
+The original routines SSYRK, DSYRK, CHERK, and ZHERK have ten arguments,
 whereas `herk` requires four arguments.
 
 [table Deduction of arguments of herk.
@@ -84,6 +86,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/blas/cherk.f cherk.f] and [@http://www.netlib.org/blas/zherk.f zherk.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/blas/ssyrk.f ssyrk.f], [@http://www.netlib.org/blas/dsyrk.f dsyrk.f], [@http://www.netlib.org/blas/cherk.f cherk.f], and [@http://www.netlib.org/blas/zherk.f zherk.f] at Netlib.
 
 [endsect]

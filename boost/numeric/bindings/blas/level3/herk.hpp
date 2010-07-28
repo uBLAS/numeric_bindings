@@ -61,6 +61,32 @@ namespace detail {
 //
 // Overloaded function for dispatching to
 // * CBLAS backend, and
+// * float value-type.
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const float alpha, const float* a,
+        const int lda, const float beta, float* c, const int ldc ) {
+    cblas_ssyrk( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, n, k, alpha, a, lda, beta, c, ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * double value-type.
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const double alpha, const double* a,
+        const int lda, const double beta, double* c, const int ldc ) {
+    cblas_dsyrk( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, n, k, alpha, a, lda, beta, c, ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
@@ -87,6 +113,34 @@ inline void herk( const Order order, const UpLo uplo, const Trans trans,
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * float value-type.
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const float alpha, const float* a,
+        const int lda, const float beta, float* c, const int ldc ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    cublasSsyrk( blas_option< UpLo >::value, blas_option< Trans >::value, n,
+            k, alpha, a, lda, beta, c, ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * double value-type.
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const int n, const int k, const double alpha, const double* a,
+        const int lda, const double beta, double* c, const int ldc ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    cublasDsyrk( blas_option< UpLo >::value, blas_option< Trans >::value, n,
+            k, alpha, a, lda, beta, c, ldc );
+}
+
 //
 // Overloaded function for dispatching to
 // * CUBLAS backend, and
@@ -117,6 +171,36 @@ inline void herk( const Order order, const UpLo uplo, const Trans trans,
 }
 
 #else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k, const float alpha,
+        const float* a, const fortran_int_t lda, const float beta, float* c,
+        const fortran_int_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    BLAS_SSYRK( &blas_option< UpLo >::value, &blas_option< Trans >::value, &n,
+            &k, &alpha, a, &lda, &beta, c, &ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void herk( const Order order, const UpLo uplo, const Trans trans,
+        const fortran_int_t n, const fortran_int_t k, const double alpha,
+        const double* a, const fortran_int_t lda, const double beta,
+        double* c, const fortran_int_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    BLAS_DSYRK( &blas_option< UpLo >::value, &blas_option< Trans >::value, &n,
+            &k, &alpha, a, &lda, &beta, c, &ldc );
+}
+
 //
 // Overloaded function for dispatching to
 // * netlib-compatible BLAS backend (the default), and

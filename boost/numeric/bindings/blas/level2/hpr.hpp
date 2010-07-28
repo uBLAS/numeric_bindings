@@ -60,6 +60,30 @@ namespace detail {
 //
 // Overloaded function for dispatching to
 // * CBLAS backend, and
+// * float value-type.
+//
+template< typename Order, typename UpLo >
+inline void hpr( const Order order, const UpLo uplo, const int n,
+        const float alpha, const float* x, const int incx, float* ap ) {
+    cblas_sspr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
+            alpha, x, incx, ap );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * double value-type.
+//
+template< typename Order, typename UpLo >
+inline void hpr( const Order order, const UpLo uplo, const int n,
+        const double alpha, const double* x, const int incx, double* ap ) {
+    cblas_dspr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
+            alpha, x, incx, ap );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
@@ -87,6 +111,30 @@ inline void hpr( const Order order, const UpLo uplo, const int n,
 //
 // Overloaded function for dispatching to
 // * CUBLAS backend, and
+// * float value-type.
+//
+template< typename Order, typename UpLo >
+inline void hpr( const Order order, const UpLo uplo, const int n,
+        const float alpha, const float* x, const int incx, float* ap ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    cublasSspr( blas_option< UpLo >::value, n, alpha, x, incx, ap );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * double value-type.
+//
+template< typename Order, typename UpLo >
+inline void hpr( const Order order, const UpLo uplo, const int n,
+        const double alpha, const double* x, const int incx, double* ap ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    // NOT FOUND();
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
@@ -111,6 +159,32 @@ inline void hpr( const Order order, const UpLo uplo, const int n,
 }
 
 #else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
+//
+template< typename Order, typename UpLo >
+inline void hpr( const Order order, const UpLo uplo, const fortran_int_t n,
+        const float alpha, const float* x, const fortran_int_t incx,
+        float* ap ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    BLAS_SSPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
+//
+template< typename Order, typename UpLo >
+inline void hpr( const Order order, const UpLo uplo, const fortran_int_t n,
+        const double alpha, const double* x, const fortran_int_t incx,
+        double* ap ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    BLAS_DSPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
+}
+
 //
 // Overloaded function for dispatching to
 // * netlib-compatible BLAS backend (the default), and

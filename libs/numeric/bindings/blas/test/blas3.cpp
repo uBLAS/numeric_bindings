@@ -28,30 +28,6 @@
 
 namespace bindings = boost::numeric::bindings;
 
-struct apply_real {
-  template< typename MatrixA, typename MatrixC >
-  static inline typename bindings::blas::herk_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-  herk( const typename bindings::remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type alpha, const MatrixA& a,
-        const typename bindings::remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type beta, MatrixC& c ) {
-    return bindings::blas::syrk( alpha, a, beta, c );
-  }
-};
-
-struct apply_complex {
-  template< typename MatrixA, typename MatrixC >
-  static inline typename bindings::blas::herk_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-  herk( const typename bindings::remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type alpha, const MatrixA& a,
-        const typename bindings::remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type beta, MatrixC& c ) {
-    return bindings::blas::herk( alpha, a, beta, c );
-  }
-};
-
 // Randomize a matrix
 template <typename M>
 void randomize(M& m) {
@@ -132,7 +108,6 @@ struct Syrk2 {
    typedef boost::numeric::ublas::matrix<value_type, boost::numeric::ublas::column_major>  ref_matrix_type ;
    typedef typename bindings::remove_imaginary<value_type>::type real_type ;
    typedef typename ref_matrix_type::size_type                                             size_type ;
-   typedef typename boost::mpl::if_<boost::is_complex<value_type>, apply_complex, apply_real>::type apply_t;
 
    Syrk2(const M1& a,
         const ref_matrix_type& a_ref)
@@ -167,14 +142,14 @@ struct Syrk2 {
       c.assign( c_ref_ );
       //boost::numeric::bindings::blas::herk( 'U', 'N', alpha, a_, beta, c ) ;
       hermitian_adaptor<M, upper> hc( c );
-      apply_t::herk( alpha, a_, beta, hc ) ;
+      boost::numeric::bindings::blas::herk( alpha, a_, beta, hc ) ;
       if ( norm_frobenius( upper_part( c - (beta*c_ref_ + alpha * prod( a_ref_, herm( a_ref_ ) ) ) ) )
           > std::numeric_limits< real_type >::epsilon() * norm_frobenius( upper_part(c) ) ) return 255;
 
       c.assign( c_ref_ );
       hermitian_adaptor<M, upper> c_h( c );
       //boost::numeric::bindings::blas::herk( 'U', 'N', alpha, a_, beta, c_h ) ;
-      apply_t::herk( alpha, a_, beta, c_h ) ;
+      boost::numeric::bindings::blas::herk( alpha, a_, beta, c_h ) ;
       if ( norm_frobenius( upper_part( c_h - (beta*c_ref_ + alpha * prod( a_ref_, herm( a_ref_ ) ) ) ) )
           > std::numeric_limits< real_type >::epsilon() * norm_frobenius( upper_part(c_h) ) ) return 255;
 

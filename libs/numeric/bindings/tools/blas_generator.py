@@ -37,6 +37,28 @@ def group_by_value_type( global_info_map ):
               insert_at = i+1
       group_map[ subroutine_group_name ].insert( insert_at, subroutine_name )
 
+# add real symmetric or orthogonal matrices as special cases
+# of complex hermitian or unitary matrices.
+  real_as_complex_matrix = \
+    { 'OR' : 'UN',
+      'OP' : 'UP',
+      'SB' : 'HB',
+      'SP' : 'HP',
+      'SY' : 'HE' }
+  for subroutine_name in global_info_map.keys():
+    subroutine_group_name = global_info_map[ subroutine_name ][ 'group_name' ]
+    if global_info_map[ subroutine_name ][ 'value_type' ] == 'real' and \
+        subroutine_group_name[0:2] in real_as_complex_matrix:
+      complex_group_name = real_as_complex_matrix[ subroutine_group_name[0:2] ] + subroutine_group_name[2:]
+      if group_map.has_key( complex_group_name ):
+        insert_at = 0
+        for i in range( 0, len(group_map[ complex_group_name ]) ):
+            if bindings.subroutine_less( subroutine_name,
+                                group_map[ complex_group_name ][ i ],
+                                global_info_map ):
+                insert_at = i+1
+        group_map[ complex_group_name ].insert( insert_at, subroutine_name )
+
   return group_map
  
 #
@@ -67,8 +89,10 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/assert.hpp>',
     ]
       
-    if template_map.has_key( group_name.lower() + '.includes' ):
-      includes += template_map[ group_name.lower() + '.includes' ].splitlines()
+    for subroutine in subroutines:
+      group_name_l = info_map[ subroutine ][ 'group_name' ].lower()
+      if template_map.has_key( group_name_l + '.includes' ):
+        includes += template_map[ group_name_l + '.includes' ].splitlines()
 
     #
     # LEVEL 0 HANDLING
@@ -77,6 +101,7 @@ def write_functions( info_map, group, template_map, base_dir ):
     for select_backend in [ 'blas_overloads', 'cblas_overloads', 'cublas_overloads' ]:
       sub_overloads = ''
       for subroutine in subroutines:
+        group_name_l = info_map[ subroutine ][ 'group_name' ].lower()
 
         # stuff like float, complex<double>, etc.
         subroutine_value_type = documentation. \
@@ -149,7 +174,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         sub_template = sub_template.replace( '$groupname', group_name.lower() )
         sub_template = sub_template.replace( '$RESULT_TYPE', info_map[ subroutine ][ 'return_value_type' ] )
         sub_template = sub_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
-        sub_template = bindings.search_replace( sub_template, group_name.lower() + '.level0.gsub', template_map )
+        sub_template = bindings.search_replace( sub_template, group_name_l + '.level0.gsub', template_map )
 
         sub_overloads += bindings.proper_indent( sub_template )
 
@@ -186,9 +211,16 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = template_map[ 'blas_level1' ]
       level2_template = template_map[ 'blas_level2' ]
 
+      subroutine = case_map[ 'subroutines' ][ 0 ]
+      group_name_l = info_map[ subroutine ][ 'group_name' ].lower()
+
+      # take this subroutine for arguments etc.
+      # (last entry -> complex version if available, which can be important)
+      subroutine = subroutines[-1]
+
       # include templates come before anything else; they can hold any
       # $ID
-      my_include_key = group_name.lower() + '.' + value_type + '.include_templates'
+      my_include_key = group_name_l + '.' + value_type + '.include_templates'
       if netlib.my_has_key( my_include_key, template_map ):
         include_template_list = template_map[ netlib.my_has_key( my_include_key, template_map ) ].strip().replace(' ','').split(",")
         include_templates = ''
@@ -360,7 +392,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       #level2_template = level2_template.replace( "$LEVEL2", ", ".join( level2_arg_list ) )
 
       if len(level1_type_arg_list)>0:
-        my_key = group_name.lower() + '.' + value_type + '.first_typename'
+        my_key = group_name_l + '.' + value_type + '.first_typename'
         if netlib.my_has_key( my_key, template_map ):
             first_typename = template_map[ netlib.my_has_key( \
                 my_key, template_map ) ].strip()

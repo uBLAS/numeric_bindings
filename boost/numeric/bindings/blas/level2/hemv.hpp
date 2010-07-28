@@ -60,6 +60,32 @@ namespace detail {
 //
 // Overloaded function for dispatching to
 // * CBLAS backend, and
+// * float value-type.
+//
+template< typename Order, typename UpLo >
+inline void hemv( const Order order, const UpLo uplo, const int n,
+        const float alpha, const float* a, const int lda, const float* x,
+        const int incx, const float beta, float* y, const int incy ) {
+    cblas_ssymv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
+            alpha, a, lda, x, incx, beta, y, incy );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
+// * double value-type.
+//
+template< typename Order, typename UpLo >
+inline void hemv( const Order order, const UpLo uplo, const int n,
+        const double alpha, const double* a, const int lda, const double* x,
+        const int incx, const double beta, double* y, const int incy ) {
+    cblas_dsymv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
+            alpha, a, lda, x, incx, beta, y, incy );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend, and
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
@@ -88,6 +114,33 @@ inline void hemv( const Order order, const UpLo uplo, const int n,
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * float value-type.
+//
+template< typename Order, typename UpLo >
+inline void hemv( const Order order, const UpLo uplo, const int n,
+        const float alpha, const float* a, const int lda, const float* x,
+        const int incx, const float beta, float* y, const int incy ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    cublasSsymv( blas_option< UpLo >::value, n, alpha, a, lda, x, incx, beta,
+            y, incy );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend, and
+// * double value-type.
+//
+template< typename Order, typename UpLo >
+inline void hemv( const Order order, const UpLo uplo, const int n,
+        const double alpha, const double* a, const int lda, const double* x,
+        const int incx, const double beta, double* y, const int incy ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    // NOT FOUND();
+}
+
 //
 // Overloaded function for dispatching to
 // * CUBLAS backend, and
@@ -120,6 +173,36 @@ inline void hemv( const Order order, const UpLo uplo, const int n,
 }
 
 #else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
+//
+template< typename Order, typename UpLo >
+inline void hemv( const Order order, const UpLo uplo, const fortran_int_t n,
+        const float alpha, const float* a, const fortran_int_t lda,
+        const float* x, const fortran_int_t incx, const float beta, float* y,
+        const fortran_int_t incy ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    BLAS_SSYMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
+            &beta, y, &incy );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
+//
+template< typename Order, typename UpLo >
+inline void hemv( const Order order, const UpLo uplo, const fortran_int_t n,
+        const double alpha, const double* a, const fortran_int_t lda,
+        const double* x, const fortran_int_t incx, const double beta,
+        double* y, const fortran_int_t incy ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    BLAS_DSYMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
+            &beta, y, &incy );
+}
+
 //
 // Overloaded function for dispatching to
 // * netlib-compatible BLAS backend (the default), and

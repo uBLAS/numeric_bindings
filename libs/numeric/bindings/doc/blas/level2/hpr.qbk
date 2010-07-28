@@ -16,7 +16,7 @@ hpr( const Scalar >, const VectorViewX& x, MatrixAP& ap );
 [heading Description]
 
 `hpr` (short for hermitian, packed,  rank-1 update) provides a C++
-interface to BLAS routines CHPR and ZHPR. 
+interface to BLAS routines SSPR, DSPR, CHPR, and ZHPR. 
 `hpr` performs the hermitian rank 1 operation
 
 A := alpha*x*conjg( x' ) + A,
@@ -32,12 +32,14 @@ Table X below illustrates to which specific routine this dispatching will take p
 
 [table Dispatching of hpr.
 [  [ Value type of VectorViewX ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
+[  [`float`][SSPR][cblas_sspr][cublasSspr] ]
+[  [`double`][DSPR][cblas_dspr][Unavailable] ]
 [  [`complex<float>`][CHPR][cblas_chpr][cublasChpr] ]
 [  [`complex<double>`][ZHPR][cblas_zhpr][Unavailable] ]
 
 ]
 
-The original routines CHPR and ZHPR have six arguments,
+The original routines SSPR, DSPR, CHPR, and ZHPR have six arguments,
 whereas `hpr` requires three arguments.
 
 [table Deduction of arguments of hpr.
@@ -79,6 +81,6 @@ this will output
 
 [heading See Also]
 
-* Originating Fortran source files [@http://www.netlib.org/blas/chpr.f chpr.f] and [@http://www.netlib.org/blas/zhpr.f zhpr.f] at Netlib.
+* Originating Fortran source files [@http://www.netlib.org/blas/sspr.f sspr.f], [@http://www.netlib.org/blas/dspr.f dspr.f], [@http://www.netlib.org/blas/chpr.f chpr.f], and [@http://www.netlib.org/blas/zhpr.f zhpr.f] at Netlib.
 
 [endsect]

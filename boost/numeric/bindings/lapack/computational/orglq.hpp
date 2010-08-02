@@ -90,9 +90,8 @@ struct orglq_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static std::ptrdiff_t invoke( const fortran_int_t m,
-            const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-            const VectorTAU& tau, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorTAU& tau,
+            detail::workspace1< WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (bindings::is_column_major< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -100,16 +99,17 @@ struct orglq_impl {
                 typename remove_const< typename bindings::value_type<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( bindings::size(tau) >= k );
+        BOOST_ASSERT( bindings::size(tau) >= bindings::size(tau) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( m ));
+                min_size_work( bindings::size_row(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= bindings::size_row(a) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
         BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                m) );
-        BOOST_ASSERT( m >= 0 );
-        BOOST_ASSERT( n >= m );
-        return detail::orglq( m, n, k, bindings::begin_value(a),
+                bindings::size_row(a)) );
+        return detail::orglq( bindings::size_row(a), bindings::size_column(a),
+                bindings::size(tau), bindings::begin_value(a),
                 bindings::stride_major(a), bindings::begin_value(tau),
                 bindings::begin_value(work.select(real_type())),
                 bindings::size(work.select(real_type())) );
@@ -123,12 +123,12 @@ struct orglq_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorTAU >
-    static std::ptrdiff_t invoke( const fortran_int_t m,
-            const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-            const VectorTAU& tau, minimal_workspace ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorTAU& tau,
+            minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work( m ) );
-        return invoke( m, n, k, a, tau, workspace( tmp_work ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                bindings::size_row(a) ) );
+        return invoke( a, tau, workspace( tmp_work ) );
     }
 
     //
@@ -139,17 +139,17 @@ struct orglq_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorTAU >
-    static std::ptrdiff_t invoke( const fortran_int_t m,
-            const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-            const VectorTAU& tau, optimal_workspace ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorTAU& tau,
+            optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
-        detail::orglq( m, n, k, bindings::begin_value(a),
+        detail::orglq( bindings::size_row(a), bindings::size_column(a),
+                bindings::size(tau), bindings::begin_value(a),
                 bindings::stride_major(a), bindings::begin_value(tau),
                 &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        return invoke( m, n, k, a, tau, workspace( tmp_work ) );
+        return invoke( a, tau, workspace( tmp_work ) );
     }
 
     //
@@ -179,11 +179,9 @@ struct orglq_impl {
 template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-orglq( const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, MatrixA& a, const VectorTAU& tau,
-        Workspace work ) {
+orglq( MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return orglq_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( m, n, k, a, tau, work );
+            MatrixA >::type >::invoke( a, tau, work );
 }
 
 //
@@ -194,10 +192,9 @@ orglq( const fortran_int_t m, const fortran_int_t n,
 template< typename MatrixA, typename VectorTAU >
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
-orglq( const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, MatrixA& a, const VectorTAU& tau ) {
+orglq( MatrixA& a, const VectorTAU& tau ) {
     return orglq_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( m, n, k, a, tau, optimal_workspace() );
+            MatrixA >::type >::invoke( a, tau, optimal_workspace() );
 }
 
 //
@@ -208,11 +205,9 @@ orglq( const fortran_int_t m, const fortran_int_t n,
 template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-orglq( const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
-        Workspace work ) {
+orglq( const MatrixA& a, const VectorTAU& tau, Workspace work ) {
     return orglq_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( m, n, k, a, tau, work );
+            MatrixA >::type >::invoke( a, tau, work );
 }
 
 //
@@ -223,10 +218,9 @@ orglq( const fortran_int_t m, const fortran_int_t n,
 template< typename MatrixA, typename VectorTAU >
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
-orglq( const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, const MatrixA& a, const VectorTAU& tau ) {
+orglq( const MatrixA& a, const VectorTAU& tau ) {
     return orglq_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( m, n, k, a, tau, optimal_workspace() );
+            MatrixA >::type >::invoke( a, tau, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -279,10 +279,7 @@ def level1_type( name, properties ):
       if properties[ 'io' ] == [ 'input' ]:
         result = 'const ' + result
     elif properties[ 'type' ] == 'vector':
-      if 'ref_stride' in properties:
-        result = "VectorView" + name + "& " + name.lower()
-      else:
-        result = "Vector" + name + "& " + name.lower()
+      result = "Vector" + name + "& " + name.lower()
       if properties[ 'io' ] == [ 'input' ]:
         result = 'const ' + result
     else:
@@ -326,10 +323,7 @@ def level1_typename( name, properties ):
     if properties[ 'type' ] == 'matrix':
       result = "typename Matrix" + name
     if properties[ 'type' ] == 'vector':
-      if 'ref_stride' in properties:
-        result = "typename VectorView" + name
-      else:      
-        result = "typename Vector" + name
+      result = "typename Vector" + name
   if template_tag_type( name, properties ) == 'passthrough':
     result = "typename " + template_parameter[ name ]
   return result

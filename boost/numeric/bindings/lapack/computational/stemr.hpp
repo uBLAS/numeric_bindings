@@ -438,7 +438,6 @@ struct stemr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for stemr. Its overload differs for
-// * fortran_bool_t&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -460,7 +459,6 @@ stemr( const char jobz, const char range, const fortran_int_t n,
 
 //
 // Overloaded function for stemr. Its overload differs for
-// * fortran_bool_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -475,50 +473,6 @@ stemr( const char jobz, const char range, const fortran_int_t n,
         const fortran_int_t iu, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
         fortran_bool_t& tryrac ) {
-    return stemr_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
-            m, w, z, nzc, isuppz, tryrac, optimal_workspace() );
-}
-
-//
-// Overloaded function for stemr. Its overload differs for
-// * const fortran_bool_t&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stemr( const char jobz, const char range, const fortran_int_t n,
-        VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename bindings::value_type< MatrixZ >::type >::type vl,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixZ >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        const fortran_bool_t& tryrac, Workspace work ) {
-    return stemr_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
-            m, w, z, nzc, isuppz, tryrac, work );
-}
-
-//
-// Overloaded function for stemr. Its overload differs for
-// * const fortran_bool_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename MatrixZ, typename VectorISUPPZ >
-inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
-        std::ptrdiff_t >::type
-stemr( const char jobz, const char range, const fortran_int_t n,
-        VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename bindings::value_type< MatrixZ >::type >::type vl,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixZ >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, const fortran_int_t nzc, VectorISUPPZ& isuppz,
-        const fortran_bool_t& tryrac ) {
     return stemr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             m, w, z, nzc, isuppz, tryrac, optimal_workspace() );

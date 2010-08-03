@@ -195,8 +195,8 @@ struct iamax_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorViewX >
-    static result_type invoke( const VectorViewX& x ) {
+    template< typename VectorX >
+    static result_type invoke( const VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         return detail::iamax( bindings::size(x),
                 bindings::begin_value(x), bindings::stride(x) );
@@ -214,12 +214,12 @@ struct iamax_impl {
 //
 // Overloaded function for iamax. Its overload differs for
 //
-template< typename VectorViewX >
+template< typename VectorX >
 inline typename iamax_impl< typename bindings::value_type<
-        VectorViewX >::type >::result_type
-iamax( const VectorViewX& x ) {
+        VectorX >::type >::result_type
+iamax( const VectorX& x ) {
     return iamax_impl< typename bindings::value_type<
-            VectorViewX >::type >::invoke( x );
+            VectorX >::type >::invoke( x );
 }
 
 } // namespace blas

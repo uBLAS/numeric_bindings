@@ -209,23 +209,10 @@ struct hptrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for hptrd. Its overload differs for
-// * MatrixAP&
 //
 template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t hptrd( MatrixAP& ap, VectorD& d, VectorE& e,
-        VectorTAU& tau ) {
-    return hptrd_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, d, e, tau );
-}
-
-//
-// Overloaded function for hptrd. Its overload differs for
-// * const MatrixAP&
-//
-template< typename MatrixAP, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t hptrd( const MatrixAP& ap, VectorD& d, VectorE& e,
         VectorTAU& tau ) {
     return hptrd_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, d, e, tau );

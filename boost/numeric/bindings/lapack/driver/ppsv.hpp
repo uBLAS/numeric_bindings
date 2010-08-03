@@ -157,44 +157,9 @@ struct ppsv_impl {
 
 //
 // Overloaded function for ppsv. Its overload differs for
-// * MatrixAP&
-// * MatrixB&
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t ppsv( MatrixAP& ap, MatrixB& b ) {
-    return ppsv_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, b );
-}
-
-//
-// Overloaded function for ppsv. Its overload differs for
-// * const MatrixAP&
-// * MatrixB&
-//
-template< typename MatrixAP, typename MatrixB >
-inline std::ptrdiff_t ppsv( const MatrixAP& ap, MatrixB& b ) {
-    return ppsv_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, b );
-}
-
-//
-// Overloaded function for ppsv. Its overload differs for
-// * MatrixAP&
-// * const MatrixB&
-//
-template< typename MatrixAP, typename MatrixB >
-inline std::ptrdiff_t ppsv( MatrixAP& ap, const MatrixB& b ) {
-    return ppsv_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, b );
-}
-
-//
-// Overloaded function for ppsv. Its overload differs for
-// * const MatrixAP&
-// * const MatrixB&
-//
-template< typename MatrixAP, typename MatrixB >
-inline std::ptrdiff_t ppsv( const MatrixAP& ap, const MatrixB& b ) {
     return ppsv_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, b );
 }

@@ -195,8 +195,6 @@ struct sbtrd_impl {
 
 //
 // Overloaded function for sbtrd. Its overload differs for
-// * MatrixAB&
-// * MatrixQ&
 // * User-defined workspace
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
@@ -211,8 +209,6 @@ sbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
 
 //
 // Overloaded function for sbtrd. Its overload differs for
-// * MatrixAB&
-// * MatrixQ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorD, typename VectorE,
@@ -221,105 +217,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 sbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
         MatrixQ& q ) {
-    return sbtrd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, d, e, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sbtrd. Its overload differs for
-// * const MatrixAB&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
-        MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
-}
-
-//
-// Overloaded function for sbtrd. Its overload differs for
-// * const MatrixAB&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-sbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
-        MatrixQ& q ) {
-    return sbtrd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, d, e, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sbtrd. Its overload differs for
-// * MatrixAB&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
-        const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
-}
-
-//
-// Overloaded function for sbtrd. Its overload differs for
-// * MatrixAB&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-sbtrd( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
-        const MatrixQ& q ) {
-    return sbtrd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, d, e, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sbtrd. Its overload differs for
-// * const MatrixAB&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
-        const MatrixQ& q, Workspace work ) {
-    return sbtrd_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, d, e, q, work );
-}
-
-//
-// Overloaded function for sbtrd. Its overload differs for
-// * const MatrixAB&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename VectorD, typename VectorE,
-        typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-sbtrd( const char vect, const MatrixAB& ab, VectorD& d, VectorE& e,
-        const MatrixQ& q ) {
     return sbtrd_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( vect, ab, d, e, q,
             optimal_workspace() );

@@ -293,7 +293,6 @@ struct syrk_impl {
 
 //
 // Overloaded function for syrk. Its overload differs for
-// * MatrixC&
 //
 template< typename MatrixA, typename MatrixC >
 inline typename syrk_impl< typename bindings::value_type<
@@ -301,20 +300,6 @@ inline typename syrk_impl< typename bindings::value_type<
 syrk( const typename bindings::value_type< MatrixA >::type alpha,
         const MatrixA& a, const typename bindings::value_type<
         MatrixA >::type beta, MatrixC& c ) {
-    syrk_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( alpha, a, beta, c );
-}
-
-//
-// Overloaded function for syrk. Its overload differs for
-// * const MatrixC&
-//
-template< typename MatrixA, typename MatrixC >
-inline typename syrk_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-syrk( const typename bindings::value_type< MatrixA >::type alpha,
-        const MatrixA& a, const typename bindings::value_type<
-        MatrixA >::type beta, const MatrixC& c ) {
     syrk_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( alpha, a, beta, c );
 }

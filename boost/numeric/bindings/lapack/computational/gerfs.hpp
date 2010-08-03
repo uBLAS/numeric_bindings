@@ -431,7 +431,6 @@ struct gerfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for gerfs. Its overload differs for
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -448,7 +447,6 @@ gerfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
 
 //
 // Overloaded function for gerfs. Its overload differs for
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -458,41 +456,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gerfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return gerfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gerfs. Its overload differs for
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gerfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gerfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for gerfs. Its overload differs for
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-gerfs( const MatrixA& a, const MatrixAF& af, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr ) {
     return gerfs_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, af, ipiv, b, x, ferr, berr,
             optimal_workspace() );

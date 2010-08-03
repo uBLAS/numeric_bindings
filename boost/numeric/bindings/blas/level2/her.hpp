@@ -237,14 +237,14 @@ struct her_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorViewX, typename MatrixA >
-    static result_type invoke( const real_type alpha, const VectorViewX& x,
+    template< typename VectorX, typename MatrixA >
+    static result_type invoke( const real_type alpha, const VectorX& x,
             MatrixA& a ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::uplo_tag< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorViewX >::type >::type,
+                typename bindings::value_type< VectorX >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
@@ -266,29 +266,14 @@ struct her_impl {
 
 //
 // Overloaded function for her. Its overload differs for
-// * MatrixA&
 //
-template< typename VectorViewX, typename MatrixA >
+template< typename VectorX, typename MatrixA >
 inline typename her_impl< typename bindings::value_type<
-        VectorViewX >::type >::result_type
+        VectorX >::type >::result_type
 her( const typename remove_imaginary< typename bindings::value_type<
-        VectorViewX >::type >::type alpha, const VectorViewX& x, MatrixA& a ) {
+        VectorX >::type >::type alpha, const VectorX& x, MatrixA& a ) {
     her_impl< typename bindings::value_type<
-            VectorViewX >::type >::invoke( alpha, x, a );
-}
-
-//
-// Overloaded function for her. Its overload differs for
-// * const MatrixA&
-//
-template< typename VectorViewX, typename MatrixA >
-inline typename her_impl< typename bindings::value_type<
-        VectorViewX >::type >::result_type
-her( const typename remove_imaginary< typename bindings::value_type<
-        VectorViewX >::type >::type alpha, const VectorViewX& x,
-        const MatrixA& a ) {
-    her_impl< typename bindings::value_type<
-            VectorViewX >::type >::invoke( alpha, x, a );
+            VectorX >::type >::invoke( alpha, x, a );
 }
 
 } // namespace blas

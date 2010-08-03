@@ -160,20 +160,9 @@ struct pftrs_impl {
 
 //
 // Overloaded function for pftrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t pftrs( const MatrixA& a, MatrixB& b ) {
-    return pftrs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b );
-}
-
-//
-// Overloaded function for pftrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t pftrs( const MatrixA& a, const MatrixB& b ) {
     return pftrs_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, b );
 }

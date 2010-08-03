@@ -232,20 +232,9 @@ struct potrs_impl {
 
 //
 // Overloaded function for potrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t potrs( const MatrixA& a, MatrixB& b ) {
-    return potrs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b );
-}
-
-//
-// Overloaded function for potrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t potrs( const MatrixA& a, const MatrixB& b ) {
     return potrs_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, b );
 }

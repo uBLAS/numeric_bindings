@@ -317,26 +317,12 @@ struct trsm_impl {
 
 //
 // Overloaded function for trsm. Its overload differs for
-// * MatrixB&
 //
 template< typename Side, typename MatrixA, typename MatrixB >
 inline typename trsm_impl< typename bindings::value_type<
         MatrixA >::type >::result_type
 trsm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, MatrixB& b ) {
-    trsm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, alpha, a, b );
-}
-
-//
-// Overloaded function for trsm. Its overload differs for
-// * const MatrixB&
-//
-template< typename Side, typename MatrixA, typename MatrixB >
-inline typename trsm_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-trsm( const Side side, const typename bindings::value_type<
-        MatrixA >::type alpha, const MatrixA& a, const MatrixB& b ) {
     trsm_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, alpha, a, b );
 }

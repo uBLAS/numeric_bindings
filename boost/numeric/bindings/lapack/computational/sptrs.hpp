@@ -161,22 +161,10 @@ struct sptrs_impl {
 
 //
 // Overloaded function for sptrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sptrs( const MatrixAP& ap, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return sptrs_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv, b );
-}
-
-//
-// Overloaded function for sptrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t sptrs( const MatrixAP& ap, const VectorIPIV& ipiv,
-        const MatrixB& b ) {
     return sptrs_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, ipiv, b );
 }

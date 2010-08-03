@@ -166,22 +166,10 @@ struct sytrs_impl {
 
 //
 // Overloaded function for sytrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sytrs( const MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return sytrs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b );
-}
-
-//
-// Overloaded function for sytrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t sytrs( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b ) {
     return sytrs_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, ipiv, b );
 }

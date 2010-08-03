@@ -314,7 +314,6 @@ struct gemm_impl {
 
 //
 // Overloaded function for gemm. Its overload differs for
-// * MatrixC&
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename gemm_impl< typename bindings::value_type<
@@ -323,21 +322,6 @@ gemm( const typename bindings::value_type< MatrixA >::type alpha,
         const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,
         MatrixC& c ) {
-    gemm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( alpha, a, b, beta, c );
-}
-
-//
-// Overloaded function for gemm. Its overload differs for
-// * const MatrixC&
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline typename gemm_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-gemm( const typename bindings::value_type< MatrixA >::type alpha,
-        const MatrixA& a, const MatrixB& b,
-        const typename bindings::value_type< MatrixA >::type beta,
-        const MatrixC& c ) {
     gemm_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( alpha, a, b, beta, c );
 }

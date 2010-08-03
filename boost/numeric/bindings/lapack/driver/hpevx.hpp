@@ -390,8 +390,6 @@ struct hpevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for hpevx. Its overload differs for
-// * MatrixAP&
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
@@ -413,8 +411,6 @@ hpevx( const char jobz, const char range, MatrixAP& ap,
 
 //
 // Overloaded function for hpevx. Its overload differs for
-// * MatrixAP&
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
@@ -429,144 +425,6 @@ hpevx( const char jobz, const char range, MatrixAP& ap,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
-            abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpevx. Its overload differs for
-// * const MatrixAP&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
-            abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hpevx. Its overload differs for
-// * const MatrixAP&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
-            abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpevx. Its overload differs for
-// * MatrixAP&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
-            abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hpevx. Its overload differs for
-// * MatrixAP&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hpevx( const char jobz, const char range, MatrixAP& ap,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return hpevx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
-            abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpevx. Its overload differs for
-// * const MatrixAP&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return hpevx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
-            abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for hpevx. Its overload differs for
-// * const MatrixAP&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-hpevx( const char jobz, const char range, const MatrixAP& ap,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixAP >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
     return hpevx_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( jobz, range, ap, vl, vu, il, iu,
             abstol, m, w, z, ifail, optimal_workspace() );

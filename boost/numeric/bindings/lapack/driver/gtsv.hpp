@@ -164,24 +164,11 @@ struct gtsv_impl {
 
 //
 // Overloaded function for gtsv. Its overload differs for
-// * MatrixB&
 //
 template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
 inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
         VectorD& d, VectorDU& du, MatrixB& b ) {
-    return gtsv_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( n, dl, d, du, b );
-}
-
-//
-// Overloaded function for gtsv. Its overload differs for
-// * const MatrixB&
-//
-template< typename VectorDL, typename VectorD, typename VectorDU,
-        typename MatrixB >
-inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
-        VectorD& d, VectorDU& du, const MatrixB& b ) {
     return gtsv_impl< typename bindings::value_type<
             VectorDL >::type >::invoke( n, dl, d, du, b );
 }

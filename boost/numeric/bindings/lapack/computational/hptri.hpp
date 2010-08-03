@@ -263,7 +263,6 @@ struct hptri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for hptri. Its overload differs for
-// * MatrixAP&
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorIPIV, typename Workspace >
@@ -276,39 +275,12 @@ hptri( MatrixAP& ap, const VectorIPIV& ipiv, Workspace work ) {
 
 //
 // Overloaded function for hptri. Its overload differs for
-// * MatrixAP&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 hptri( MatrixAP& ap, const VectorIPIV& ipiv ) {
-    return hptri_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv, optimal_workspace() );
-}
-
-//
-// Overloaded function for hptri. Its overload differs for
-// * const MatrixAP&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorIPIV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hptri( const MatrixAP& ap, const VectorIPIV& ipiv, Workspace work ) {
-    return hptri_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv, work );
-}
-
-//
-// Overloaded function for hptri. Its overload differs for
-// * const MatrixAP&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorIPIV >
-inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
-        std::ptrdiff_t >::type
-hptri( const MatrixAP& ap, const VectorIPIV& ipiv ) {
     return hptri_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, ipiv, optimal_workspace() );
 }

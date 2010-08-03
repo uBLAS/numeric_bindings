@@ -456,8 +456,6 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for gelsd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorS,
@@ -474,119 +472,12 @@ gelsd( MatrixA& a, MatrixB& b, VectorS& s,
 
 //
 // Overloaded function for gelsd. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorS >
 inline typename boost::disable_if< detail::is_workspace< VectorS >,
         std::ptrdiff_t >::type
 gelsd( MatrixA& a, MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, s, rcond, rank,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gelsd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gelsd( const MatrixA& a, MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type rcond, fortran_int_t& rank,
-        Workspace work ) {
-    return gelsd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, s, rcond, rank, work );
-}
-
-//
-// Overloaded function for gelsd. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline typename boost::disable_if< detail::is_workspace< VectorS >,
-        std::ptrdiff_t >::type
-gelsd( const MatrixA& a, MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, s, rcond, rank,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gelsd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gelsd( MatrixA& a, const MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type rcond, fortran_int_t& rank,
-        Workspace work ) {
-    return gelsd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, s, rcond, rank, work );
-}
-
-//
-// Overloaded function for gelsd. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline typename boost::disable_if< detail::is_workspace< VectorS >,
-        std::ptrdiff_t >::type
-gelsd( MatrixA& a, const MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    return gelsd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, s, rcond, rank,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gelsd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gelsd( const MatrixA& a, const MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type rcond, fortran_int_t& rank,
-        Workspace work ) {
-    return gelsd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, s, rcond, rank, work );
-}
-
-//
-// Overloaded function for gelsd. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline typename boost::disable_if< detail::is_workspace< VectorS >,
-        std::ptrdiff_t >::type
-gelsd( const MatrixA& a, const MatrixB& b, VectorS& s,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
     return gelsd_impl< typename bindings::value_type<

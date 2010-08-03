@@ -203,15 +203,15 @@ struct axpy_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorViewX, typename VectorViewY >
-    static result_type invoke( const value_type a, const VectorViewX& x,
-            VectorViewY& y ) {
+    template< typename VectorX, typename VectorY >
+    static result_type invoke( const value_type a, const VectorX& x,
+            VectorY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorViewX >::type >::type,
+                typename bindings::value_type< VectorX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorViewY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
+                VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         detail::axpy( bindings::size(x), a, bindings::begin_value(x),
                 bindings::stride(x), bindings::begin_value(y),
                 bindings::stride(y) );
@@ -228,28 +228,14 @@ struct axpy_impl {
 
 //
 // Overloaded function for axpy. Its overload differs for
-// * VectorViewY&
 //
-template< typename VectorViewX, typename VectorViewY >
+template< typename VectorX, typename VectorY >
 inline typename axpy_impl< typename bindings::value_type<
-        VectorViewX >::type >::result_type
-axpy( const typename bindings::value_type< VectorViewX >::type a,
-        const VectorViewX& x, VectorViewY& y ) {
+        VectorX >::type >::result_type
+axpy( const typename bindings::value_type< VectorX >::type a,
+        const VectorX& x, VectorY& y ) {
     axpy_impl< typename bindings::value_type<
-            VectorViewX >::type >::invoke( a, x, y );
-}
-
-//
-// Overloaded function for axpy. Its overload differs for
-// * const VectorViewY&
-//
-template< typename VectorViewX, typename VectorViewY >
-inline typename axpy_impl< typename bindings::value_type<
-        VectorViewX >::type >::result_type
-axpy( const typename bindings::value_type< VectorViewX >::type a,
-        const VectorViewX& x, const VectorViewY& y ) {
-    axpy_impl< typename bindings::value_type<
-            VectorViewX >::type >::invoke( a, x, y );
+            VectorX >::type >::invoke( a, x, y );
 }
 
 } // namespace blas

@@ -136,20 +136,9 @@ struct pptrf_impl {
 
 //
 // Overloaded function for pptrf. Its overload differs for
-// * MatrixAP&
 //
 template< typename MatrixAP >
 inline std::ptrdiff_t pptrf( MatrixAP& ap ) {
-    return pptrf_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap );
-}
-
-//
-// Overloaded function for pptrf. Its overload differs for
-// * const MatrixAP&
-//
-template< typename MatrixAP >
-inline std::ptrdiff_t pptrf( const MatrixAP& ap ) {
     return pptrf_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap );
 }

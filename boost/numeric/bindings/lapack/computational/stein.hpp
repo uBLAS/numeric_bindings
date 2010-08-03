@@ -381,7 +381,6 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for stein. Its overload differs for
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -400,7 +399,6 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
 
 //
 // Overloaded function for stein. Its overload differs for
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -412,44 +410,6 @@ stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
         const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         VectorIFAIL& ifail ) {
-    return stein_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
-            ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for stein. Its overload differs for
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const fortran_int_t m, const VectorW& w,
-        const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return stein_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
-            ifail, work );
-}
-
-//
-// Overloaded function for stein. Its overload differs for
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-stein( const fortran_int_t n, const VectorD& d, const VectorE& e,
-        const fortran_int_t m, const VectorW& w,
-        const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
     return stein_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( n, d, e, m, w, iblock, isplit, z,
             ifail, optimal_workspace() );

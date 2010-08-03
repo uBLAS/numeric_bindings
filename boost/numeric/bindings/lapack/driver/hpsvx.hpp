@@ -414,8 +414,6 @@ struct hpsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for hpsvx. Its overload differs for
-// * MatrixAFP&
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
@@ -435,8 +433,6 @@ hpsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
 
 //
 // Overloaded function for hpsvx. Its overload differs for
-// * MatrixAFP&
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
@@ -446,129 +442,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 hpsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return hpsvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
-            ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpsvx. Its overload differs for
-// * const MatrixAFP&
-// * MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hpsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
-        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return hpsvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
-            ferr, berr, work );
-}
-
-//
-// Overloaded function for hpsvx. Its overload differs for
-// * const MatrixAFP&
-// * MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-hpsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
-        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return hpsvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
-            ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpsvx. Its overload differs for
-// * MatrixAFP&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hpsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
-        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return hpsvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
-            ferr, berr, work );
-}
-
-//
-// Overloaded function for hpsvx. Its overload differs for
-// * MatrixAFP&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-hpsvx( const char fact, const MatrixAP& ap, MatrixAFP& afp,
-        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return hpsvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
-            ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for hpsvx. Its overload differs for
-// * const MatrixAFP&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hpsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
-        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return hpsvx_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
-            ferr, berr, work );
-}
-
-//
-// Overloaded function for hpsvx. Its overload differs for
-// * const MatrixAFP&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-hpsvx( const char fact, const MatrixAP& ap, const MatrixAFP& afp,
-        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename bindings::value_type<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return hpsvx_impl< typename bindings::value_type<

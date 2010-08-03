@@ -460,7 +460,6 @@ struct gbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for gbrfs. Its overload differs for
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
@@ -478,7 +477,6 @@ gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
 
 //
 // Overloaded function for gbrfs. Its overload differs for
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
@@ -488,42 +486,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return gbrfs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab, afb, ipiv, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gbrfs. Its overload differs for
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
-    return gbrfs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab, afb, ipiv, b, x, ferr, berr,
-            work );
-}
-
-//
-// Overloaded function for gbrfs. Its overload differs for
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-gbrfs( const MatrixAB& ab, const MatrixAFB& afb, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr ) {
     return gbrfs_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( ab, afb, ipiv, b, x, ferr, berr,
             optimal_workspace() );

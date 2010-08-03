@@ -198,8 +198,6 @@ struct sygv_impl {
 
 //
 // Overloaded function for sygv. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorW,
@@ -214,8 +212,6 @@ sygv( const fortran_int_t itype, const char jobz, MatrixA& a,
 
 //
 // Overloaded function for sygv. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorW >
@@ -223,102 +219,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorW >,
         std::ptrdiff_t >::type
 sygv( const fortran_int_t itype, const char jobz, MatrixA& a,
         MatrixB& b, VectorW& w ) {
-    return sygv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sygv. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sygv( const fortran_int_t itype, const char jobz, const MatrixA& a,
-        MatrixB& b, VectorW& w, Workspace work ) {
-    return sygv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w, work );
-}
-
-//
-// Overloaded function for sygv. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW >
-inline typename boost::disable_if< detail::is_workspace< VectorW >,
-        std::ptrdiff_t >::type
-sygv( const fortran_int_t itype, const char jobz, const MatrixA& a,
-        MatrixB& b, VectorW& w ) {
-    return sygv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sygv. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sygv( const fortran_int_t itype, const char jobz, MatrixA& a,
-        const MatrixB& b, VectorW& w, Workspace work ) {
-    return sygv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w, work );
-}
-
-//
-// Overloaded function for sygv. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW >
-inline typename boost::disable_if< detail::is_workspace< VectorW >,
-        std::ptrdiff_t >::type
-sygv( const fortran_int_t itype, const char jobz, MatrixA& a,
-        const MatrixB& b, VectorW& w ) {
-    return sygv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for sygv. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sygv( const fortran_int_t itype, const char jobz, const MatrixA& a,
-        const MatrixB& b, VectorW& w, Workspace work ) {
-    return sygv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, jobz, a, b, w, work );
-}
-
-//
-// Overloaded function for sygv. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW >
-inline typename boost::disable_if< detail::is_workspace< VectorW >,
-        std::ptrdiff_t >::type
-sygv( const fortran_int_t itype, const char jobz, const MatrixA& a,
-        const MatrixB& b, VectorW& w ) {
     return sygv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( itype, jobz, a, b, w,
             optimal_workspace() );

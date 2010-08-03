@@ -207,24 +207,11 @@ struct gebak_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for gebak. Its overload differs for
-// * MatrixV&
 //
 template< typename Side, typename VectorSCALE, typename MatrixV >
 inline std::ptrdiff_t gebak( const char job, const Side side,
         const fortran_int_t ilo, const fortran_int_t ihi,
         const VectorSCALE& scale, MatrixV& v ) {
-    return gebak_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( job, side, ilo, ihi, scale, v );
-}
-
-//
-// Overloaded function for gebak. Its overload differs for
-// * const MatrixV&
-//
-template< typename Side, typename VectorSCALE, typename MatrixV >
-inline std::ptrdiff_t gebak( const char job, const Side side,
-        const fortran_int_t ilo, const fortran_int_t ihi,
-        const VectorSCALE& scale, const MatrixV& v ) {
     return gebak_impl< typename bindings::value_type<
             MatrixV >::type >::invoke( job, side, ilo, ihi, scale, v );
 }

@@ -374,8 +374,6 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
@@ -390,8 +388,6 @@ ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, VectorY& y,
 
 //
 // Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorD,
@@ -399,102 +395,6 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
 inline typename boost::disable_if< detail::is_workspace< VectorY >,
         std::ptrdiff_t >::type
 ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, VectorY& y ) {
-    return ggglm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x, VectorY& y,
-        Workspace work ) {
-    return ggglm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline typename boost::disable_if< detail::is_workspace< VectorY >,
-        std::ptrdiff_t >::type
-ggglm( const MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
-        VectorY& y ) {
-    return ggglm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x, VectorY& y,
-        Workspace work ) {
-    return ggglm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline typename boost::disable_if< detail::is_workspace< VectorY >,
-        std::ptrdiff_t >::type
-ggglm( MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
-        VectorY& y ) {
-    return ggglm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
-        VectorY& y, Workspace work ) {
-    return ggglm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, d, x, y, work );
-}
-
-//
-// Overloaded function for ggglm. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorD,
-        typename VectorX, typename VectorY >
-inline typename boost::disable_if< detail::is_workspace< VectorY >,
-        std::ptrdiff_t >::type
-ggglm( const MatrixA& a, const MatrixB& b, VectorD& d, VectorX& x,
-        VectorY& y ) {
     return ggglm_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, b, d, x, y, optimal_workspace() );
 }

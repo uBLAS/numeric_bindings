@@ -345,8 +345,6 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 
 //
 // Overloaded function for gels. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename Workspace >
@@ -359,98 +357,12 @@ gels( MatrixA& a, MatrixB& b, Workspace work ) {
 
 //
 // Overloaded function for gels. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB >
 inline typename boost::disable_if< detail::is_workspace< MatrixB >,
         std::ptrdiff_t >::type
 gels( MatrixA& a, MatrixB& b ) {
-    return gels_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, optimal_workspace() );
-}
-
-//
-// Overloaded function for gels. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gels( const MatrixA& a, MatrixB& b, Workspace work ) {
-    return gels_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, work );
-}
-
-//
-// Overloaded function for gels. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB >
-inline typename boost::disable_if< detail::is_workspace< MatrixB >,
-        std::ptrdiff_t >::type
-gels( const MatrixA& a, MatrixB& b ) {
-    return gels_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, optimal_workspace() );
-}
-
-//
-// Overloaded function for gels. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gels( MatrixA& a, const MatrixB& b, Workspace work ) {
-    return gels_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, work );
-}
-
-//
-// Overloaded function for gels. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB >
-inline typename boost::disable_if< detail::is_workspace< MatrixB >,
-        std::ptrdiff_t >::type
-gels( MatrixA& a, const MatrixB& b ) {
-    return gels_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, optimal_workspace() );
-}
-
-//
-// Overloaded function for gels. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gels( const MatrixA& a, const MatrixB& b, Workspace work ) {
-    return gels_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, work );
-}
-
-//
-// Overloaded function for gels. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB >
-inline typename boost::disable_if< detail::is_workspace< MatrixB >,
-        std::ptrdiff_t >::type
-gels( const MatrixA& a, const MatrixB& b ) {
     return gels_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, b, optimal_workspace() );
 }

@@ -245,18 +245,18 @@ struct hpr2_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorViewX, typename VectorViewY, typename MatrixAP >
-    static result_type invoke( const value_type alpha, const VectorViewX& x,
-            const VectorViewY& y, MatrixAP& ap ) {
+    template< typename VectorX, typename VectorY, typename MatrixAP >
+    static result_type invoke( const value_type alpha, const VectorX& x,
+            const VectorY& y, MatrixAP& ap ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorViewX >::type >::type,
+                typename bindings::value_type< VectorX >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorViewY >::type >::type >::value) );
+                VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
-                typename bindings::value_type< VectorViewX >::type >::type,
+                typename bindings::value_type< VectorX >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixAP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
@@ -277,28 +277,14 @@ struct hpr2_impl {
 
 //
 // Overloaded function for hpr2. Its overload differs for
-// * MatrixAP&
 //
-template< typename VectorViewX, typename VectorViewY, typename MatrixAP >
+template< typename VectorX, typename VectorY, typename MatrixAP >
 inline typename hpr2_impl< typename bindings::value_type<
-        VectorViewX >::type >::result_type
-hpr2( const typename bindings::value_type< VectorViewX >::type alpha,
-        const VectorViewX& x, const VectorViewY& y, MatrixAP& ap ) {
+        VectorX >::type >::result_type
+hpr2( const typename bindings::value_type< VectorX >::type alpha,
+        const VectorX& x, const VectorY& y, MatrixAP& ap ) {
     hpr2_impl< typename bindings::value_type<
-            VectorViewX >::type >::invoke( alpha, x, y, ap );
-}
-
-//
-// Overloaded function for hpr2. Its overload differs for
-// * const MatrixAP&
-//
-template< typename VectorViewX, typename VectorViewY, typename MatrixAP >
-inline typename hpr2_impl< typename bindings::value_type<
-        VectorViewX >::type >::result_type
-hpr2( const typename bindings::value_type< VectorViewX >::type alpha,
-        const VectorViewX& x, const VectorViewY& y, const MatrixAP& ap ) {
-    hpr2_impl< typename bindings::value_type<
-            VectorViewX >::type >::invoke( alpha, x, y, ap );
+            VectorX >::type >::invoke( alpha, x, y, ap );
 }
 
 } // namespace blas

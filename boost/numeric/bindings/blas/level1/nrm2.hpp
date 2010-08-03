@@ -193,8 +193,8 @@ struct nrm2_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorViewX >
-    static result_type invoke( const VectorViewX& x ) {
+    template< typename VectorX >
+    static result_type invoke( const VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
         return detail::nrm2( bindings::size(x),
                 bindings::begin_value(x), bindings::stride(x) );
@@ -212,12 +212,12 @@ struct nrm2_impl {
 //
 // Overloaded function for nrm2. Its overload differs for
 //
-template< typename VectorViewX >
+template< typename VectorX >
 inline typename nrm2_impl< typename bindings::value_type<
-        VectorViewX >::type >::result_type
-nrm2( const VectorViewX& x ) {
+        VectorX >::type >::result_type
+nrm2( const VectorX& x ) {
     return nrm2_impl< typename bindings::value_type<
-            VectorViewX >::type >::invoke( x );
+            VectorX >::type >::invoke( x );
 }
 
 } // namespace blas

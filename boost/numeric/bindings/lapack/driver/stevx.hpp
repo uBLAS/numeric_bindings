@@ -218,7 +218,6 @@ struct stevx_impl {
 
 //
 // Overloaded function for stevx. Its overload differs for
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -241,7 +240,6 @@ stevx( const char jobz, const char range, const fortran_int_t n,
 
 //
 // Overloaded function for stevx. Its overload differs for
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -256,52 +254,6 @@ stevx( const char jobz, const char range, const fortran_int_t n,
         const fortran_int_t iu, const typename remove_imaginary<
         typename bindings::value_type< VectorD >::type >::type abstol,
         fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    return stevx_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
-            abstol, m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for stevx. Its overload differs for
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stevx( const char jobz, const char range, const fortran_int_t n,
-        VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename bindings::value_type< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename bindings::value_type<
-        VectorD >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename bindings::value_type< VectorD >::type >::type abstol,
-        fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    return stevx_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
-            abstol, m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for stevx. Its overload differs for
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-stevx( const char jobz, const char range, const fortran_int_t n,
-        VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename bindings::value_type< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename bindings::value_type<
-        VectorD >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename bindings::value_type< VectorD >::type >::type abstol,
-        fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail ) {
     return stevx_impl< typename bindings::value_type<
             VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             abstol, m, w, z, ifail, optimal_workspace() );

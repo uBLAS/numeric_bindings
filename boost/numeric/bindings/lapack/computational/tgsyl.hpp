@@ -504,8 +504,6 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for tgsyl. Its overload differs for
-// * MatrixC&
-// * MatrixF&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC,
@@ -526,8 +524,6 @@ tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
 
 //
 // Overloaded function for tgsyl. Its overload differs for
-// * MatrixC&
-// * MatrixF&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC,
@@ -539,133 +535,6 @@ tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
         typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scale, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& dif ) {
-    return tgsyl_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsyl. Its overload differs for
-// * const MatrixC&
-// * MatrixF&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC,
-        typename MatrixD, typename MatrixE, typename MatrixF,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
-        const MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& dif,
-        Workspace work ) {
-    return tgsyl_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
-            work );
-}
-
-//
-// Overloaded function for tgsyl. Its overload differs for
-// * const MatrixC&
-// * MatrixF&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC,
-        typename MatrixD, typename MatrixE, typename MatrixF >
-inline typename boost::disable_if< detail::is_workspace< MatrixF >,
-        std::ptrdiff_t >::type
-tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
-        const MatrixC& c, const MatrixD& d, const MatrixE& e, MatrixF& f,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& dif ) {
-    return tgsyl_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsyl. Its overload differs for
-// * MatrixC&
-// * const MatrixF&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC,
-        typename MatrixD, typename MatrixE, typename MatrixF,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
-        MatrixC& c, const MatrixD& d, const MatrixE& e, const MatrixF& f,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& dif,
-        Workspace work ) {
-    return tgsyl_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
-            work );
-}
-
-//
-// Overloaded function for tgsyl. Its overload differs for
-// * MatrixC&
-// * const MatrixF&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC,
-        typename MatrixD, typename MatrixE, typename MatrixF >
-inline typename boost::disable_if< detail::is_workspace< MatrixF >,
-        std::ptrdiff_t >::type
-tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
-        MatrixC& c, const MatrixD& d, const MatrixE& e, const MatrixF& f,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& scale, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& dif ) {
-    return tgsyl_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for tgsyl. Its overload differs for
-// * const MatrixC&
-// * const MatrixF&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC,
-        typename MatrixD, typename MatrixE, typename MatrixF,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
-        const MatrixC& c, const MatrixD& d, const MatrixE& e,
-        const MatrixF& f, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& scale,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& dif, Workspace work ) {
-    return tgsyl_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
-            work );
-}
-
-//
-// Overloaded function for tgsyl. Its overload differs for
-// * const MatrixC&
-// * const MatrixF&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC,
-        typename MatrixD, typename MatrixE, typename MatrixF >
-inline typename boost::disable_if< detail::is_workspace< MatrixF >,
-        std::ptrdiff_t >::type
-tgsyl( const fortran_int_t ijob, const MatrixA& a, const MatrixB& b,
-        const MatrixC& c, const MatrixD& d, const MatrixE& e,
-        const MatrixF& f, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& scale,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& dif ) {
     return tgsyl_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( ijob, a, b, c, d, e, f, scale, dif,
             optimal_workspace() );

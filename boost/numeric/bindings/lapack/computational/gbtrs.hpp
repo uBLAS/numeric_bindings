@@ -179,22 +179,10 @@ struct gbtrs_impl {
 
 //
 // Overloaded function for gbtrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbtrs( const MatrixAB& ab, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return gbtrs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab, ipiv, b );
-}
-
-//
-// Overloaded function for gbtrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gbtrs( const MatrixAB& ab, const VectorIPIV& ipiv,
-        const MatrixB& b ) {
     return gbtrs_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( ab, ipiv, b );
 }

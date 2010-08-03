@@ -313,7 +313,6 @@ struct symm_impl {
 
 //
 // Overloaded function for symm. Its overload differs for
-// * MatrixC&
 //
 template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename symm_impl< typename bindings::value_type<
@@ -322,21 +321,6 @@ symm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,
         MatrixC& c ) {
-    symm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, alpha, a, b, beta, c );
-}
-
-//
-// Overloaded function for symm. Its overload differs for
-// * const MatrixC&
-//
-template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
-inline typename symm_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-symm( const Side side, const typename bindings::value_type<
-        MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
-        const typename bindings::value_type< MatrixA >::type beta,
-        const MatrixC& c ) {
     symm_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, alpha, a, b, beta, c );
 }

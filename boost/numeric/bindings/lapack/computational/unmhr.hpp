@@ -364,7 +364,6 @@ struct unmhr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for unmhr. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -380,7 +379,6 @@ unmhr( const Side side, const fortran_int_t ilo,
 
 //
 // Overloaded function for unmhr. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -390,39 +388,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
 unmhr( const Side side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c ) {
-    return unmhr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, ilo, ihi, a, tau, c,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for unmhr. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-unmhr( const Side side, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
-        const MatrixC& c, Workspace work ) {
-    return unmhr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, ilo, ihi, a, tau, c, work );
-}
-
-//
-// Overloaded function for unmhr. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-unmhr( const Side side, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
-        const MatrixC& c ) {
     return unmhr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, ilo, ihi, a, tau, c,
             optimal_workspace() );

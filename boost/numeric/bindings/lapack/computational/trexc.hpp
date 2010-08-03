@@ -254,8 +254,6 @@ struct trexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
 // * User-defined workspace
 //
 template< typename MatrixT, typename MatrixQ, typename Workspace >
@@ -269,8 +267,6 @@ trexc( const char compq, MatrixT& t, MatrixQ& q, fortran_int_t& ifst,
 
 //
 // Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixT, typename MatrixQ >
@@ -282,146 +278,12 @@ trexc( const char compq, MatrixT& t, MatrixQ& q, fortran_int_t& ifst,
             MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
             optimal_workspace() );
 }
-
 //
 // Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-trexc( const char compq, const MatrixT& t, MatrixQ& q,
-        fortran_int_t& ifst, fortran_int_t& ilst, Workspace work ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixT, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-trexc( const char compq, const MatrixT& t, MatrixQ& q,
-        fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-trexc( const char compq, MatrixT& t, const MatrixQ& q,
-        fortran_int_t& ifst, fortran_int_t& ilst, Workspace work ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixT, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-trexc( const char compq, MatrixT& t, const MatrixQ& q,
-        fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-trexc( const char compq, const MatrixT& t, const MatrixQ& q,
-        fortran_int_t& ifst, fortran_int_t& ilst, Workspace work ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst, work );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixT, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-trexc( const char compq, const MatrixT& t, const MatrixQ& q,
-        fortran_int_t& ifst, fortran_int_t& ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
-            optimal_workspace() );
-}
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
 //
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
         const fortran_int_t ifst, const fortran_int_t ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        MatrixQ& q, const fortran_int_t ifst,
-        const fortran_int_t ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
-        const MatrixQ& q, const fortran_int_t ifst,
-        const fortran_int_t ilst ) {
-    return trexc_impl< typename bindings::value_type<
-            MatrixT >::type >::invoke( compq, t, q, ifst, ilst );
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        const MatrixQ& q, const fortran_int_t ifst,
-        const fortran_int_t ilst ) {
     return trexc_impl< typename bindings::value_type<
             MatrixT >::type >::invoke( compq, t, q, ifst, ilst );
 }

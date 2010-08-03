@@ -231,44 +231,9 @@ struct posv_impl {
 
 //
 // Overloaded function for posv. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t posv( MatrixA& a, MatrixB& b ) {
-    return posv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b );
-}
-
-//
-// Overloaded function for posv. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-//
-template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t posv( const MatrixA& a, MatrixB& b ) {
-    return posv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b );
-}
-
-//
-// Overloaded function for posv. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-//
-template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t posv( MatrixA& a, const MatrixB& b ) {
-    return posv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b );
-}
-
-//
-// Overloaded function for posv. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-//
-template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t posv( const MatrixA& a, const MatrixB& b ) {
     return posv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, b );
 }

@@ -382,8 +382,6 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for tgevc. Its overload differs for
-// * MatrixVL&
-// * MatrixVR&
 // * User-defined workspace
 //
 template< typename Side, typename VectorSELECT, typename MatrixS,
@@ -401,8 +399,6 @@ tgevc( const Side side, const char howmny, const VectorSELECT& select,
 
 //
 // Overloaded function for tgevc. Its overload differs for
-// * MatrixVL&
-// * MatrixVR&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename VectorSELECT, typename MatrixS,
@@ -412,119 +408,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
 tgevc( const Side side, const char howmny, const VectorSELECT& select,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    return tgevc_impl< typename bindings::value_type<
-            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
-            m, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgevc. Its overload differs for
-// * const MatrixVL&
-// * MatrixVR&
-// * User-defined workspace
-//
-template< typename Side, typename VectorSELECT, typename MatrixS,
-        typename MatrixP, typename MatrixVL, typename MatrixVR,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgevc( const Side side, const char howmny, const VectorSELECT& select,
-        const MatrixS& s, const MatrixP& p, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return tgevc_impl< typename bindings::value_type<
-            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
-            m, work );
-}
-
-//
-// Overloaded function for tgevc. Its overload differs for
-// * const MatrixVL&
-// * MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename VectorSELECT, typename MatrixS,
-        typename MatrixP, typename MatrixVL, typename MatrixVR >
-inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
-        std::ptrdiff_t >::type
-tgevc( const Side side, const char howmny, const VectorSELECT& select,
-        const MatrixS& s, const MatrixP& p, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, fortran_int_t& m ) {
-    return tgevc_impl< typename bindings::value_type<
-            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
-            m, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgevc. Its overload differs for
-// * MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename Side, typename VectorSELECT, typename MatrixS,
-        typename MatrixP, typename MatrixVL, typename MatrixVR,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgevc( const Side side, const char howmny, const VectorSELECT& select,
-        const MatrixS& s, const MatrixP& p, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    return tgevc_impl< typename bindings::value_type<
-            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
-            m, work );
-}
-
-//
-// Overloaded function for tgevc. Its overload differs for
-// * MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename VectorSELECT, typename MatrixS,
-        typename MatrixP, typename MatrixVL, typename MatrixVR >
-inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
-        std::ptrdiff_t >::type
-tgevc( const Side side, const char howmny, const VectorSELECT& select,
-        const MatrixS& s, const MatrixP& p, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, fortran_int_t& m ) {
-    return tgevc_impl< typename bindings::value_type<
-            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
-            m, optimal_workspace() );
-}
-
-//
-// Overloaded function for tgevc. Its overload differs for
-// * const MatrixVL&
-// * const MatrixVR&
-// * User-defined workspace
-//
-template< typename Side, typename VectorSELECT, typename MatrixS,
-        typename MatrixP, typename MatrixVL, typename MatrixVR,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-tgevc( const Side side, const char howmny, const VectorSELECT& select,
-        const MatrixS& s, const MatrixP& p, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
-        Workspace work ) {
-    return tgevc_impl< typename bindings::value_type<
-            MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
-            m, work );
-}
-
-//
-// Overloaded function for tgevc. Its overload differs for
-// * const MatrixVL&
-// * const MatrixVR&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename VectorSELECT, typename MatrixS,
-        typename MatrixP, typename MatrixVL, typename MatrixVR >
-inline typename boost::disable_if< detail::is_workspace< MatrixVR >,
-        std::ptrdiff_t >::type
-tgevc( const Side side, const char howmny, const VectorSELECT& select,
-        const MatrixS& s, const MatrixP& p, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        fortran_int_t& m ) {
     return tgevc_impl< typename bindings::value_type<
             MatrixS >::type >::invoke( side, howmny, select, s, p, vl, vr, mm,
             m, optimal_workspace() );

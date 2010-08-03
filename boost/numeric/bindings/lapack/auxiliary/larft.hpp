@@ -162,52 +162,11 @@ struct larft_impl {
 
 //
 // Overloaded function for larft. Its overload differs for
-// * MatrixV&
-// * MatrixT&
 //
 template< typename MatrixV, typename VectorTAU, typename MatrixT >
 inline std::ptrdiff_t larft( const char direct, const char storev,
         const fortran_int_t n, const fortran_int_t k, MatrixV& v,
         const VectorTAU& tau, MatrixT& t ) {
-    return larft_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( direct, storev, n, k, v, tau, t );
-}
-
-//
-// Overloaded function for larft. Its overload differs for
-// * const MatrixV&
-// * MatrixT&
-//
-template< typename MatrixV, typename VectorTAU, typename MatrixT >
-inline std::ptrdiff_t larft( const char direct, const char storev,
-        const fortran_int_t n, const fortran_int_t k,
-        const MatrixV& v, const VectorTAU& tau, MatrixT& t ) {
-    return larft_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( direct, storev, n, k, v, tau, t );
-}
-
-//
-// Overloaded function for larft. Its overload differs for
-// * MatrixV&
-// * const MatrixT&
-//
-template< typename MatrixV, typename VectorTAU, typename MatrixT >
-inline std::ptrdiff_t larft( const char direct, const char storev,
-        const fortran_int_t n, const fortran_int_t k, MatrixV& v,
-        const VectorTAU& tau, const MatrixT& t ) {
-    return larft_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( direct, storev, n, k, v, tau, t );
-}
-
-//
-// Overloaded function for larft. Its overload differs for
-// * const MatrixV&
-// * const MatrixT&
-//
-template< typename MatrixV, typename VectorTAU, typename MatrixT >
-inline std::ptrdiff_t larft( const char direct, const char storev,
-        const fortran_int_t n, const fortran_int_t k,
-        const MatrixV& v, const VectorTAU& tau, const MatrixT& t ) {
     return larft_impl< typename bindings::value_type<
             MatrixV >::type >::invoke( direct, storev, n, k, v, tau, t );
 }

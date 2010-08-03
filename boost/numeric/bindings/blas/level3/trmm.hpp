@@ -315,26 +315,12 @@ struct trmm_impl {
 
 //
 // Overloaded function for trmm. Its overload differs for
-// * MatrixB&
 //
 template< typename Side, typename MatrixA, typename MatrixB >
 inline typename trmm_impl< typename bindings::value_type<
         MatrixA >::type >::result_type
 trmm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, MatrixB& b ) {
-    trmm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, alpha, a, b );
-}
-
-//
-// Overloaded function for trmm. Its overload differs for
-// * const MatrixB&
-//
-template< typename Side, typename MatrixA, typename MatrixB >
-inline typename trmm_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-trmm( const Side side, const typename bindings::value_type<
-        MatrixA >::type alpha, const MatrixA& a, const MatrixB& b ) {
     trmm_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, alpha, a, b );
 }

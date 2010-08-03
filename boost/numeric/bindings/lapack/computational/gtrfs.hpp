@@ -516,7 +516,6 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for gtrfs. Its overload differs for
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename VectorDL, typename VectorD, typename VectorDU,
@@ -537,7 +536,6 @@ gtrfs( const VectorDL& dl, const VectorD& d, const VectorDU& du,
 
 //
 // Overloaded function for gtrfs. Its overload differs for
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename VectorDL, typename VectorD, typename VectorDU,
@@ -550,48 +548,6 @@ gtrfs( const VectorDL& dl, const VectorD& d, const VectorDU& du,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return gtrfs_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( dl, d, du, dlf, df, duf, du2, ipiv, b,
-            x, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for gtrfs. Its overload differs for
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename VectorDL, typename VectorD, typename VectorDU,
-        typename VectorDLF, typename VectorDF, typename VectorDUF,
-        typename VectorDU2, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gtrfs( const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gtrfs_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( dl, d, du, dlf, df, duf, du2, ipiv, b,
-            x, ferr, berr, work );
-}
-
-//
-// Overloaded function for gtrfs. Its overload differs for
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename VectorDL, typename VectorD, typename VectorDU,
-        typename VectorDLF, typename VectorDF, typename VectorDUF,
-        typename VectorDU2, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-gtrfs( const VectorDL& dl, const VectorD& d, const VectorDU& du,
-        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
     return gtrfs_impl< typename bindings::value_type<
             VectorDL >::type >::invoke( dl, d, du, dlf, df, duf, du2, ipiv, b,
             x, ferr, berr, optimal_workspace() );

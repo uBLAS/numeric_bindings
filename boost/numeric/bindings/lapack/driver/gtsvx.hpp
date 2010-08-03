@@ -508,7 +508,6 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for gtsvx. Its overload differs for
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename VectorDL, typename VectorD, typename VectorDU,
@@ -531,7 +530,6 @@ gtsvx( const char fact, const VectorDL& dl, const VectorD& d,
 
 //
 // Overloaded function for gtsvx. Its overload differs for
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename VectorDL, typename VectorD, typename VectorDU,
@@ -543,50 +541,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
 gtsvx( const char fact, const VectorDL& dl, const VectorD& d,
         const VectorDU& du, VectorDLF& dlf, VectorDF& df, VectorDUF& duf,
         VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return gtsvx_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( fact, dl, d, du, dlf, df, duf, du2,
-            ipiv, b, x, rcond, ferr, berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for gtsvx. Its overload differs for
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename VectorDL, typename VectorD, typename VectorDU,
-        typename VectorDLF, typename VectorDF, typename VectorDUF,
-        typename VectorDU2, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gtsvx( const char fact, const VectorDL& dl, const VectorD& d,
-        const VectorDU& du, VectorDLF& dlf, VectorDF& df, VectorDUF& duf,
-        VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return gtsvx_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( fact, dl, d, du, dlf, df, duf, du2,
-            ipiv, b, x, rcond, ferr, berr, work );
-}
-
-//
-// Overloaded function for gtsvx. Its overload differs for
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename VectorDL, typename VectorD, typename VectorDU,
-        typename VectorDLF, typename VectorDF, typename VectorDUF,
-        typename VectorDU2, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-gtsvx( const char fact, const VectorDL& dl, const VectorD& d,
-        const VectorDU& du, VectorDLF& dlf, VectorDF& df, VectorDUF& duf,
-        VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename bindings::value_type<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return gtsvx_impl< typename bindings::value_type<

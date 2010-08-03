@@ -239,8 +239,6 @@ struct syevx_impl {
 
 //
 // Overloaded function for syevx. Its overload differs for
-// * MatrixA&
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
@@ -262,8 +260,6 @@ syevx( const char jobz, const char range, MatrixA& a,
 
 //
 // Overloaded function for syevx. Its overload differs for
-// * MatrixA&
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
@@ -278,144 +274,6 @@ syevx( const char jobz, const char range, MatrixA& a,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for syevx. Its overload differs for
-// * const MatrixA&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for syevx. Its overload differs for
-// * const MatrixA&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for syevx. Its overload differs for
-// * MatrixA&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for syevx. Its overload differs for
-// * MatrixA&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-syevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return syevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for syevx. Its overload differs for
-// * const MatrixA&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return syevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for syevx. Its overload differs for
-// * const MatrixA&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-syevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
     return syevx_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
             m, w, z, ifail, optimal_workspace() );

@@ -147,20 +147,9 @@ struct pbstf_impl {
 
 //
 // Overloaded function for pbstf. Its overload differs for
-// * MatrixAB&
 //
 template< typename MatrixAB >
 inline std::ptrdiff_t pbstf( MatrixAB& ab ) {
-    return pbstf_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab );
-}
-
-//
-// Overloaded function for pbstf. Its overload differs for
-// * const MatrixAB&
-//
-template< typename MatrixAB >
-inline std::ptrdiff_t pbstf( const MatrixAB& ab ) {
     return pbstf_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( ab );
 }

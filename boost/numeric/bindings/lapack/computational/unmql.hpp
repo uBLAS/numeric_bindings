@@ -363,7 +363,6 @@ struct unmql_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for unmql. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -378,7 +377,6 @@ unmql( const Side side, const fortran_int_t k, const MatrixA& a,
 
 //
 // Overloaded function for unmql. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -387,37 +385,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 unmql( const Side side, const fortran_int_t k, const MatrixA& a,
         const VectorTAU& tau, MatrixC& c ) {
-    return unmql_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, k, a, tau, c,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for unmql. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-unmql( const Side side, const fortran_int_t k, const MatrixA& a,
-        const VectorTAU& tau, const MatrixC& c, Workspace work ) {
-    return unmql_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, k, a, tau, c, work );
-}
-
-//
-// Overloaded function for unmql. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-unmql( const Side side, const fortran_int_t k, const MatrixA& a,
-        const VectorTAU& tau, const MatrixC& c ) {
     return unmql_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, k, a, tau, c,
             optimal_workspace() );

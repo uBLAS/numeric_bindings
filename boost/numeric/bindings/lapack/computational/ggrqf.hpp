@@ -370,8 +370,6 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for ggrqf. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
@@ -386,8 +384,6 @@ ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b, VectorTAUB& taub,
 
 //
 // Overloaded function for ggrqf. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
@@ -395,102 +391,6 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
 inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
         std::ptrdiff_t >::type
 ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b, VectorTAUB& taub ) {
-    return ggrqf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggrqf( const MatrixA& a, VectorTAUA& taua, MatrixB& b, VectorTAUB& taub,
-        Workspace work ) {
-    return ggrqf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, taua, b, taub, work );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB >
-inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
-        std::ptrdiff_t >::type
-ggrqf( const MatrixA& a, VectorTAUA& taua, MatrixB& b,
-        VectorTAUB& taub ) {
-    return ggrqf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggrqf( MatrixA& a, VectorTAUA& taua, const MatrixB& b, VectorTAUB& taub,
-        Workspace work ) {
-    return ggrqf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, taua, b, taub, work );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB >
-inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
-        std::ptrdiff_t >::type
-ggrqf( MatrixA& a, VectorTAUA& taua, const MatrixB& b,
-        VectorTAUB& taub ) {
-    return ggrqf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ggrqf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
-        VectorTAUB& taub, Workspace work ) {
-    return ggrqf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, taua, b, taub, work );
-}
-
-//
-// Overloaded function for ggrqf. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAUA, typename MatrixB,
-        typename VectorTAUB >
-inline typename boost::disable_if< detail::is_workspace< VectorTAUB >,
-        std::ptrdiff_t >::type
-ggrqf( const MatrixA& a, VectorTAUA& taua, const MatrixB& b,
-        VectorTAUB& taub ) {
     return ggrqf_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, taua, b, taub, optimal_workspace() );
 }

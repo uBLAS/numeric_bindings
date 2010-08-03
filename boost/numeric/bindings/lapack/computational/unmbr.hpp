@@ -366,7 +366,6 @@ struct unmbr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for unmbr. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -381,7 +380,6 @@ unmbr( const char vect, const Side side, const fortran_int_t k,
 
 //
 // Overloaded function for unmbr. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -390,38 +388,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 unmbr( const char vect, const Side side, const fortran_int_t k,
         const MatrixA& a, const VectorTAU& tau, MatrixC& c ) {
-    return unmbr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( vect, side, k, a, tau, c,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for unmbr. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-unmbr( const char vect, const Side side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, const MatrixC& c,
-        Workspace work ) {
-    return unmbr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( vect, side, k, a, tau, c, work );
-}
-
-//
-// Overloaded function for unmbr. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-unmbr( const char vect, const Side side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, const MatrixC& c ) {
     return unmbr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( vect, side, k, a, tau, c,
             optimal_workspace() );

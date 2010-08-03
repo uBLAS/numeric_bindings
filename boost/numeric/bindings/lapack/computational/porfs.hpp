@@ -416,7 +416,6 @@ struct porfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for porfs. Its overload differs for
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixAF, typename MatrixB,
@@ -432,7 +431,6 @@ porfs( const MatrixA& a, const MatrixAF& af, const MatrixB& b,
 
 //
 // Overloaded function for porfs. Its overload differs for
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixAF, typename MatrixB,
@@ -441,39 +439,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
         std::ptrdiff_t >::type
 porfs( const MatrixA& a, const MatrixAF& af, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    return porfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, b, x, ferr, berr,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for porfs. Its overload differs for
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-porfs( const MatrixA& a, const MatrixAF& af, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return porfs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, af, b, x, ferr, berr, work );
-}
-
-//
-// Overloaded function for porfs. Its overload differs for
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename MatrixB,
-        typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-porfs( const MatrixA& a, const MatrixAF& af, const MatrixB& b,
-        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
     return porfs_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, af, b, x, ferr, berr,
             optimal_workspace() );

@@ -172,7 +172,6 @@ struct orgqr_impl {
 
 //
 // Overloaded function for orgqr. Its overload differs for
-// * MatrixA&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
@@ -185,39 +184,12 @@ orgqr( MatrixA& a, const VectorTAU& tau, Workspace work ) {
 
 //
 // Overloaded function for orgqr. Its overload differs for
-// * MatrixA&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 orgqr( MatrixA& a, const VectorTAU& tau ) {
-    return orgqr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for orgqr. Its overload differs for
-// * const MatrixA&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-orgqr( const MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return orgqr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, tau, work );
-}
-
-//
-// Overloaded function for orgqr. Its overload differs for
-// * const MatrixA&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAU >
-inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
-        std::ptrdiff_t >::type
-orgqr( const MatrixA& a, const VectorTAU& tau ) {
     return orgqr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, tau, optimal_workspace() );
 }

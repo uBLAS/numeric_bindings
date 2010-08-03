@@ -214,20 +214,9 @@ struct trtri_impl {
 
 //
 // Overloaded function for trtri. Its overload differs for
-// * MatrixA&
 //
 template< typename MatrixA >
 inline std::ptrdiff_t trtri( MatrixA& a ) {
-    return trtri_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a );
-}
-
-//
-// Overloaded function for trtri. Its overload differs for
-// * const MatrixA&
-//
-template< typename MatrixA >
-inline std::ptrdiff_t trtri( const MatrixA& a ) {
     return trtri_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a );
 }

@@ -195,7 +195,6 @@ struct sytrd_impl {
 
 //
 // Overloaded function for sytrd. Its overload differs for
-// * MatrixA&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
@@ -210,7 +209,6 @@ sytrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau,
 
 //
 // Overloaded function for sytrd. Its overload differs for
-// * MatrixA&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
@@ -218,35 +216,6 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 sytrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau ) {
-    return sytrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
-}
-
-//
-// Overloaded function for sytrd. Its overload differs for
-// * const MatrixA&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sytrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau,
-        Workspace work ) {
-    return sytrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, d, e, tau, work );
-}
-
-//
-// Overloaded function for sytrd. Its overload differs for
-// * const MatrixA&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
-        std::ptrdiff_t >::type
-sytrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau ) {
     return sytrd_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, d, e, tau, optimal_workspace() );
 }

@@ -131,22 +131,10 @@ struct sygst_impl {
 
 //
 // Overloaded function for sygst. Its overload differs for
-// * MatrixA&
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t sygst( const fortran_int_t itype, MatrixA& a,
         const MatrixB& b ) {
-    return sygst_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, a, b );
-}
-
-//
-// Overloaded function for sygst. Its overload differs for
-// * const MatrixA&
-//
-template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t sygst( const fortran_int_t itype,
-        const MatrixA& a, const MatrixB& b ) {
     return sygst_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( itype, a, b );
 }

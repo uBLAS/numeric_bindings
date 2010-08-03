@@ -410,7 +410,6 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for ptsvx. Its overload differs for
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorDF,
@@ -429,7 +428,6 @@ ptsvx( const char fact, const VectorD& d, const VectorE& e, VectorDF& df,
 
 //
 // Overloaded function for ptsvx. Its overload differs for
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorDF,
@@ -441,45 +439,6 @@ ptsvx( const char fact, const VectorD& d, const VectorE& e, VectorDF& df,
         VectorEF& ef, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename bindings::value_type< VectorE >::type >::type& rcond,
         VectorFERR& ferr, VectorBERR& berr ) {
-    return ptsvx_impl< typename bindings::value_type<
-            VectorE >::type >::invoke( fact, d, e, df, ef, b, x, rcond, ferr,
-            berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ptsvx( const char fact, const VectorD& d, const VectorE& e, VectorDF& df,
-        VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return ptsvx_impl< typename bindings::value_type<
-            VectorE >::type >::invoke( fact, d, e, df, ef, b, x, rcond, ferr,
-            berr, work );
-}
-
-//
-// Overloaded function for ptsvx. Its overload differs for
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorDF,
-        typename VectorEF, typename MatrixB, typename MatrixX,
-        typename VectorFERR, typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-ptsvx( const char fact, const VectorD& d, const VectorE& e, VectorDF& df,
-        VectorEF& ef, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return ptsvx_impl< typename bindings::value_type<
             VectorE >::type >::invoke( fact, d, e, df, ef, b, x, rcond, ferr,
             berr, optimal_workspace() );

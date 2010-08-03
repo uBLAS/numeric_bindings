@@ -166,22 +166,10 @@ struct hetrs_impl {
 
 //
 // Overloaded function for hetrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t hetrs( const MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return hetrs_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b );
-}
-
-//
-// Overloaded function for hetrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hetrs( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b ) {
     return hetrs_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, ipiv, b );
 }

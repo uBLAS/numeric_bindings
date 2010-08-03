@@ -309,7 +309,6 @@ struct her2k_impl {
 
 //
 // Overloaded function for her2k. Its overload differs for
-// * MatrixC&
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename her2k_impl< typename bindings::value_type<
@@ -318,21 +317,6 @@ her2k( const typename bindings::value_type< MatrixA >::type alpha,
         const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type beta,
         MatrixC& c ) {
-    her2k_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( alpha, a, b, beta, c );
-}
-
-//
-// Overloaded function for her2k. Its overload differs for
-// * const MatrixC&
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline typename her2k_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-her2k( const typename bindings::value_type< MatrixA >::type alpha,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type beta,
-        const MatrixC& c ) {
     her2k_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( alpha, a, b, beta, c );
 }

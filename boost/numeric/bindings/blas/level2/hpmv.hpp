@@ -255,21 +255,21 @@ struct hpmv_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixAP, typename VectorViewX, typename VectorViewY >
+    template< typename MatrixAP, typename VectorX, typename VectorY >
     static result_type invoke( const value_type alpha, const MatrixAP& ap,
-            const VectorViewX& x, const value_type beta, VectorViewY& y ) {
+            const VectorX& x, const value_type beta, VectorY& y ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
         typedef typename result_of::uplo_tag< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixAP >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorViewX >::type >::type >::value) );
+                VectorX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const<
                 typename bindings::value_type< MatrixAP >::type >::type,
                 typename remove_const< typename bindings::value_type<
-                VectorViewY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorViewY >::value) );
+                VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         detail::hpmv( order(), uplo(), bindings::size_column(ap), alpha,
                 bindings::begin_value(ap), bindings::begin_value(x),
                 bindings::stride(x), beta, bindings::begin_value(y),
@@ -287,30 +287,14 @@ struct hpmv_impl {
 
 //
 // Overloaded function for hpmv. Its overload differs for
-// * VectorViewY&
 //
-template< typename MatrixAP, typename VectorViewX, typename VectorViewY >
+template< typename MatrixAP, typename VectorX, typename VectorY >
 inline typename hpmv_impl< typename bindings::value_type<
         MatrixAP >::type >::result_type
 hpmv( const typename bindings::value_type< MatrixAP >::type alpha,
-        const MatrixAP& ap, const VectorViewX& x,
+        const MatrixAP& ap, const VectorX& x,
         const typename bindings::value_type< MatrixAP >::type beta,
-        VectorViewY& y ) {
-    hpmv_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( alpha, ap, x, beta, y );
-}
-
-//
-// Overloaded function for hpmv. Its overload differs for
-// * const VectorViewY&
-//
-template< typename MatrixAP, typename VectorViewX, typename VectorViewY >
-inline typename hpmv_impl< typename bindings::value_type<
-        MatrixAP >::type >::result_type
-hpmv( const typename bindings::value_type< MatrixAP >::type alpha,
-        const MatrixAP& ap, const VectorViewX& x,
-        const typename bindings::value_type< MatrixAP >::type beta,
-        const VectorViewY& y ) {
+        VectorY& y ) {
     hpmv_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( alpha, ap, x, beta, y );
 }

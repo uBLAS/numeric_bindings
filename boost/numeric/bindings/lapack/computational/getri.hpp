@@ -369,7 +369,6 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for getri. Its overload differs for
-// * MatrixA&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
@@ -382,39 +381,12 @@ getri( MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
 
 //
 // Overloaded function for getri. Its overload differs for
-// * MatrixA&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 getri( MatrixA& a, const VectorIPIV& ipiv ) {
-    return getri_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
-}
-
-//
-// Overloaded function for getri. Its overload differs for
-// * const MatrixA&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-getri( const MatrixA& a, const VectorIPIV& ipiv, Workspace work ) {
-    return getri_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, work );
-}
-
-//
-// Overloaded function for getri. Its overload differs for
-// * const MatrixA&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV >
-inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
-        std::ptrdiff_t >::type
-getri( const MatrixA& a, const VectorIPIV& ipiv ) {
     return getri_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
 }

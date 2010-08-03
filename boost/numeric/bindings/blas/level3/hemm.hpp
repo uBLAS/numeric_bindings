@@ -313,7 +313,6 @@ struct hemm_impl {
 
 //
 // Overloaded function for hemm. Its overload differs for
-// * MatrixC&
 //
 template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename hemm_impl< typename bindings::value_type<
@@ -322,21 +321,6 @@ hemm( const Side side, const typename bindings::value_type<
         MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,
         MatrixC& c ) {
-    hemm_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, alpha, a, b, beta, c );
-}
-
-//
-// Overloaded function for hemm. Its overload differs for
-// * const MatrixC&
-//
-template< typename Side, typename MatrixA, typename MatrixB, typename MatrixC >
-inline typename hemm_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-hemm( const Side side, const typename bindings::value_type<
-        MatrixA >::type alpha, const MatrixA& a, const MatrixB& b,
-        const typename bindings::value_type< MatrixA >::type beta,
-        const MatrixC& c ) {
     hemm_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, alpha, a, b, beta, c );
 }

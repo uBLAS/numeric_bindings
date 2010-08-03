@@ -208,7 +208,6 @@ struct ormtr_impl {
 
 //
 // Overloaded function for ormtr. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -223,7 +222,6 @@ ormtr( const Side side, const MatrixA& a, const VectorTAU& tau,
 
 //
 // Overloaded function for ormtr. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -232,36 +230,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 ormtr( const Side side, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c ) {
-    return ormtr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for ormtr. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ormtr( const Side side, const MatrixA& a, const VectorTAU& tau,
-        const MatrixC& c, Workspace work ) {
-    return ormtr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, a, tau, c, work );
-}
-
-//
-// Overloaded function for ormtr. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-ormtr( const Side side, const MatrixA& a, const VectorTAU& tau,
-        const MatrixC& c ) {
     return ormtr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
 }

@@ -225,28 +225,12 @@ struct ggbak_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for ggbak. Its overload differs for
-// * MatrixV&
 //
 template< typename Side, typename VectorLSCALE, typename VectorRSCALE,
         typename MatrixV >
 inline std::ptrdiff_t ggbak( const char job, const Side side,
         const fortran_int_t ilo, const fortran_int_t ihi,
         const VectorLSCALE& lscale, const VectorRSCALE& rscale, MatrixV& v ) {
-    return ggbak_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( job, side, ilo, ihi, lscale, rscale,
-            v );
-}
-
-//
-// Overloaded function for ggbak. Its overload differs for
-// * const MatrixV&
-//
-template< typename Side, typename VectorLSCALE, typename VectorRSCALE,
-        typename MatrixV >
-inline std::ptrdiff_t ggbak( const char job, const Side side,
-        const fortran_int_t ilo, const fortran_int_t ihi,
-        const VectorLSCALE& lscale, const VectorRSCALE& rscale,
-        const MatrixV& v ) {
     return ggbak_impl< typename bindings::value_type<
             MatrixV >::type >::invoke( job, side, ilo, ihi, lscale, rscale,
             v );

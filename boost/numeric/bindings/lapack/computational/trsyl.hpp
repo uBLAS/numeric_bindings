@@ -245,7 +245,6 @@ struct trsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for trsyl. Its overload differs for
-// * MatrixC&
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline std::ptrdiff_t trsyl( const char trana, const char tranb,
@@ -253,21 +252,6 @@ inline std::ptrdiff_t trsyl( const char trana, const char tranb,
         const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         MatrixC& c, typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type& scale ) {
-    return trsyl_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( trana, tranb, isgn, m, n, a, b, c,
-            scale );
-}
-
-//
-// Overloaded function for trsyl. Its overload differs for
-// * const MatrixC&
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline std::ptrdiff_t trsyl( const char trana, const char tranb,
-        const fortran_int_t isgn, const fortran_int_t m,
-        const fortran_int_t n, const MatrixA& a, const MatrixB& b,
-        const MatrixC& c, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& scale ) {
     return trsyl_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( trana, tranb, isgn, m, n, a, b, c,
             scale );

@@ -227,47 +227,9 @@ struct gesv_impl {
 
 //
 // Overloaded function for gesv. Its overload differs for
-// * MatrixA&
-// * MatrixB&
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
-    return gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b );
-}
-
-//
-// Overloaded function for gesv. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
-        MatrixB& b ) {
-    return gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b );
-}
-
-//
-// Overloaded function for gesv. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b ) {
-    return gesv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, b );
-}
-
-//
-// Overloaded function for gesv. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b ) {
     return gesv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, ipiv, b );
 }

@@ -350,8 +350,6 @@ struct iter_posv_impl< Value, typename boost::enable_if< is_complex< Value > >::
 
 //
 // Overloaded function for iter_posv. Its overload differs for
-// * MatrixA&
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX,
@@ -366,107 +364,12 @@ iter_posv( MatrixA& a, const MatrixB& b, MatrixX& x, fortran_int_t& iter,
 
 //
 // Overloaded function for iter_posv. Its overload differs for
-// * MatrixA&
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX >
 inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 iter_posv( MatrixA& a, const MatrixB& b, MatrixX& x,
-        fortran_int_t& iter ) {
-    return iter_posv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, x, iter, optimal_workspace() );
-}
-
-//
-// Overloaded function for iter_posv. Its overload differs for
-// * const MatrixA&
-// * MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-iter_posv( const MatrixA& a, const MatrixB& b, MatrixX& x,
-        fortran_int_t& iter, Workspace work ) {
-    return iter_posv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, x, iter, work );
-}
-
-//
-// Overloaded function for iter_posv. Its overload differs for
-// * const MatrixA&
-// * MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-iter_posv( const MatrixA& a, const MatrixB& b, MatrixX& x,
-        fortran_int_t& iter ) {
-    return iter_posv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, x, iter, optimal_workspace() );
-}
-
-//
-// Overloaded function for iter_posv. Its overload differs for
-// * MatrixA&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-iter_posv( MatrixA& a, const MatrixB& b, const MatrixX& x,
-        fortran_int_t& iter, Workspace work ) {
-    return iter_posv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, x, iter, work );
-}
-
-//
-// Overloaded function for iter_posv. Its overload differs for
-// * MatrixA&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-iter_posv( MatrixA& a, const MatrixB& b, const MatrixX& x,
-        fortran_int_t& iter ) {
-    return iter_posv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, x, iter, optimal_workspace() );
-}
-
-//
-// Overloaded function for iter_posv. Its overload differs for
-// * const MatrixA&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-iter_posv( const MatrixA& a, const MatrixB& b, const MatrixX& x,
-        fortran_int_t& iter, Workspace work ) {
-    return iter_posv_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, b, x, iter, work );
-}
-
-//
-// Overloaded function for iter_posv. Its overload differs for
-// * const MatrixA&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-iter_posv( const MatrixA& a, const MatrixB& b, const MatrixX& x,
         fortran_int_t& iter ) {
     return iter_posv_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, b, x, iter, optimal_workspace() );

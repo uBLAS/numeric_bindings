@@ -333,7 +333,6 @@ struct upmtr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for upmtr. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename VectorAP, typename VectorTAU,
@@ -348,7 +347,6 @@ upmtr( const Side side, const char uplo, const VectorAP& ap,
 
 //
 // Overloaded function for upmtr. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename VectorAP, typename VectorTAU,
@@ -357,37 +355,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 upmtr( const Side side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, MatrixC& c ) {
-    return upmtr_impl< typename bindings::value_type<
-            VectorAP >::type >::invoke( side, uplo, ap, tau, c,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for upmtr. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename VectorAP, typename VectorTAU,
-        typename MatrixC, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-upmtr( const Side side, const char uplo, const VectorAP& ap,
-        const VectorTAU& tau, const MatrixC& c, Workspace work ) {
-    return upmtr_impl< typename bindings::value_type<
-            VectorAP >::type >::invoke( side, uplo, ap, tau, c, work );
-}
-
-//
-// Overloaded function for upmtr. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename VectorAP, typename VectorTAU,
-        typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-upmtr( const Side side, const char uplo, const VectorAP& ap,
-        const VectorTAU& tau, const MatrixC& c ) {
     return upmtr_impl< typename bindings::value_type<
             VectorAP >::type >::invoke( side, uplo, ap, tau, c,
             optimal_workspace() );

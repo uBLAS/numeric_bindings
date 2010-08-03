@@ -167,7 +167,6 @@ struct stev_impl {
 
 //
 // Overloaded function for stev. Its overload differs for
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename MatrixZ,
@@ -182,7 +181,6 @@ stev( const char jobz, const fortran_int_t n, VectorD& d,
 
 //
 // Overloaded function for stev. Its overload differs for
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename MatrixZ >
@@ -190,35 +188,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 stev( const char jobz, const fortran_int_t n, VectorD& d,
         VectorE& e, MatrixZ& z ) {
-    return stev_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for stev. Its overload differs for
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stev( const char jobz, const fortran_int_t n, VectorD& d,
-        VectorE& e, const MatrixZ& z, Workspace work ) {
-    return stev_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, n, d, e, z, work );
-}
-
-//
-// Overloaded function for stev. Its overload differs for
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-stev( const char jobz, const fortran_int_t n, VectorD& d,
-        VectorE& e, const MatrixZ& z ) {
     return stev_impl< typename bindings::value_type<
             VectorD >::type >::invoke( jobz, n, d, e, z, optimal_workspace() );
 }

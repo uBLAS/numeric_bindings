@@ -351,8 +351,6 @@ struct hseqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for hseqr. Its overload differs for
-// * MatrixH&
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename MatrixH, typename VectorWR, typename VectorWI,
@@ -369,8 +367,6 @@ hseqr( const char job, const char compz, const fortran_int_t ilo,
 
 //
 // Overloaded function for hseqr. Its overload differs for
-// * MatrixH&
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixH, typename VectorWR, typename VectorWI,
@@ -384,118 +380,8 @@ hseqr( const char job, const char compz, const fortran_int_t ilo,
             MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
             optimal_workspace() );
 }
-
 //
 // Overloaded function for hseqr. Its overload differs for
-// * const MatrixH&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixH, typename VectorWR, typename VectorWI,
-        typename MatrixZ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
-        VectorWI& wi, MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
-            work );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * const MatrixH&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixH, typename VectorWR, typename VectorWI,
-        typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
-        VectorWI& wi, MatrixZ& z ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * MatrixH&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixH, typename VectorWR, typename VectorWI,
-        typename MatrixZ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
-        const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
-            work );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * MatrixH&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixH, typename VectorWR, typename VectorWI,
-        typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
-        const MatrixZ& z ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * const MatrixH&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixH, typename VectorWR, typename VectorWI,
-        typename MatrixZ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
-        VectorWI& wi, const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
-            work );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * const MatrixH&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixH, typename VectorWR, typename VectorWI,
-        typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixH& h, VectorWR& wr,
-        VectorWI& wi, const MatrixZ& z ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
-            optimal_workspace() );
-}
-//
-// Overloaded function for hseqr. Its overload differs for
-// * MatrixH&
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename MatrixH, typename VectorW, typename MatrixZ,
@@ -511,8 +397,6 @@ hseqr( const char job, const char compz, const fortran_int_t ilo,
 
 //
 // Overloaded function for hseqr. Its overload differs for
-// * MatrixH&
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixH, typename VectorW, typename MatrixZ >
@@ -520,108 +404,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 hseqr( const char job, const char compz, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixH& h, VectorW& w, MatrixZ& z ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * const MatrixH&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixH, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixH& h, VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * const MatrixH&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixH, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixH& h, VectorW& w,
-        MatrixZ& z ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * MatrixH&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixH, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, MatrixH& h, VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * MatrixH&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixH, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, MatrixH& h, VectorW& w,
-        const MatrixZ& z ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * const MatrixH&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixH, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixH& h, VectorW& w,
-        const MatrixZ& z, Workspace work ) {
-    return hseqr_impl< typename bindings::value_type<
-            MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z, work );
-}
-
-//
-// Overloaded function for hseqr. Its overload differs for
-// * const MatrixH&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixH, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-hseqr( const char job, const char compz, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixH& h, VectorW& w,
-        const MatrixZ& z ) {
     return hseqr_impl< typename bindings::value_type<
             MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
             optimal_workspace() );

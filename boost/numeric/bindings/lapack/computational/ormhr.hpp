@@ -208,7 +208,6 @@ struct ormhr_impl {
 
 //
 // Overloaded function for ormhr. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -224,7 +223,6 @@ ormhr( const Side side, const fortran_int_t ilo,
 
 //
 // Overloaded function for ormhr. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -234,39 +232,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
 ormhr( const Side side, const fortran_int_t ilo,
         const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c ) {
-    return ormhr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, ilo, ihi, a, tau, c,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ormhr. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ormhr( const Side side, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
-        const MatrixC& c, Workspace work ) {
-    return ormhr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, ilo, ihi, a, tau, c, work );
-}
-
-//
-// Overloaded function for ormhr. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-ormhr( const Side side, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
-        const MatrixC& c ) {
     return ormhr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, ilo, ihi, a, tau, c,
             optimal_workspace() );

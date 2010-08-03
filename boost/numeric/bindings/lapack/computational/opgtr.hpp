@@ -172,7 +172,6 @@ struct opgtr_impl {
 
 //
 // Overloaded function for opgtr. Its overload differs for
-// * MatrixQ&
 // * User-defined workspace
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixQ,
@@ -187,7 +186,6 @@ opgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
 
 //
 // Overloaded function for opgtr. Its overload differs for
-// * MatrixQ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorAP, typename VectorTAU, typename MatrixQ >
@@ -195,36 +193,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
         std::ptrdiff_t >::type
 opgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
         MatrixQ& q ) {
-    return opgtr_impl< typename bindings::value_type<
-            VectorAP >::type >::invoke( uplo, ap, tau, q,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for opgtr. Its overload differs for
-// * const MatrixQ&
-// * User-defined workspace
-//
-template< typename VectorAP, typename VectorTAU, typename MatrixQ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-opgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
-        const MatrixQ& q, Workspace work ) {
-    return opgtr_impl< typename bindings::value_type<
-            VectorAP >::type >::invoke( uplo, ap, tau, q, work );
-}
-
-//
-// Overloaded function for opgtr. Its overload differs for
-// * const MatrixQ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-inline typename boost::disable_if< detail::is_workspace< MatrixQ >,
-        std::ptrdiff_t >::type
-opgtr( const char uplo, const VectorAP& ap, const VectorTAU& tau,
-        const MatrixQ& q ) {
     return opgtr_impl< typename bindings::value_type<
             VectorAP >::type >::invoke( uplo, ap, tau, q,
             optimal_workspace() );

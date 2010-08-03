@@ -216,8 +216,6 @@ struct spevd_impl {
 
 //
 // Overloaded function for spevd. Its overload differs for
-// * MatrixAP&
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
@@ -232,105 +230,12 @@ spevd( const char jobz, MatrixAP& ap, VectorW& w, MatrixZ& z,
 
 //
 // Overloaded function for spevd. Its overload differs for
-// * MatrixAP&
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
 inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
         std::ptrdiff_t >::type
 spevd( const char jobz, MatrixAP& ap, VectorW& w, MatrixZ& z ) {
-    return spevd_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, ap, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for spevd. Its overload differs for
-// * const MatrixAP&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-spevd( const char jobz, const MatrixAP& ap, VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return spevd_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, ap, w, z, work );
-}
-
-//
-// Overloaded function for spevd. Its overload differs for
-// * const MatrixAP&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-spevd( const char jobz, const MatrixAP& ap, VectorW& w, MatrixZ& z ) {
-    return spevd_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, ap, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for spevd. Its overload differs for
-// * MatrixAP&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-spevd( const char jobz, MatrixAP& ap, VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return spevd_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, ap, w, z, work );
-}
-
-//
-// Overloaded function for spevd. Its overload differs for
-// * MatrixAP&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-spevd( const char jobz, MatrixAP& ap, VectorW& w, const MatrixZ& z ) {
-    return spevd_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, ap, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for spevd. Its overload differs for
-// * const MatrixAP&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-spevd( const char jobz, const MatrixAP& ap, VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return spevd_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( jobz, ap, w, z, work );
-}
-
-//
-// Overloaded function for spevd. Its overload differs for
-// * const MatrixAP&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAP, typename VectorW, typename MatrixZ >
-inline typename boost::disable_if< detail::is_workspace< MatrixZ >,
-        std::ptrdiff_t >::type
-spevd( const char jobz, const MatrixAP& ap, VectorW& w,
-        const MatrixZ& z ) {
     return spevd_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( jobz, ap, w, z, optimal_workspace() );
 }

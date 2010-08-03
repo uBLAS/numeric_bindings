@@ -155,20 +155,9 @@ struct gbtrf_impl {
 
 //
 // Overloaded function for gbtrf. Its overload differs for
-// * MatrixAB&
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( MatrixAB& ab, VectorIPIV& ipiv ) {
-    return gbtrf_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( ab, ipiv );
-}
-
-//
-// Overloaded function for gbtrf. Its overload differs for
-// * const MatrixAB&
-//
-template< typename MatrixAB, typename VectorIPIV >
-inline std::ptrdiff_t gbtrf( const MatrixAB& ab, VectorIPIV& ipiv ) {
     return gbtrf_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( ab, ipiv );
 }

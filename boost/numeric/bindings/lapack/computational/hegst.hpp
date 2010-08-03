@@ -163,22 +163,10 @@ struct hegst_impl {
 
 //
 // Overloaded function for hegst. Its overload differs for
-// * MatrixA&
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t hegst( const fortran_int_t itype, MatrixA& a,
         const MatrixB& b ) {
-    return hegst_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( itype, a, b );
-}
-
-//
-// Overloaded function for hegst. Its overload differs for
-// * const MatrixA&
-//
-template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t hegst( const fortran_int_t itype,
-        const MatrixA& a, const MatrixB& b ) {
     return hegst_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( itype, a, b );
 }

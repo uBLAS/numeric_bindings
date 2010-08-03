@@ -203,7 +203,6 @@ struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for pttrs. Its overload differs for
-// * MatrixB&
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
@@ -211,35 +210,12 @@ inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
     return pttrs_impl< typename bindings::value_type<
             VectorE >::type >::invoke( d, e, b );
 }
-
 //
 // Overloaded function for pttrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
-        const MatrixB& b ) {
-    return pttrs_impl< typename bindings::value_type<
-            VectorE >::type >::invoke( d, e, b );
-}
-//
-// Overloaded function for pttrs. Its overload differs for
-// * MatrixB&
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const char uplo, const VectorD& d,
         const VectorE& e, MatrixB& b ) {
-    return pttrs_impl< typename bindings::value_type<
-            VectorE >::type >::invoke( uplo, d, e, b );
-}
-
-//
-// Overloaded function for pttrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t pttrs( const char uplo, const VectorD& d,
-        const VectorE& e, const MatrixB& b ) {
     return pttrs_impl< typename bindings::value_type<
             VectorE >::type >::invoke( uplo, d, e, b );
 }

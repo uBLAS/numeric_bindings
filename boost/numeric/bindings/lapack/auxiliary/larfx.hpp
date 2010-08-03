@@ -300,7 +300,6 @@ struct larfx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for larfx. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename VectorV, typename MatrixC,
@@ -316,7 +315,6 @@ larfx( const Side side, const VectorV& v,
 
 //
 // Overloaded function for larfx. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename VectorV, typename MatrixC >
@@ -328,40 +326,8 @@ larfx( const Side side, const VectorV& v,
     return larfx_impl< typename bindings::value_type<
             VectorV >::type >::invoke( side, v, tau, c, optimal_workspace() );
 }
-
 //
 // Overloaded function for larfx. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename VectorV, typename MatrixC,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-larfx( const Side side, const VectorV& v,
-        const typename remove_imaginary< typename bindings::value_type<
-        VectorV >::type >::type tau, const MatrixC& c, Workspace work ) {
-    return larfx_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, v, tau, c, work );
-}
-
-//
-// Overloaded function for larfx. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename VectorV, typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-larfx( const Side side, const VectorV& v,
-        const typename remove_imaginary< typename bindings::value_type<
-        VectorV >::type >::type tau, const MatrixC& c ) {
-    return larfx_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, v, tau, c, optimal_workspace() );
-}
-//
-// Overloaded function for larfx. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename VectorV, typename MatrixC,
@@ -377,7 +343,6 @@ larfx( const Side side, const VectorV& v,
 
 //
 // Overloaded function for larfx. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename VectorV, typename MatrixC >
@@ -386,37 +351,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
 larfx( const Side side, const VectorV& v,
         const typename bindings::value_type< VectorV >::type tau,
         MatrixC& c ) {
-    return larfx_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, v, tau, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for larfx. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename VectorV, typename MatrixC,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-larfx( const Side side, const VectorV& v,
-        const typename bindings::value_type< VectorV >::type tau,
-        const MatrixC& c, Workspace work ) {
-    return larfx_impl< typename bindings::value_type<
-            VectorV >::type >::invoke( side, v, tau, c, work );
-}
-
-//
-// Overloaded function for larfx. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename VectorV, typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-larfx( const Side side, const VectorV& v,
-        const typename bindings::value_type< VectorV >::type tau,
-        const MatrixC& c ) {
     return larfx_impl< typename bindings::value_type<
             VectorV >::type >::invoke( side, v, tau, c, optimal_workspace() );
 }

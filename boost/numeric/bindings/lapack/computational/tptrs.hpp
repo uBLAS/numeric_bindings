@@ -167,20 +167,9 @@ struct tptrs_impl {
 
 //
 // Overloaded function for tptrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t tptrs( const MatrixAP& ap, MatrixB& b ) {
-    return tptrs_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, b );
-}
-
-//
-// Overloaded function for tptrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixAP, typename MatrixB >
-inline std::ptrdiff_t tptrs( const MatrixAP& ap, const MatrixB& b ) {
     return tptrs_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, b );
 }

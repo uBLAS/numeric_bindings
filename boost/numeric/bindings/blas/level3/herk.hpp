@@ -284,7 +284,6 @@ struct herk_impl {
 
 //
 // Overloaded function for herk. Its overload differs for
-// * MatrixC&
 //
 template< typename MatrixA, typename MatrixC >
 inline typename herk_impl< typename bindings::value_type<
@@ -293,21 +292,6 @@ herk( const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type alpha, const MatrixA& a,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type beta, MatrixC& c ) {
-    herk_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( alpha, a, beta, c );
-}
-
-//
-// Overloaded function for herk. Its overload differs for
-// * const MatrixC&
-//
-template< typename MatrixA, typename MatrixC >
-inline typename herk_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-herk( const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type alpha, const MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type beta, const MatrixC& c ) {
     herk_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( alpha, a, beta, c );
 }

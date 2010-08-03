@@ -139,20 +139,9 @@ struct pftrf_impl {
 
 //
 // Overloaded function for pftrf. Its overload differs for
-// * MatrixA&
 //
 template< typename MatrixA >
 inline std::ptrdiff_t pftrf( const char uplo, MatrixA& a ) {
-    return pftrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( uplo, a );
-}
-
-//
-// Overloaded function for pftrf. Its overload differs for
-// * const MatrixA&
-//
-template< typename MatrixA >
-inline std::ptrdiff_t pftrf( const char uplo, const MatrixA& a ) {
     return pftrf_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( uplo, a );
 }

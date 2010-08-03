@@ -432,7 +432,6 @@ struct stegr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for stegr. Its overload differs for
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -455,7 +454,6 @@ stegr( const char jobz, const char range, const fortran_int_t n,
 
 //
 // Overloaded function for stegr. Its overload differs for
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -470,52 +468,6 @@ stegr( const char jobz, const char range, const fortran_int_t n,
         const fortran_int_t iu, const typename remove_imaginary<
         typename bindings::value_type< MatrixZ >::type >::type abstol,
         fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stegr_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
-            abstol, m, w, z, isuppz, optimal_workspace() );
-}
-
-//
-// Overloaded function for stegr. Its overload differs for
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stegr( const char jobz, const char range, const fortran_int_t n,
-        VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename bindings::value_type< MatrixZ >::type >::type vl,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixZ >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename bindings::value_type< MatrixZ >::type >::type abstol,
-        fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorISUPPZ& isuppz, Workspace work ) {
-    return stegr_impl< typename bindings::value_type<
-            MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
-            abstol, m, w, z, isuppz, work );
-}
-
-//
-// Overloaded function for stegr. Its overload differs for
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename MatrixZ, typename VectorISUPPZ >
-inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
-        std::ptrdiff_t >::type
-stegr( const char jobz, const char range, const fortran_int_t n,
-        VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename bindings::value_type< MatrixZ >::type >::type vl,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixZ >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename bindings::value_type< MatrixZ >::type >::type abstol,
-        fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorISUPPZ& isuppz ) {
     return stegr_impl< typename bindings::value_type<
             MatrixZ >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             abstol, m, w, z, isuppz, optimal_workspace() );

@@ -178,22 +178,10 @@ struct tbtrs_impl {
 
 //
 // Overloaded function for tbtrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixAB, typename MatrixB >
 inline std::ptrdiff_t tbtrs( const fortran_int_t kd,
         const MatrixAB& ab, MatrixB& b ) {
-    return tbtrs_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( kd, ab, b );
-}
-
-//
-// Overloaded function for tbtrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixAB, typename MatrixB >
-inline std::ptrdiff_t tbtrs( const fortran_int_t kd,
-        const MatrixAB& ab, const MatrixB& b ) {
     return tbtrs_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( kd, ab, b );
 }

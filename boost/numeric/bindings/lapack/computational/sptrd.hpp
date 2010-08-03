@@ -130,23 +130,10 @@ struct sptrd_impl {
 
 //
 // Overloaded function for sptrd. Its overload differs for
-// * MatrixAP&
 //
 template< typename MatrixAP, typename VectorD, typename VectorE,
         typename VectorTAU >
 inline std::ptrdiff_t sptrd( MatrixAP& ap, VectorD& d, VectorE& e,
-        VectorTAU& tau ) {
-    return sptrd_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, d, e, tau );
-}
-
-//
-// Overloaded function for sptrd. Its overload differs for
-// * const MatrixAP&
-//
-template< typename MatrixAP, typename VectorD, typename VectorE,
-        typename VectorTAU >
-inline std::ptrdiff_t sptrd( const MatrixAP& ap, VectorD& d, VectorE& e,
         VectorTAU& tau ) {
     return sptrd_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, d, e, tau );

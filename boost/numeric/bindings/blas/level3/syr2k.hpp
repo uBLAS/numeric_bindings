@@ -313,7 +313,6 @@ struct syr2k_impl {
 
 //
 // Overloaded function for syr2k. Its overload differs for
-// * MatrixC&
 //
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename syr2k_impl< typename bindings::value_type<
@@ -322,21 +321,6 @@ syr2k( const typename bindings::value_type< MatrixA >::type alpha,
         const MatrixA& a, const MatrixB& b,
         const typename bindings::value_type< MatrixA >::type beta,
         MatrixC& c ) {
-    syr2k_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( alpha, a, b, beta, c );
-}
-
-//
-// Overloaded function for syr2k. Its overload differs for
-// * const MatrixC&
-//
-template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline typename syr2k_impl< typename bindings::value_type<
-        MatrixA >::type >::result_type
-syr2k( const typename bindings::value_type< MatrixA >::type alpha,
-        const MatrixA& a, const MatrixB& b,
-        const typename bindings::value_type< MatrixA >::type beta,
-        const MatrixC& c ) {
     syr2k_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( alpha, a, b, beta, c );
 }

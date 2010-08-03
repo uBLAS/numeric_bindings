@@ -194,8 +194,6 @@ struct sbgst_impl {
 
 //
 // Overloaded function for sbgst. Its overload differs for
-// * MatrixAB&
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX,
@@ -210,107 +208,12 @@ sbgst( const char vect, MatrixAB& ab, const MatrixBB& bb, MatrixX& x,
 
 //
 // Overloaded function for sbgst. Its overload differs for
-// * MatrixAB&
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX >
 inline typename boost::disable_if< detail::is_workspace< MatrixX >,
         std::ptrdiff_t >::type
 sbgst( const char vect, MatrixAB& ab, const MatrixBB& bb, MatrixX& x ) {
-    return sbgst_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, bb, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgst. Its overload differs for
-// * const MatrixAB&
-// * MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixX,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixX& x, Workspace work ) {
-    return sbgst_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, bb, x, work );
-}
-
-//
-// Overloaded function for sbgst. Its overload differs for
-// * const MatrixAB&
-// * MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-sbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixX& x ) {
-    return sbgst_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, bb, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgst. Its overload differs for
-// * MatrixAB&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixX,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbgst( const char vect, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixX& x, Workspace work ) {
-    return sbgst_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, bb, x, work );
-}
-
-//
-// Overloaded function for sbgst. Its overload differs for
-// * MatrixAB&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-sbgst( const char vect, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixX& x ) {
-    return sbgst_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, bb, x, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgst. Its overload differs for
-// * const MatrixAB&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixX,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-sbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixX& x, Workspace work ) {
-    return sbgst_impl< typename bindings::value_type<
-            MatrixAB >::type >::invoke( vect, ab, bb, x, work );
-}
-
-//
-// Overloaded function for sbgst. Its overload differs for
-// * const MatrixAB&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline typename boost::disable_if< detail::is_workspace< MatrixX >,
-        std::ptrdiff_t >::type
-sbgst( const char vect, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixX& x ) {
     return sbgst_impl< typename bindings::value_type<
             MatrixAB >::type >::invoke( vect, ab, bb, x, optimal_workspace() );
 }

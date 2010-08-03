@@ -233,7 +233,6 @@ struct stevr_impl {
 
 //
 // Overloaded function for stevr. Its overload differs for
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -256,7 +255,6 @@ stevr( const char jobz, const char range, const fortran_int_t n,
 
 //
 // Overloaded function for stevr. Its overload differs for
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename VectorD, typename VectorE, typename VectorW,
@@ -271,52 +269,6 @@ stevr( const char jobz, const char range, const fortran_int_t n,
         const fortran_int_t iu, const typename remove_imaginary<
         typename bindings::value_type< VectorD >::type >::type abstol,
         fortran_int_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    return stevr_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
-            abstol, m, w, z, isuppz, optimal_workspace() );
-}
-
-//
-// Overloaded function for stevr. Its overload differs for
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-stevr( const char jobz, const char range, const fortran_int_t n,
-        VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename bindings::value_type< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename bindings::value_type<
-        VectorD >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename bindings::value_type< VectorD >::type >::type abstol,
-        fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorISUPPZ& isuppz, Workspace work ) {
-    return stevr_impl< typename bindings::value_type<
-            VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
-            abstol, m, w, z, isuppz, work );
-}
-
-//
-// Overloaded function for stevr. Its overload differs for
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorW,
-        typename MatrixZ, typename VectorISUPPZ >
-inline typename boost::disable_if< detail::is_workspace< VectorISUPPZ >,
-        std::ptrdiff_t >::type
-stevr( const char jobz, const char range, const fortran_int_t n,
-        VectorD& d, VectorE& e, const typename remove_imaginary<
-        typename bindings::value_type< VectorD >::type >::type vl,
-        const typename remove_imaginary< typename bindings::value_type<
-        VectorD >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename bindings::value_type< VectorD >::type >::type abstol,
-        fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorISUPPZ& isuppz ) {
     return stevr_impl< typename bindings::value_type<
             VectorD >::type >::invoke( jobz, range, n, d, e, vl, vu, il, iu,
             abstol, m, w, z, isuppz, optimal_workspace() );

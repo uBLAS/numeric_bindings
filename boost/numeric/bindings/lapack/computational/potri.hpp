@@ -205,20 +205,9 @@ struct potri_impl {
 
 //
 // Overloaded function for potri. Its overload differs for
-// * MatrixA&
 //
 template< typename MatrixA >
 inline std::ptrdiff_t potri( MatrixA& a ) {
-    return potri_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a );
-}
-
-//
-// Overloaded function for potri. Its overload differs for
-// * const MatrixA&
-//
-template< typename MatrixA >
-inline std::ptrdiff_t potri( const MatrixA& a ) {
     return potri_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a );
 }

@@ -161,22 +161,10 @@ struct hptrs_impl {
 
 //
 // Overloaded function for hptrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t hptrs( const MatrixAP& ap, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return hptrs_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, ipiv, b );
-}
-
-//
-// Overloaded function for hptrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hptrs( const MatrixAP& ap, const VectorIPIV& ipiv,
-        const MatrixB& b ) {
     return hptrs_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, ipiv, b );
 }

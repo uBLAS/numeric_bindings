@@ -437,8 +437,6 @@ struct heevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for heevx. Its overload differs for
-// * MatrixA&
-// * MatrixZ&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
@@ -460,8 +458,6 @@ heevx( const char jobz, const char range, MatrixA& a,
 
 //
 // Overloaded function for heevx. Its overload differs for
-// * MatrixA&
-// * MatrixZ&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorW, typename MatrixZ,
@@ -476,144 +472,6 @@ heevx( const char jobz, const char range, MatrixA& a,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
-    return heevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for heevx. Its overload differs for
-// * const MatrixA&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-heevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return heevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for heevx. Its overload differs for
-// * const MatrixA&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-heevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        MatrixZ& z, VectorIFAIL& ifail ) {
-    return heevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for heevx. Its overload differs for
-// * MatrixA&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-heevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return heevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for heevx. Its overload differs for
-// * MatrixA&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-heevx( const char jobz, const char range, MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
-    return heevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, optimal_workspace() );
-}
-
-//
-// Overloaded function for heevx. Its overload differs for
-// * const MatrixA&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-heevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return heevx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
-            m, w, z, ifail, work );
-}
-
-//
-// Overloaded function for heevx. Its overload differs for
-// * const MatrixA&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorW, typename MatrixZ,
-        typename VectorIFAIL >
-inline typename boost::disable_if< detail::is_workspace< VectorIFAIL >,
-        std::ptrdiff_t >::type
-heevx( const char jobz, const char range, const MatrixA& a,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type vl, const typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
-        const MatrixZ& z, VectorIFAIL& ifail ) {
     return heevx_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( jobz, range, a, vl, vu, il, iu, abstol,
             m, w, z, ifail, optimal_workspace() );

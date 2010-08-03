@@ -474,8 +474,6 @@ struct hesvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for hesvx. Its overload differs for
-// * MatrixAF&
-// * MatrixX&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -494,8 +492,6 @@ hesvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
 
 //
 // Overloaded function for hesvx. Its overload differs for
-// * MatrixAF&
-// * MatrixX&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -507,128 +503,6 @@ hesvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename bindings::value_type< MatrixA >::type >::type& rcond,
         VectorFERR& ferr, VectorBERR& berr ) {
-    return hesvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( fact, a, af, ipiv, b, x, rcond, ferr,
-            berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for hesvx. Its overload differs for
-// * const MatrixAF&
-// * MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hesvx( const char fact, const MatrixA& a, const MatrixAF& af,
-        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return hesvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( fact, a, af, ipiv, b, x, rcond, ferr,
-            berr, work );
-}
-
-//
-// Overloaded function for hesvx. Its overload differs for
-// * const MatrixAF&
-// * MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-hesvx( const char fact, const MatrixA& a, const MatrixAF& af,
-        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    return hesvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( fact, a, af, ipiv, b, x, rcond, ferr,
-            berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for hesvx. Its overload differs for
-// * MatrixAF&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hesvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& rcond,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return hesvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( fact, a, af, ipiv, b, x, rcond, ferr,
-            berr, work );
-}
-
-//
-// Overloaded function for hesvx. Its overload differs for
-// * MatrixAF&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-hesvx( const char fact, const MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, typename remove_imaginary<
-        typename bindings::value_type< MatrixA >::type >::type& rcond,
-        VectorFERR& ferr, VectorBERR& berr ) {
-    return hesvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( fact, a, af, ipiv, b, x, rcond, ferr,
-            berr, optimal_workspace() );
-}
-
-//
-// Overloaded function for hesvx. Its overload differs for
-// * const MatrixAF&
-// * const MatrixX&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hesvx( const char fact, const MatrixA& a, const MatrixAF& af,
-        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
-    return hesvx_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( fact, a, af, ipiv, b, x, rcond, ferr,
-            berr, work );
-}
-
-//
-// Overloaded function for hesvx. Its overload differs for
-// * const MatrixAF&
-// * const MatrixX&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
-        typename MatrixB, typename MatrixX, typename VectorFERR,
-        typename VectorBERR >
-inline typename boost::disable_if< detail::is_workspace< VectorBERR >,
-        std::ptrdiff_t >::type
-hesvx( const char fact, const MatrixA& a, const MatrixAF& af,
-        VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
-        typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     return hesvx_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( fact, a, af, ipiv, b, x, rcond, ferr,
             berr, optimal_workspace() );

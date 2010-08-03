@@ -199,7 +199,6 @@ struct pstrf_impl {
 
 //
 // Overloaded function for pstrf. Its overload differs for
-// * MatrixA&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorPIV, typename Workspace >
@@ -214,44 +213,12 @@ pstrf( MatrixA& a, VectorPIV& piv, fortran_int_t& rank,
 
 //
 // Overloaded function for pstrf. Its overload differs for
-// * MatrixA&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorPIV >,
         std::ptrdiff_t >::type
 pstrf( MatrixA& a, VectorPIV& piv, fortran_int_t& rank,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type tol ) {
-    return pstrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, piv, rank, tol,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for pstrf. Its overload differs for
-// * const MatrixA&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorPIV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-pstrf( const MatrixA& a, VectorPIV& piv, fortran_int_t& rank,
-        const typename remove_imaginary< typename bindings::value_type<
-        MatrixA >::type >::type tol, Workspace work ) {
-    return pstrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, piv, rank, tol, work );
-}
-
-//
-// Overloaded function for pstrf. Its overload differs for
-// * const MatrixA&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorPIV >
-inline typename boost::disable_if< detail::is_workspace< VectorPIV >,
-        std::ptrdiff_t >::type
-pstrf( const MatrixA& a, VectorPIV& piv, fortran_int_t& rank,
         const typename remove_imaginary< typename bindings::value_type<
         MatrixA >::type >::type tol ) {
     return pstrf_impl< typename bindings::value_type<

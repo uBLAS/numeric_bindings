@@ -156,20 +156,9 @@ struct pptrs_impl {
 
 //
 // Overloaded function for pptrs. Its overload differs for
-// * MatrixB&
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t pptrs( const MatrixAP& ap, MatrixB& b ) {
-    return pptrs_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap, b );
-}
-
-//
-// Overloaded function for pptrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename MatrixAP, typename MatrixB >
-inline std::ptrdiff_t pptrs( const MatrixAP& ap, const MatrixB& b ) {
     return pptrs_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap, b );
 }

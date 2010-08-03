@@ -201,20 +201,9 @@ struct ptsv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 
 //
 // Overloaded function for ptsv. Its overload differs for
-// * MatrixB&
 //
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t ptsv( VectorD& d, VectorE& e, MatrixB& b ) {
-    return ptsv_impl< typename bindings::value_type<
-            VectorE >::type >::invoke( d, e, b );
-}
-
-//
-// Overloaded function for ptsv. Its overload differs for
-// * const MatrixB&
-//
-template< typename VectorD, typename VectorE, typename MatrixB >
-inline std::ptrdiff_t ptsv( VectorD& d, VectorE& e, const MatrixB& b ) {
     return ptsv_impl< typename bindings::value_type<
             VectorE >::type >::invoke( d, e, b );
 }

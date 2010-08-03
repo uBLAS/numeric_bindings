@@ -356,7 +356,6 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
@@ -371,7 +370,6 @@ gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
 
 //
 // Overloaded function for gebrd. Its overload differs for
-// * MatrixA&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorD, typename VectorE,
@@ -379,37 +377,6 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
         std::ptrdiff_t >::type
 gebrd( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-        VectorTAUP& taup ) {
-    return gebrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, d, e, tauq, taup,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-        VectorTAUP& taup, Workspace work ) {
-    return gebrd_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, d, e, tauq, taup, work );
-}
-
-//
-// Overloaded function for gebrd. Its overload differs for
-// * const MatrixA&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorD, typename VectorE,
-        typename VectorTAUQ, typename VectorTAUP >
-inline typename boost::disable_if< detail::is_workspace< VectorTAUP >,
-        std::ptrdiff_t >::type
-gebrd( const MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
         VectorTAUP& taup ) {
     return gebrd_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, d, e, tauq, taup,

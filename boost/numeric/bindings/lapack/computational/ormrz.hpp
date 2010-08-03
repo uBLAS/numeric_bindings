@@ -211,7 +211,6 @@ struct ormrz_impl {
 
 //
 // Overloaded function for ormrz. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -226,7 +225,6 @@ ormrz( const Side side, const fortran_int_t k, const MatrixA& a,
 
 //
 // Overloaded function for ormrz. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -235,37 +233,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 ormrz( const Side side, const fortran_int_t k, const MatrixA& a,
         const VectorTAU& tau, MatrixC& c ) {
-    return ormrz_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, k, a, tau, c,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for ormrz. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-ormrz( const Side side, const fortran_int_t k, const MatrixA& a,
-        const VectorTAU& tau, const MatrixC& c, Workspace work ) {
-    return ormrz_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, k, a, tau, c, work );
-}
-
-//
-// Overloaded function for ormrz. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-ormrz( const Side side, const fortran_int_t k, const MatrixA& a,
-        const VectorTAU& tau, const MatrixC& c ) {
     return ormrz_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, k, a, tau, c,
             optimal_workspace() );

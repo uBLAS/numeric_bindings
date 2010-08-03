@@ -192,7 +192,6 @@ struct opmtr_impl {
 
 //
 // Overloaded function for opmtr. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename VectorAP, typename VectorTAU,
@@ -207,7 +206,6 @@ opmtr( const Side side, const char uplo, const VectorAP& ap,
 
 //
 // Overloaded function for opmtr. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename VectorAP, typename VectorTAU,
@@ -216,37 +214,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 opmtr( const Side side, const char uplo, const VectorAP& ap,
         const VectorTAU& tau, MatrixC& c ) {
-    return opmtr_impl< typename bindings::value_type<
-            VectorAP >::type >::invoke( side, uplo, ap, tau, c,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for opmtr. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename VectorAP, typename VectorTAU,
-        typename MatrixC, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-opmtr( const Side side, const char uplo, const VectorAP& ap,
-        const VectorTAU& tau, const MatrixC& c, Workspace work ) {
-    return opmtr_impl< typename bindings::value_type<
-            VectorAP >::type >::invoke( side, uplo, ap, tau, c, work );
-}
-
-//
-// Overloaded function for opmtr. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename VectorAP, typename VectorTAU,
-        typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-opmtr( const Side side, const char uplo, const VectorAP& ap,
-        const VectorTAU& tau, const MatrixC& c ) {
     return opmtr_impl< typename bindings::value_type<
             VectorAP >::type >::invoke( side, uplo, ap, tau, c,
             optimal_workspace() );

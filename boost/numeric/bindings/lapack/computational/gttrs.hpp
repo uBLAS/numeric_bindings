@@ -188,26 +188,12 @@ struct gttrs_impl {
 
 //
 // Overloaded function for gttrs. Its overload differs for
-// * MatrixB&
 //
 template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gttrs( const VectorDL& dl, const VectorD& d,
         const VectorDU& du, const VectorDU2& du2, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    return gttrs_impl< typename bindings::value_type<
-            VectorDL >::type >::invoke( dl, d, du, du2, ipiv, b );
-}
-
-//
-// Overloaded function for gttrs. Its overload differs for
-// * const MatrixB&
-//
-template< typename VectorDL, typename VectorD, typename VectorDU,
-        typename VectorDU2, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gttrs( const VectorDL& dl, const VectorD& d,
-        const VectorDU& du, const VectorDU2& du2, const VectorIPIV& ipiv,
-        const MatrixB& b ) {
     return gttrs_impl< typename bindings::value_type<
             VectorDL >::type >::invoke( dl, d, du, du2, ipiv, b );
 }

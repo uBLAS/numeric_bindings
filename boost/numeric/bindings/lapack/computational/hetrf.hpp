@@ -295,7 +295,6 @@ struct hetrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for hetrf. Its overload differs for
-// * MatrixA&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
@@ -308,39 +307,12 @@ hetrf( MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
 
 //
 // Overloaded function for hetrf. Its overload differs for
-// * MatrixA&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
 inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
         std::ptrdiff_t >::type
 hetrf( MatrixA& a, VectorIPIV& ipiv ) {
-    return hetrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
-}
-
-//
-// Overloaded function for hetrf. Its overload differs for
-// * const MatrixA&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-hetrf( const MatrixA& a, VectorIPIV& ipiv, Workspace work ) {
-    return hetrf_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( a, ipiv, work );
-}
-
-//
-// Overloaded function for hetrf. Its overload differs for
-// * const MatrixA&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV >
-inline typename boost::disable_if< detail::is_workspace< VectorIPIV >,
-        std::ptrdiff_t >::type
-hetrf( const MatrixA& a, VectorIPIV& ipiv ) {
     return hetrf_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( a, ipiv, optimal_workspace() );
 }

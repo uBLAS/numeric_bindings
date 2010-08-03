@@ -364,7 +364,6 @@ struct unmtr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for unmtr. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -379,7 +378,6 @@ unmtr( const Side side, const MatrixA& a, const VectorTAU& tau,
 
 //
 // Overloaded function for unmtr. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename MatrixA, typename VectorTAU,
@@ -388,36 +386,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 unmtr( const Side side, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c ) {
-    return unmtr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
-}
-
-//
-// Overloaded function for unmtr. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-unmtr( const Side side, const MatrixA& a, const VectorTAU& tau,
-        const MatrixC& c, Workspace work ) {
-    return unmtr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, a, tau, c, work );
-}
-
-//
-// Overloaded function for unmtr. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename MatrixA, typename VectorTAU,
-        typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-unmtr( const Side side, const MatrixA& a, const VectorTAU& tau,
-        const MatrixC& c ) {
     return unmtr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
 }

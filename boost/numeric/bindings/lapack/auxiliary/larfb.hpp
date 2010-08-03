@@ -358,7 +358,6 @@ struct larfb_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 
 //
 // Overloaded function for larfb. Its overload differs for
-// * MatrixC&
 // * User-defined workspace
 //
 template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC,
@@ -375,7 +374,6 @@ larfb( const Side side, const char direct, const char storev,
 
 //
 // Overloaded function for larfb. Its overload differs for
-// * MatrixC&
 // * Default workspace-type (optimal)
 //
 template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC >
@@ -383,39 +381,6 @@ inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
 larfb( const Side side, const char direct, const char storev,
         const MatrixV& v, const MatrixT& t, MatrixC& c,
-        const fortran_int_t ldwork ) {
-    return larfb_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( side, direct, storev, v, t, c, ldwork,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for larfb. Its overload differs for
-// * const MatrixC&
-// * User-defined workspace
-//
-template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC,
-        typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-larfb( const Side side, const char direct, const char storev,
-        const MatrixV& v, const MatrixT& t, const MatrixC& c,
-        const fortran_int_t ldwork, Workspace work ) {
-    return larfb_impl< typename bindings::value_type<
-            MatrixV >::type >::invoke( side, direct, storev, v, t, c, ldwork,
-            work );
-}
-
-//
-// Overloaded function for larfb. Its overload differs for
-// * const MatrixC&
-// * Default workspace-type (optimal)
-//
-template< typename Side, typename MatrixV, typename MatrixT, typename MatrixC >
-inline typename boost::disable_if< detail::is_workspace< MatrixC >,
-        std::ptrdiff_t >::type
-larfb( const Side side, const char direct, const char storev,
-        const MatrixV& v, const MatrixT& t, const MatrixC& c,
         const fortran_int_t ldwork ) {
     return larfb_impl< typename bindings::value_type<
             MatrixV >::type >::invoke( side, direct, storev, v, t, c, ldwork,

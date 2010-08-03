@@ -142,20 +142,9 @@ struct tptri_impl {
 
 //
 // Overloaded function for tptri. Its overload differs for
-// * MatrixAP&
 //
 template< typename MatrixAP >
 inline std::ptrdiff_t tptri( MatrixAP& ap ) {
-    return tptri_impl< typename bindings::value_type<
-            MatrixAP >::type >::invoke( ap );
-}
-
-//
-// Overloaded function for tptri. Its overload differs for
-// * const MatrixAP&
-//
-template< typename MatrixAP >
-inline std::ptrdiff_t tptri( const MatrixAP& ap ) {
     return tptri_impl< typename bindings::value_type<
             MatrixAP >::type >::invoke( ap );
 }

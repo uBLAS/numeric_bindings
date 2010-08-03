@@ -175,7 +175,6 @@ struct orghr_impl {
 
 //
 // Overloaded function for orghr. Its overload differs for
-// * MatrixA&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
@@ -190,7 +189,6 @@ orghr( const fortran_int_t n, const fortran_int_t ilo,
 
 //
 // Overloaded function for orghr. Its overload differs for
-// * MatrixA&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
@@ -198,36 +196,6 @@ inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
         std::ptrdiff_t >::type
 orghr( const fortran_int_t n, const fortran_int_t ilo,
         const fortran_int_t ihi, MatrixA& a, const VectorTAU& tau ) {
-    return orghr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( n, ilo, ihi, a, tau,
-            optimal_workspace() );
-}
-
-//
-// Overloaded function for orghr. Its overload differs for
-// * const MatrixA&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline typename boost::enable_if< detail::is_workspace< Workspace >,
-        std::ptrdiff_t >::type
-orghr( const fortran_int_t n, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau,
-        Workspace work ) {
-    return orghr_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( n, ilo, ihi, a, tau, work );
-}
-
-//
-// Overloaded function for orghr. Its overload differs for
-// * const MatrixA&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorTAU >
-inline typename boost::disable_if< detail::is_workspace< VectorTAU >,
-        std::ptrdiff_t >::type
-orghr( const fortran_int_t n, const fortran_int_t ilo,
-        const fortran_int_t ihi, const MatrixA& a, const VectorTAU& tau ) {
     return orghr_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( n, ilo, ihi, a, tau,
             optimal_workspace() );

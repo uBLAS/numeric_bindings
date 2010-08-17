@@ -102,9 +102,9 @@ struct ormrq_impl {
     //
     template< typename Side, typename MatrixA, typename VectorTAU,
             typename MatrixC, typename WORK >
-    static std::ptrdiff_t invoke( const Side side, const fortran_int_t k,
-            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
-            detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, detail::workspace1<
+            WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -117,7 +117,7 @@ struct ormrq_impl {
                 typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
-        BOOST_ASSERT( bindings::size(tau) >= k );
+        BOOST_ASSERT( bindings::size(tau) >= bindings::size(tau) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_work( side, bindings::size_row(c),
                 bindings::size_column(c) ));
@@ -128,13 +128,14 @@ struct ormrq_impl {
                 bindings::stride_minor(c) == 1 );
         BOOST_ASSERT( bindings::size_row(c) >= 0 );
         BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                k) );
+                bindings::size(tau)) );
         BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 bindings::size_row(c)) );
         return detail::ormrq( side, trans(), bindings::size_row(c),
-                bindings::size_column(c), k, bindings::begin_value(a),
-                bindings::stride_major(a), bindings::begin_value(tau),
-                bindings::begin_value(c), bindings::stride_major(c),
+                bindings::size_column(c), bindings::size(tau),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(tau), bindings::begin_value(c),
+                bindings::stride_major(c),
                 bindings::begin_value(work.select(real_type())),
                 bindings::size(work.select(real_type())) );
     }
@@ -148,15 +149,14 @@ struct ormrq_impl {
     //
     template< typename Side, typename MatrixA, typename VectorTAU,
             typename MatrixC >
-    static std::ptrdiff_t invoke( const Side side, const fortran_int_t k,
-            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
-            minimal_workspace ) {
+    static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
                 bindings::size_row(c), bindings::size_column(c) ) );
-        return invoke( side, k, a, tau, c, workspace( tmp_work ) );
+        return invoke( side, a, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -168,21 +168,20 @@ struct ormrq_impl {
     //
     template< typename Side, typename MatrixA, typename VectorTAU,
             typename MatrixC >
-    static std::ptrdiff_t invoke( const Side side, const fortran_int_t k,
-            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
-            optimal_workspace ) {
+    static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         real_type opt_size_work;
         detail::ormrq( side, trans(), bindings::size_row(c),
-                bindings::size_column(c), k, bindings::begin_value(a),
-                bindings::stride_major(a), bindings::begin_value(tau),
-                bindings::begin_value(c), bindings::stride_major(c),
-                &opt_size_work, -1 );
+                bindings::size_column(c), bindings::size(tau),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(tau), bindings::begin_value(c),
+                bindings::stride_major(c), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        return invoke( side, k, a, tau, c, workspace( tmp_work ) );
+        return invoke( side, a, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -215,10 +214,10 @@ template< typename Side, typename MatrixA, typename VectorTAU,
         typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ormrq( const Side side, const fortran_int_t k, const MatrixA& a,
-        const VectorTAU& tau, MatrixC& c, Workspace work ) {
+ormrq( const Side side, const MatrixA& a, const VectorTAU& tau,
+        MatrixC& c, Workspace work ) {
     return ormrq_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, k, a, tau, c, work );
+            MatrixA >::type >::invoke( side, a, tau, c, work );
 }
 
 //
@@ -229,11 +228,10 @@ template< typename Side, typename MatrixA, typename VectorTAU,
         typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-ormrq( const Side side, const fortran_int_t k, const MatrixA& a,
-        const VectorTAU& tau, MatrixC& c ) {
+ormrq( const Side side, const MatrixA& a, const VectorTAU& tau,
+        MatrixC& c ) {
     return ormrq_impl< typename bindings::value_type<
-            MatrixA >::type >::invoke( side, k, a, tau, c,
-            optimal_workspace() );
+            MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
 }
 
 } // namespace lapack

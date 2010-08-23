@@ -56,7 +56,7 @@ namespace detail {
 template< typename Side, typename Trans >
 inline std::ptrdiff_t ormql( const Side side, const Trans trans,
         const fortran_int_t m, const fortran_int_t n, const fortran_int_t k,
-        const float* a, const fortran_int_t lda, const float* tau, float* c,
+        float* a, const fortran_int_t lda, const float* tau, float* c,
         const fortran_int_t ldc, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SORMQL( &lapack_option< Side >::value, &lapack_option<
@@ -73,9 +73,8 @@ inline std::ptrdiff_t ormql( const Side side, const Trans trans,
 template< typename Side, typename Trans >
 inline std::ptrdiff_t ormql( const Side side, const Trans trans,
         const fortran_int_t m, const fortran_int_t n, const fortran_int_t k,
-        const double* a, const fortran_int_t lda, const double* tau,
-        double* c, const fortran_int_t ldc, double* work,
-        const fortran_int_t lwork ) {
+        double* a, const fortran_int_t lda, const double* tau, double* c,
+        const fortran_int_t ldc, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DORMQL( &lapack_option< Side >::value, &lapack_option<
             Trans >::value, &m, &n, &k, a, &lda, tau, c, &ldc, work, &lwork,
@@ -102,7 +101,7 @@ struct ormql_impl {
     //
     template< typename Side, typename MatrixA, typename VectorTAU,
             typename MatrixC, typename WORK >
-    static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
+    static std::ptrdiff_t invoke( const Side side, MatrixA& a,
             const VectorTAU& tau, MatrixC& c, detail::workspace1<
             WORK > work ) {
         namespace bindings = ::boost::numeric::bindings;
@@ -116,6 +115,7 @@ struct ormql_impl {
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
         BOOST_ASSERT( bindings::size(tau) >= bindings::size(tau) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
@@ -147,7 +147,7 @@ struct ormql_impl {
     //
     template< typename Side, typename MatrixA, typename VectorTAU,
             typename MatrixC >
-    static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
+    static std::ptrdiff_t invoke( const Side side, MatrixA& a,
             const VectorTAU& tau, MatrixC& c, minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
@@ -166,7 +166,7 @@ struct ormql_impl {
     //
     template< typename Side, typename MatrixA, typename VectorTAU,
             typename MatrixC >
-    static std::ptrdiff_t invoke( const Side side, const MatrixA& a,
+    static std::ptrdiff_t invoke( const Side side, MatrixA& a,
             const VectorTAU& tau, MatrixC& c, optimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
@@ -212,8 +212,8 @@ template< typename Side, typename MatrixA, typename VectorTAU,
         typename MatrixC, typename Workspace >
 inline typename boost::enable_if< detail::is_workspace< Workspace >,
         std::ptrdiff_t >::type
-ormql( const Side side, const MatrixA& a, const VectorTAU& tau,
-        MatrixC& c, Workspace work ) {
+ormql( const Side side, MatrixA& a, const VectorTAU& tau, MatrixC& c,
+        Workspace work ) {
     return ormql_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, work );
 }
@@ -226,8 +226,7 @@ template< typename Side, typename MatrixA, typename VectorTAU,
         typename MatrixC >
 inline typename boost::disable_if< detail::is_workspace< MatrixC >,
         std::ptrdiff_t >::type
-ormql( const Side side, const MatrixA& a, const VectorTAU& tau,
-        MatrixC& c ) {
+ormql( const Side side, MatrixA& a, const VectorTAU& tau, MatrixC& c ) {
     return ormql_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
 }

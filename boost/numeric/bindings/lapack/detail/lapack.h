@@ -239,12 +239,12 @@ void LAPACK_DORMLQ( const char* side, const char* trans,
 // Value-type variants of ormql
 void LAPACK_SORMQL( const char* side, const char* trans,
         const fortran_int_t* m, const fortran_int_t* n,
-        const fortran_int_t* k, const float* a, const fortran_int_t* lda,
+        const fortran_int_t* k, float* a, const fortran_int_t* lda,
         const float* tau, float* c, const fortran_int_t* ldc, float* work,
         const fortran_int_t* lwork, fortran_int_t* info );
 void LAPACK_DORMQL( const char* side, const char* trans,
         const fortran_int_t* m, const fortran_int_t* n,
-        const fortran_int_t* k, const double* a, const fortran_int_t* lda,
+        const fortran_int_t* k, double* a, const fortran_int_t* lda,
         const double* tau, double* c, const fortran_int_t* ldc, double* work,
         const fortran_int_t* lwork, fortran_int_t* info );
 

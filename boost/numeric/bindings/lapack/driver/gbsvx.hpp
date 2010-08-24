@@ -57,7 +57,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
+inline std::ptrdiff_t gbsvx( const char fact, const Trans,
         const fortran_int_t n, const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, float* ab, const fortran_int_t ldab,
         float* afb, const fortran_int_t ldafb, fortran_int_t* ipiv,
@@ -77,7 +77,7 @@ inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
+inline std::ptrdiff_t gbsvx( const char fact, const Trans,
         const fortran_int_t n, const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, double* ab, const fortran_int_t ldab,
         double* afb, const fortran_int_t ldafb, fortran_int_t* ipiv,
@@ -97,7 +97,7 @@ inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
+inline std::ptrdiff_t gbsvx( const char fact, const Trans,
         const fortran_int_t n, const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, std::complex<float>* ab,
         const fortran_int_t ldab, std::complex<float>* afb,
@@ -118,7 +118,7 @@ inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbsvx( const char fact, const Trans trans,
+inline std::ptrdiff_t gbsvx( const char fact, const Trans,
         const fortran_int_t n, const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, std::complex<double>* ab,
         const fortran_int_t ldab, std::complex<double>* afb,

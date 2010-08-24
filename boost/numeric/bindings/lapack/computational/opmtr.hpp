@@ -53,10 +53,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t opmtr( const Side side, const char uplo,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
-        const float* ap, const float* tau, float* c, const fortran_int_t ldc,
-        float* work ) {
+inline std::ptrdiff_t opmtr( const Side, const char uplo, const Trans,
+        const fortran_int_t m, const fortran_int_t n, const float* ap,
+        const float* tau, float* c, const fortran_int_t ldc, float* work ) {
     fortran_int_t info(0);
     LAPACK_SOPMTR( &lapack_option< Side >::value, &uplo, &lapack_option<
             Trans >::value, &m, &n, ap, tau, c, &ldc, work, &info );
@@ -69,10 +68,9 @@ inline std::ptrdiff_t opmtr( const Side side, const char uplo,
 // * double value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t opmtr( const Side side, const char uplo,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
-        const double* ap, const double* tau, double* c,
-        const fortran_int_t ldc, double* work ) {
+inline std::ptrdiff_t opmtr( const Side, const char uplo, const Trans,
+        const fortran_int_t m, const fortran_int_t n, const double* ap,
+        const double* tau, double* c, const fortran_int_t ldc, double* work ) {
     fortran_int_t info(0);
     LAPACK_DOPMTR( &lapack_option< Side >::value, &uplo, &lapack_option<
             Trans >::value, &m, &n, ap, tau, c, &ldc, work, &info );
@@ -173,8 +171,8 @@ struct opmtr_impl {
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }

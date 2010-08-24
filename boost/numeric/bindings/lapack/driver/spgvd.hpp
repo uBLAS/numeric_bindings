@@ -54,8 +54,8 @@ namespace detail {
 //
 template< typename UpLo >
 inline std::ptrdiff_t spgvd( const fortran_int_t itype, const char jobz,
-        const UpLo uplo, const fortran_int_t n, float* ap, float* bp,
-        float* w, float* z, const fortran_int_t ldz, float* work,
+        const UpLo, const fortran_int_t n, float* ap, float* bp, float* w,
+        float* z, const fortran_int_t ldz, float* work,
         const fortran_int_t lwork, fortran_int_t* iwork,
         const fortran_int_t liwork ) {
     fortran_int_t info(0);
@@ -71,8 +71,8 @@ inline std::ptrdiff_t spgvd( const fortran_int_t itype, const char jobz,
 //
 template< typename UpLo >
 inline std::ptrdiff_t spgvd( const fortran_int_t itype, const char jobz,
-        const UpLo uplo, const fortran_int_t n, double* ap, double* bp,
-        double* w, double* z, const fortran_int_t ldz, double* work,
+        const UpLo, const fortran_int_t n, double* ap, double* bp, double* w,
+        double* z, const fortran_int_t ldz, double* work,
         const fortran_int_t lwork, fortran_int_t* iwork,
         const fortran_int_t liwork ) {
     fortran_int_t info(0);

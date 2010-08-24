@@ -56,7 +56,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t trcon( const char norm, const UpLo uplo, const Diag diag,
+inline std::ptrdiff_t trcon( const char norm, const UpLo, const Diag,
         const fortran_int_t n, const float* a, const fortran_int_t lda,
         float& rcond, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
@@ -71,7 +71,7 @@ inline std::ptrdiff_t trcon( const char norm, const UpLo uplo, const Diag diag,
 // * double value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t trcon( const char norm, const UpLo uplo, const Diag diag,
+inline std::ptrdiff_t trcon( const char norm, const UpLo, const Diag,
         const fortran_int_t n, const double* a, const fortran_int_t lda,
         double& rcond, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
@@ -86,7 +86,7 @@ inline std::ptrdiff_t trcon( const char norm, const UpLo uplo, const Diag diag,
 // * complex<float> value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t trcon( const char norm, const UpLo uplo, const Diag diag,
+inline std::ptrdiff_t trcon( const char norm, const UpLo, const Diag,
         const fortran_int_t n, const std::complex<float>* a,
         const fortran_int_t lda, float& rcond, std::complex<float>* work,
         float* rwork ) {
@@ -102,7 +102,7 @@ inline std::ptrdiff_t trcon( const char norm, const UpLo uplo, const Diag diag,
 // * complex<double> value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t trcon( const char norm, const UpLo uplo, const Diag diag,
+inline std::ptrdiff_t trcon( const char norm, const UpLo, const Diag,
         const fortran_int_t n, const std::complex<double>* a,
         const fortran_int_t lda, double& rcond, std::complex<double>* work,
         double* rwork ) {

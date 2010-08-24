@@ -57,7 +57,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t tgsyl( const Trans trans, const fortran_int_t ijob,
+inline std::ptrdiff_t tgsyl( const Trans, const fortran_int_t ijob,
         const fortran_int_t m, const fortran_int_t n, const float* a,
         const fortran_int_t lda, const float* b, const fortran_int_t ldb,
         float* c, const fortran_int_t ldc, const float* d,
@@ -77,7 +77,7 @@ inline std::ptrdiff_t tgsyl( const Trans trans, const fortran_int_t ijob,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t tgsyl( const Trans trans, const fortran_int_t ijob,
+inline std::ptrdiff_t tgsyl( const Trans, const fortran_int_t ijob,
         const fortran_int_t m, const fortran_int_t n, const double* a,
         const fortran_int_t lda, const double* b, const fortran_int_t ldb,
         double* c, const fortran_int_t ldc, const double* d,
@@ -97,7 +97,7 @@ inline std::ptrdiff_t tgsyl( const Trans trans, const fortran_int_t ijob,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t tgsyl( const Trans trans, const fortran_int_t ijob,
+inline std::ptrdiff_t tgsyl( const Trans, const fortran_int_t ijob,
         const fortran_int_t m, const fortran_int_t n,
         const std::complex<float>* a, const fortran_int_t lda,
         const std::complex<float>* b, const fortran_int_t ldb,
@@ -120,7 +120,7 @@ inline std::ptrdiff_t tgsyl( const Trans trans, const fortran_int_t ijob,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t tgsyl( const Trans trans, const fortran_int_t ijob,
+inline std::ptrdiff_t tgsyl( const Trans, const fortran_int_t ijob,
         const fortran_int_t m, const fortran_int_t n,
         const std::complex<double>* a, const fortran_int_t lda,
         const std::complex<double>* b, const fortran_int_t ldb,

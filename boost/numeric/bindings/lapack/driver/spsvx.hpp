@@ -55,7 +55,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsvx( const char fact, const UpLo uplo,
+inline std::ptrdiff_t spsvx( const char fact, const UpLo,
         const fortran_int_t n, const fortran_int_t nrhs, const float* ap,
         float* afp, fortran_int_t* ipiv, const float* b,
         const fortran_int_t ldb, float* x, const fortran_int_t ldx,
@@ -73,7 +73,7 @@ inline std::ptrdiff_t spsvx( const char fact, const UpLo uplo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsvx( const char fact, const UpLo uplo,
+inline std::ptrdiff_t spsvx( const char fact, const UpLo,
         const fortran_int_t n, const fortran_int_t nrhs, const double* ap,
         double* afp, fortran_int_t* ipiv, const double* b,
         const fortran_int_t ldb, double* x, const fortran_int_t ldx,
@@ -91,7 +91,7 @@ inline std::ptrdiff_t spsvx( const char fact, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsvx( const char fact, const UpLo uplo,
+inline std::ptrdiff_t spsvx( const char fact, const UpLo,
         const fortran_int_t n, const fortran_int_t nrhs,
         const std::complex<float>* ap, std::complex<float>* afp,
         fortran_int_t* ipiv, const std::complex<float>* b,
@@ -110,7 +110,7 @@ inline std::ptrdiff_t spsvx( const char fact, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsvx( const char fact, const UpLo uplo,
+inline std::ptrdiff_t spsvx( const char fact, const UpLo,
         const fortran_int_t n, const fortran_int_t nrhs,
         const std::complex<double>* ap, std::complex<double>* afp,
         fortran_int_t* ipiv, const std::complex<double>* b,

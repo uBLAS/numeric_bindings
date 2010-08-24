@@ -51,7 +51,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbtrs( const Trans trans, const fortran_int_t n,
+inline std::ptrdiff_t gbtrs( const Trans, const fortran_int_t n,
         const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, const float* ab, const fortran_int_t ldab,
         const fortran_int_t* ipiv, float* b, const fortran_int_t ldb ) {
@@ -67,7 +67,7 @@ inline std::ptrdiff_t gbtrs( const Trans trans, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbtrs( const Trans trans, const fortran_int_t n,
+inline std::ptrdiff_t gbtrs( const Trans, const fortran_int_t n,
         const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, const double* ab, const fortran_int_t ldab,
         const fortran_int_t* ipiv, double* b, const fortran_int_t ldb ) {
@@ -83,7 +83,7 @@ inline std::ptrdiff_t gbtrs( const Trans trans, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbtrs( const Trans trans, const fortran_int_t n,
+inline std::ptrdiff_t gbtrs( const Trans, const fortran_int_t n,
         const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, const std::complex<float>* ab,
         const fortran_int_t ldab, const fortran_int_t* ipiv,
@@ -100,7 +100,7 @@ inline std::ptrdiff_t gbtrs( const Trans trans, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbtrs( const Trans trans, const fortran_int_t n,
+inline std::ptrdiff_t gbtrs( const Trans, const fortran_int_t n,
         const fortran_int_t kl, const fortran_int_t ku,
         const fortran_int_t nrhs, const std::complex<double>* ab,
         const fortran_int_t ldab, const fortran_int_t* ipiv,

@@ -57,7 +57,7 @@ namespace detail {
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
-        const char range, const UpLo uplo, const fortran_int_t n, float* a,
+        const char range, const UpLo, const fortran_int_t n, float* a,
         const fortran_int_t lda, float* b, const fortran_int_t ldb,
         const float vl, const float vu, const fortran_int_t il,
         const fortran_int_t iu, const float abstol, fortran_int_t& m,
@@ -78,7 +78,7 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
-        const char range, const UpLo uplo, const fortran_int_t n, double* a,
+        const char range, const UpLo, const fortran_int_t n, double* a,
         const fortran_int_t lda, double* b, const fortran_int_t ldb,
         const double vl, const double vu, const fortran_int_t il,
         const fortran_int_t iu, const double abstol, fortran_int_t& m,
@@ -99,7 +99,7 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
-        const char range, const UpLo uplo, const fortran_int_t n,
+        const char range, const UpLo, const fortran_int_t n,
         std::complex<float>* a, const fortran_int_t lda,
         std::complex<float>* b, const fortran_int_t ldb, const float vl,
         const float vu, const fortran_int_t il, const fortran_int_t iu,
@@ -121,7 +121,7 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype, const char jobz,
-        const char range, const UpLo uplo, const fortran_int_t n,
+        const char range, const UpLo, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda,
         std::complex<double>* b, const fortran_int_t ldb, const double vl,
         const double vu, const fortran_int_t il, const fortran_int_t iu,

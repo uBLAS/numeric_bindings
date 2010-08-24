@@ -52,12 +52,11 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, float* ap, const float vl,
-        const float vu, const fortran_int_t il, const fortran_int_t iu,
-        const float abstol, fortran_int_t& m, float* w, float* z,
-        const fortran_int_t ldz, float* work, fortran_int_t* iwork,
-        fortran_int_t* ifail ) {
+inline std::ptrdiff_t spevx( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, float* ap, const float vl, const float vu,
+        const fortran_int_t il, const fortran_int_t iu, const float abstol,
+        fortran_int_t& m, float* w, float* z, const fortran_int_t ldz,
+        float* work, fortran_int_t* iwork, fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_SSPEVX( &jobz, &range, &lapack_option< UpLo >::value, &n, ap, &vl,
             &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail,
@@ -71,12 +70,11 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, double* ap, const double vl,
-        const double vu, const fortran_int_t il, const fortran_int_t iu,
-        const double abstol, fortran_int_t& m, double* w, double* z,
-        const fortran_int_t ldz, double* work, fortran_int_t* iwork,
-        fortran_int_t* ifail ) {
+inline std::ptrdiff_t spevx( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, double* ap, const double vl, const double vu,
+        const fortran_int_t il, const fortran_int_t iu, const double abstol,
+        fortran_int_t& m, double* w, double* z, const fortran_int_t ldz,
+        double* work, fortran_int_t* iwork, fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_DSPEVX( &jobz, &range, &lapack_option< UpLo >::value, &n, ap, &vl,
             &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail,

@@ -53,7 +53,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t lantr( const char norm, const UpLo uplo, const Diag diag,
+inline std::ptrdiff_t lantr( const char norm, const UpLo, const Diag,
         const fortran_int_t m, const fortran_int_t n, const float* a,
         const fortran_int_t lda, float* work ) {
     fortran_int_t info(0);
@@ -68,7 +68,7 @@ inline std::ptrdiff_t lantr( const char norm, const UpLo uplo, const Diag diag,
 // * double value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t lantr( const char norm, const UpLo uplo, const Diag diag,
+inline std::ptrdiff_t lantr( const char norm, const UpLo, const Diag,
         const fortran_int_t m, const fortran_int_t n, const double* a,
         const fortran_int_t lda, double* work ) {
     fortran_int_t info(0);
@@ -83,7 +83,7 @@ inline std::ptrdiff_t lantr( const char norm, const UpLo uplo, const Diag diag,
 // * complex<float> value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t lantr( const char norm, const UpLo uplo, const Diag diag,
+inline std::ptrdiff_t lantr( const char norm, const UpLo, const Diag,
         const fortran_int_t m, const fortran_int_t n,
         const std::complex<float>* a, const fortran_int_t lda, float* work ) {
     fortran_int_t info(0);
@@ -98,7 +98,7 @@ inline std::ptrdiff_t lantr( const char norm, const UpLo uplo, const Diag diag,
 // * complex<double> value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t lantr( const char norm, const UpLo uplo, const Diag diag,
+inline std::ptrdiff_t lantr( const char norm, const UpLo, const Diag,
         const fortran_int_t m, const fortran_int_t n,
         const std::complex<double>* a, const fortran_int_t lda,
         double* work ) {

@@ -56,14 +56,14 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, const fortran_int_t ka,
-        const fortran_int_t kb, float* ab, const fortran_int_t ldab,
-        float* bb, const fortran_int_t ldbb, float* q,
-        const fortran_int_t ldq, const float vl, const float vu,
-        const fortran_int_t il, const fortran_int_t iu, const float abstol,
-        fortran_int_t& m, float* w, float* z, const fortran_int_t ldz,
-        float* work, fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t hbgvx( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
+        float* ab, const fortran_int_t ldab, float* bb,
+        const fortran_int_t ldbb, float* q, const fortran_int_t ldq,
+        const float vl, const float vu, const fortran_int_t il,
+        const fortran_int_t iu, const float abstol, fortran_int_t& m,
+        float* w, float* z, const fortran_int_t ldz, float* work,
+        fortran_int_t* iwork, fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_SSBGVX( &jobz, &range, &lapack_option< UpLo >::value, &n, &ka, &kb,
             ab, &ldab, bb, &ldbb, q, &ldq, &vl, &vu, &il, &iu, &abstol, &m, w,
@@ -77,14 +77,14 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, const fortran_int_t ka,
-        const fortran_int_t kb, double* ab, const fortran_int_t ldab,
-        double* bb, const fortran_int_t ldbb, double* q,
-        const fortran_int_t ldq, const double vl, const double vu,
-        const fortran_int_t il, const fortran_int_t iu, const double abstol,
-        fortran_int_t& m, double* w, double* z, const fortran_int_t ldz,
-        double* work, fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t hbgvx( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
+        double* ab, const fortran_int_t ldab, double* bb,
+        const fortran_int_t ldbb, double* q, const fortran_int_t ldq,
+        const double vl, const double vu, const fortran_int_t il,
+        const fortran_int_t iu, const double abstol, fortran_int_t& m,
+        double* w, double* z, const fortran_int_t ldz, double* work,
+        fortran_int_t* iwork, fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_DSBGVX( &jobz, &range, &lapack_option< UpLo >::value, &n, &ka, &kb,
             ab, &ldab, bb, &ldbb, q, &ldq, &vl, &vu, &il, &iu, &abstol, &m, w,
@@ -98,16 +98,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, const fortran_int_t ka,
-        const fortran_int_t kb, std::complex<float>* ab,
-        const fortran_int_t ldab, std::complex<float>* bb,
-        const fortran_int_t ldbb, std::complex<float>* q,
-        const fortran_int_t ldq, const float vl, const float vu,
-        const fortran_int_t il, const fortran_int_t iu, const float abstol,
-        fortran_int_t& m, float* w, std::complex<float>* z,
-        const fortran_int_t ldz, std::complex<float>* work, float* rwork,
-        fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t hbgvx( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<float>* ab, const fortran_int_t ldab,
+        std::complex<float>* bb, const fortran_int_t ldbb,
+        std::complex<float>* q, const fortran_int_t ldq, const float vl,
+        const float vu, const fortran_int_t il, const fortran_int_t iu,
+        const float abstol, fortran_int_t& m, float* w,
+        std::complex<float>* z, const fortran_int_t ldz,
+        std::complex<float>* work, float* rwork, fortran_int_t* iwork,
+        fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_CHBGVX( &jobz, &range, &lapack_option< UpLo >::value, &n, &ka, &kb,
             ab, &ldab, bb, &ldbb, q, &ldq, &vl, &vu, &il, &iu, &abstol, &m, w,
@@ -121,16 +121,16 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, const fortran_int_t ka,
-        const fortran_int_t kb, std::complex<double>* ab,
-        const fortran_int_t ldab, std::complex<double>* bb,
-        const fortran_int_t ldbb, std::complex<double>* q,
-        const fortran_int_t ldq, const double vl, const double vu,
-        const fortran_int_t il, const fortran_int_t iu, const double abstol,
-        fortran_int_t& m, double* w, std::complex<double>* z,
-        const fortran_int_t ldz, std::complex<double>* work, double* rwork,
-        fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t hbgvx( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<double>* ab, const fortran_int_t ldab,
+        std::complex<double>* bb, const fortran_int_t ldbb,
+        std::complex<double>* q, const fortran_int_t ldq, const double vl,
+        const double vu, const fortran_int_t il, const fortran_int_t iu,
+        const double abstol, fortran_int_t& m, double* w,
+        std::complex<double>* z, const fortran_int_t ldz,
+        std::complex<double>* work, double* rwork, fortran_int_t* iwork,
+        fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_ZHBGVX( &jobz, &range, &lapack_option< UpLo >::value, &n, &ka, &kb,
             ab, &ldab, bb, &ldbb, q, &ldq, &vl, &vu, &il, &iu, &abstol, &m, w,

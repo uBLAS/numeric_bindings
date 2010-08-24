@@ -56,9 +56,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heev( const char jobz, const UpLo uplo,
-        const fortran_int_t n, float* a, const fortran_int_t lda, float* w,
-        float* work, const fortran_int_t lwork ) {
+inline std::ptrdiff_t heev( const char jobz, const UpLo, const fortran_int_t n,
+        float* a, const fortran_int_t lda, float* w, float* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SSYEV( &jobz, &lapack_option< UpLo >::value, &n, a, &lda, w, work,
             &lwork, &info );
@@ -71,9 +71,9 @@ inline std::ptrdiff_t heev( const char jobz, const UpLo uplo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heev( const char jobz, const UpLo uplo,
-        const fortran_int_t n, double* a, const fortran_int_t lda, double* w,
-        double* work, const fortran_int_t lwork ) {
+inline std::ptrdiff_t heev( const char jobz, const UpLo, const fortran_int_t n,
+        double* a, const fortran_int_t lda, double* w, double* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DSYEV( &jobz, &lapack_option< UpLo >::value, &n, a, &lda, w, work,
             &lwork, &info );
@@ -86,10 +86,9 @@ inline std::ptrdiff_t heev( const char jobz, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heev( const char jobz, const UpLo uplo,
-        const fortran_int_t n, std::complex<float>* a,
-        const fortran_int_t lda, float* w, std::complex<float>* work,
-        const fortran_int_t lwork, float* rwork ) {
+inline std::ptrdiff_t heev( const char jobz, const UpLo, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda, float* w,
+        std::complex<float>* work, const fortran_int_t lwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CHEEV( &jobz, &lapack_option< UpLo >::value, &n, a, &lda, w, work,
             &lwork, rwork, &info );
@@ -102,10 +101,10 @@ inline std::ptrdiff_t heev( const char jobz, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heev( const char jobz, const UpLo uplo,
-        const fortran_int_t n, std::complex<double>* a,
-        const fortran_int_t lda, double* w, std::complex<double>* work,
-        const fortran_int_t lwork, double* rwork ) {
+inline std::ptrdiff_t heev( const char jobz, const UpLo, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda, double* w,
+        std::complex<double>* work, const fortran_int_t lwork,
+        double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZHEEV( &jobz, &lapack_option< UpLo >::value, &n, a, &lda, w, work,
             &lwork, rwork, &info );

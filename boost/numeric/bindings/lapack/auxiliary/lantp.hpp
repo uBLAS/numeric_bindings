@@ -52,7 +52,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag diag,
+inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag,
         const fortran_int_t n, const float* ap, float* work ) {
     fortran_int_t info(0);
     LAPACK_SLANTP( &norm, &uplo, &lapack_option< Diag >::value, &n, ap, work );
@@ -65,7 +65,7 @@ inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag diag,
 // * double value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag diag,
+inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag,
         const fortran_int_t n, const double* ap, double* work ) {
     fortran_int_t info(0);
     LAPACK_DLANTP( &norm, &uplo, &lapack_option< Diag >::value, &n, ap, work );
@@ -78,7 +78,7 @@ inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag diag,
 // * complex<float> value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag diag,
+inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag,
         const fortran_int_t n, const std::complex<float>* ap, float* work ) {
     fortran_int_t info(0);
     LAPACK_CLANTP( &norm, &uplo, &lapack_option< Diag >::value, &n, ap, work );
@@ -91,7 +91,7 @@ inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag diag,
 // * complex<double> value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag diag,
+inline std::ptrdiff_t lantp( const char norm, const char uplo, const Diag,
         const fortran_int_t n, const std::complex<double>* ap, double* work ) {
     fortran_int_t info(0);
     LAPACK_ZLANTP( &norm, &uplo, &lapack_option< Diag >::value, &n, ap, work );

@@ -50,7 +50,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sygst( const fortran_int_t itype, const UpLo uplo,
+inline std::ptrdiff_t sygst( const fortran_int_t itype, const UpLo,
         const fortran_int_t n, float* a, const fortran_int_t lda,
         const float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
@@ -65,7 +65,7 @@ inline std::ptrdiff_t sygst( const fortran_int_t itype, const UpLo uplo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sygst( const fortran_int_t itype, const UpLo uplo,
+inline std::ptrdiff_t sygst( const fortran_int_t itype, const UpLo,
         const fortran_int_t n, double* a, const fortran_int_t lda,
         const double* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);

@@ -58,9 +58,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side, typename UpLo, typename Trans >
-inline std::ptrdiff_t unmtr( const Side side, const UpLo uplo,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
-        const float* a, const fortran_int_t lda, const float* tau, float* c,
+inline std::ptrdiff_t unmtr( const Side, const UpLo, const Trans,
+        const fortran_int_t m, const fortran_int_t n, const float* a,
+        const fortran_int_t lda, const float* tau, float* c,
         const fortran_int_t ldc, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SORMTR( &lapack_option< Side >::value, &lapack_option<
@@ -75,11 +75,10 @@ inline std::ptrdiff_t unmtr( const Side side, const UpLo uplo,
 // * double value-type.
 //
 template< typename Side, typename UpLo, typename Trans >
-inline std::ptrdiff_t unmtr( const Side side, const UpLo uplo,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
-        const double* a, const fortran_int_t lda, const double* tau,
-        double* c, const fortran_int_t ldc, double* work,
-        const fortran_int_t lwork ) {
+inline std::ptrdiff_t unmtr( const Side, const UpLo, const Trans,
+        const fortran_int_t m, const fortran_int_t n, const double* a,
+        const fortran_int_t lda, const double* tau, double* c,
+        const fortran_int_t ldc, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DORMTR( &lapack_option< Side >::value, &lapack_option<
             UpLo >::value, &lapack_option< Trans >::value, &m, &n, a, &lda,
@@ -93,8 +92,8 @@ inline std::ptrdiff_t unmtr( const Side side, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename Side, typename UpLo, typename Trans >
-inline std::ptrdiff_t unmtr( const Side side, const UpLo uplo,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
+inline std::ptrdiff_t unmtr( const Side, const UpLo, const Trans,
+        const fortran_int_t m, const fortran_int_t n,
         const std::complex<float>* a, const fortran_int_t lda,
         const std::complex<float>* tau, std::complex<float>* c,
         const fortran_int_t ldc, std::complex<float>* work,
@@ -112,8 +111,8 @@ inline std::ptrdiff_t unmtr( const Side side, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename Side, typename UpLo, typename Trans >
-inline std::ptrdiff_t unmtr( const Side side, const UpLo uplo,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
+inline std::ptrdiff_t unmtr( const Side, const UpLo, const Trans,
+        const fortran_int_t m, const fortran_int_t n,
         const std::complex<double>* a, const fortran_int_t lda,
         const std::complex<double>* tau, std::complex<double>* c,
         const fortran_int_t ldc, std::complex<double>* work,
@@ -236,8 +235,8 @@ struct unmtr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }
@@ -345,8 +344,8 @@ struct unmtr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }

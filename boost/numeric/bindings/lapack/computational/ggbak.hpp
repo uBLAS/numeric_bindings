@@ -52,10 +52,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t ggbak( const char job, const Side side,
-        const fortran_int_t n, const fortran_int_t ilo,
-        const fortran_int_t ihi, const float* lscale, const float* rscale,
-        const fortran_int_t m, float* v, const fortran_int_t ldv ) {
+inline std::ptrdiff_t ggbak( const char job, const Side, const fortran_int_t n,
+        const fortran_int_t ilo, const fortran_int_t ihi, const float* lscale,
+        const float* rscale, const fortran_int_t m, float* v,
+        const fortran_int_t ldv ) {
     fortran_int_t info(0);
     LAPACK_SGGBAK( &job, &lapack_option< Side >::value, &n, &ilo, &ihi,
             lscale, rscale, &m, v, &ldv, &info );
@@ -68,10 +68,10 @@ inline std::ptrdiff_t ggbak( const char job, const Side side,
 // * double value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t ggbak( const char job, const Side side,
-        const fortran_int_t n, const fortran_int_t ilo,
-        const fortran_int_t ihi, const double* lscale, const double* rscale,
-        const fortran_int_t m, double* v, const fortran_int_t ldv ) {
+inline std::ptrdiff_t ggbak( const char job, const Side, const fortran_int_t n,
+        const fortran_int_t ilo, const fortran_int_t ihi,
+        const double* lscale, const double* rscale, const fortran_int_t m,
+        double* v, const fortran_int_t ldv ) {
     fortran_int_t info(0);
     LAPACK_DGGBAK( &job, &lapack_option< Side >::value, &n, &ilo, &ihi,
             lscale, rscale, &m, v, &ldv, &info );
@@ -84,10 +84,9 @@ inline std::ptrdiff_t ggbak( const char job, const Side side,
 // * complex<float> value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t ggbak( const char job, const Side side,
-        const fortran_int_t n, const fortran_int_t ilo,
-        const fortran_int_t ihi, const float* lscale, const float* rscale,
-        const fortran_int_t m, std::complex<float>* v,
+inline std::ptrdiff_t ggbak( const char job, const Side, const fortran_int_t n,
+        const fortran_int_t ilo, const fortran_int_t ihi, const float* lscale,
+        const float* rscale, const fortran_int_t m, std::complex<float>* v,
         const fortran_int_t ldv ) {
     fortran_int_t info(0);
     LAPACK_CGGBAK( &job, &lapack_option< Side >::value, &n, &ilo, &ihi,
@@ -101,11 +100,10 @@ inline std::ptrdiff_t ggbak( const char job, const Side side,
 // * complex<double> value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t ggbak( const char job, const Side side,
-        const fortran_int_t n, const fortran_int_t ilo,
-        const fortran_int_t ihi, const double* lscale, const double* rscale,
-        const fortran_int_t m, std::complex<double>* v,
-        const fortran_int_t ldv ) {
+inline std::ptrdiff_t ggbak( const char job, const Side, const fortran_int_t n,
+        const fortran_int_t ilo, const fortran_int_t ihi,
+        const double* lscale, const double* rscale, const fortran_int_t m,
+        std::complex<double>* v, const fortran_int_t ldv ) {
     fortran_int_t info(0);
     LAPACK_ZGGBAK( &job, &lapack_option< Side >::value, &n, &ilo, &ihi,
             lscale, rscale, &m, v, &ldv, &info );

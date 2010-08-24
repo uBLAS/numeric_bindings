@@ -55,9 +55,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sycon( const UpLo uplo, const fortran_int_t n,
-        const float* a, const fortran_int_t lda, const fortran_int_t* ipiv,
-        const float anorm, float& rcond, float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t sycon( const UpLo, const fortran_int_t n, const float* a,
+        const fortran_int_t lda, const fortran_int_t* ipiv, const float anorm,
+        float& rcond, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SSYCON( &lapack_option< UpLo >::value, &n, a, &lda, ipiv, &anorm,
             &rcond, work, iwork, &info );
@@ -70,7 +70,7 @@ inline std::ptrdiff_t sycon( const UpLo uplo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sycon( const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t sycon( const UpLo, const fortran_int_t n,
         const double* a, const fortran_int_t lda, const fortran_int_t* ipiv,
         const double anorm, double& rcond, double* work,
         fortran_int_t* iwork ) {
@@ -86,7 +86,7 @@ inline std::ptrdiff_t sycon( const UpLo uplo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sycon( const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t sycon( const UpLo, const fortran_int_t n,
         const std::complex<float>* a, const fortran_int_t lda,
         const fortran_int_t* ipiv, const float anorm, float& rcond,
         std::complex<float>* work ) {
@@ -102,7 +102,7 @@ inline std::ptrdiff_t sycon( const UpLo uplo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sycon( const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t sycon( const UpLo, const fortran_int_t n,
         const std::complex<double>* a, const fortran_int_t lda,
         const fortran_int_t* ipiv, const double anorm, double& rcond,
         std::complex<double>* work ) {

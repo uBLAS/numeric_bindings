@@ -54,11 +54,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t ormbr( const char vect, const Side side,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, const float* a, const fortran_int_t lda,
-        const float* tau, float* c, const fortran_int_t ldc, float* work,
-        const fortran_int_t lwork ) {
+inline std::ptrdiff_t ormbr( const char vect, const Side, const Trans,
+        const fortran_int_t m, const fortran_int_t n, const fortran_int_t k,
+        const float* a, const fortran_int_t lda, const float* tau, float* c,
+        const fortran_int_t ldc, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SORMBR( &vect, &lapack_option< Side >::value, &lapack_option<
             Trans >::value, &m, &n, &k, a, &lda, tau, c, &ldc, work, &lwork,
@@ -72,10 +71,10 @@ inline std::ptrdiff_t ormbr( const char vect, const Side side,
 // * double value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t ormbr( const char vect, const Side side,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
-        const fortran_int_t k, const double* a, const fortran_int_t lda,
-        const double* tau, double* c, const fortran_int_t ldc, double* work,
+inline std::ptrdiff_t ormbr( const char vect, const Side, const Trans,
+        const fortran_int_t m, const fortran_int_t n, const fortran_int_t k,
+        const double* a, const fortran_int_t lda, const double* tau,
+        double* c, const fortran_int_t ldc, double* work,
         const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DORMBR( &vect, &lapack_option< Side >::value, &lapack_option<
@@ -191,8 +190,8 @@ struct ormbr_impl {
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }

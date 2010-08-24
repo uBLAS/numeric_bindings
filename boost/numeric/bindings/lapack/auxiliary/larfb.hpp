@@ -57,12 +57,11 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t larfb( const Side side, const Trans trans,
-        const char direct, const char storev, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, const float* v,
-        const fortran_int_t ldv, const float* t, const fortran_int_t ldt,
-        float* c, const fortran_int_t ldc, float* work,
-        const fortran_int_t ldwork ) {
+inline std::ptrdiff_t larfb( const Side, const Trans, const char direct,
+        const char storev, const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, const float* v, const fortran_int_t ldv,
+        const float* t, const fortran_int_t ldt, float* c,
+        const fortran_int_t ldc, float* work, const fortran_int_t ldwork ) {
     fortran_int_t info(0);
     LAPACK_SLARFB( &lapack_option< Side >::value, &lapack_option<
             Trans >::value, &direct, &storev, &m, &n, &k, v, &ldv, t, &ldt, c,
@@ -76,12 +75,11 @@ inline std::ptrdiff_t larfb( const Side side, const Trans trans,
 // * double value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t larfb( const Side side, const Trans trans,
-        const char direct, const char storev, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, const double* v,
-        const fortran_int_t ldv, const double* t, const fortran_int_t ldt,
-        double* c, const fortran_int_t ldc, double* work,
-        const fortran_int_t ldwork ) {
+inline std::ptrdiff_t larfb( const Side, const Trans, const char direct,
+        const char storev, const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, const double* v, const fortran_int_t ldv,
+        const double* t, const fortran_int_t ldt, double* c,
+        const fortran_int_t ldc, double* work, const fortran_int_t ldwork ) {
     fortran_int_t info(0);
     LAPACK_DLARFB( &lapack_option< Side >::value, &lapack_option<
             Trans >::value, &direct, &storev, &m, &n, &k, v, &ldv, t, &ldt, c,
@@ -95,13 +93,13 @@ inline std::ptrdiff_t larfb( const Side side, const Trans trans,
 // * complex<float> value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t larfb( const Side side, const Trans trans,
-        const char direct, const char storev, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k,
-        const std::complex<float>* v, const fortran_int_t ldv,
-        const std::complex<float>* t, const fortran_int_t ldt,
-        std::complex<float>* c, const fortran_int_t ldc,
-        std::complex<float>* work, const fortran_int_t ldwork ) {
+inline std::ptrdiff_t larfb( const Side, const Trans, const char direct,
+        const char storev, const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, const std::complex<float>* v,
+        const fortran_int_t ldv, const std::complex<float>* t,
+        const fortran_int_t ldt, std::complex<float>* c,
+        const fortran_int_t ldc, std::complex<float>* work,
+        const fortran_int_t ldwork ) {
     fortran_int_t info(0);
     LAPACK_CLARFB( &lapack_option< Side >::value, &lapack_option<
             Trans >::value, &direct, &storev, &m, &n, &k, v, &ldv, t, &ldt, c,
@@ -115,13 +113,13 @@ inline std::ptrdiff_t larfb( const Side side, const Trans trans,
 // * complex<double> value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t larfb( const Side side, const Trans trans,
-        const char direct, const char storev, const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k,
-        const std::complex<double>* v, const fortran_int_t ldv,
-        const std::complex<double>* t, const fortran_int_t ldt,
-        std::complex<double>* c, const fortran_int_t ldc,
-        std::complex<double>* work, const fortran_int_t ldwork ) {
+inline std::ptrdiff_t larfb( const Side, const Trans, const char direct,
+        const char storev, const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, const std::complex<double>* v,
+        const fortran_int_t ldv, const std::complex<double>* t,
+        const fortran_int_t ldt, std::complex<double>* c,
+        const fortran_int_t ldc, std::complex<double>* work,
+        const fortran_int_t ldwork ) {
     fortran_int_t info(0);
     LAPACK_ZLARFB( &lapack_option< Side >::value, &lapack_option<
             Trans >::value, &direct, &storev, &m, &n, &k, v, &ldv, t, &ldt, c,

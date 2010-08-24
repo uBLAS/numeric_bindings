@@ -53,7 +53,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lansb( const char norm, const UpLo,
         const fortran_int_t n, const fortran_int_t k, const float* ab,
         const fortran_int_t ldab, float* work ) {
     fortran_int_t info(0);
@@ -68,7 +68,7 @@ inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lansb( const char norm, const UpLo,
         const fortran_int_t n, const fortran_int_t k, const double* ab,
         const fortran_int_t ldab, double* work ) {
     fortran_int_t info(0);
@@ -83,7 +83,7 @@ inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lansb( const char norm, const UpLo,
         const fortran_int_t n, const fortran_int_t k,
         const std::complex<float>* ab, const fortran_int_t ldab,
         float* work ) {
@@ -99,7 +99,7 @@ inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansb( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lansb( const char norm, const UpLo,
         const fortran_int_t n, const fortran_int_t k,
         const std::complex<double>* ab, const fortran_int_t ldab,
         double* work ) {

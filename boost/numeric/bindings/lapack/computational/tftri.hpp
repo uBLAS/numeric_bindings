@@ -52,8 +52,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename TransR, typename UpLo, typename Diag >
-inline std::ptrdiff_t tftri( const TransR transr, const UpLo uplo,
-        const Diag diag, const fortran_int_t n, float* a ) {
+inline std::ptrdiff_t tftri( const TransR, const UpLo, const Diag,
+        const fortran_int_t n, float* a ) {
     fortran_int_t info(0);
     LAPACK_STFTRI( &lapack_option< TransR >::value, &lapack_option<
             UpLo >::value, &lapack_option< Diag >::value, &n, a, &info );
@@ -66,8 +66,8 @@ inline std::ptrdiff_t tftri( const TransR transr, const UpLo uplo,
 // * double value-type.
 //
 template< typename TransR, typename UpLo, typename Diag >
-inline std::ptrdiff_t tftri( const TransR transr, const UpLo uplo,
-        const Diag diag, const fortran_int_t n, double* a ) {
+inline std::ptrdiff_t tftri( const TransR, const UpLo, const Diag,
+        const fortran_int_t n, double* a ) {
     fortran_int_t info(0);
     LAPACK_DTFTRI( &lapack_option< TransR >::value, &lapack_option<
             UpLo >::value, &lapack_option< Diag >::value, &n, a, &info );
@@ -80,8 +80,8 @@ inline std::ptrdiff_t tftri( const TransR transr, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename TransR, typename UpLo, typename Diag >
-inline std::ptrdiff_t tftri( const TransR transr, const UpLo uplo,
-        const Diag diag, const fortran_int_t n, std::complex<float>* a ) {
+inline std::ptrdiff_t tftri( const TransR, const UpLo, const Diag,
+        const fortran_int_t n, std::complex<float>* a ) {
     fortran_int_t info(0);
     LAPACK_CTFTRI( &lapack_option< TransR >::value, &lapack_option<
             UpLo >::value, &lapack_option< Diag >::value, &n, a, &info );
@@ -94,8 +94,8 @@ inline std::ptrdiff_t tftri( const TransR transr, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename TransR, typename UpLo, typename Diag >
-inline std::ptrdiff_t tftri( const TransR transr, const UpLo uplo,
-        const Diag diag, const fortran_int_t n, std::complex<double>* a ) {
+inline std::ptrdiff_t tftri( const TransR, const UpLo, const Diag,
+        const fortran_int_t n, std::complex<double>* a ) {
     fortran_int_t info(0);
     LAPACK_ZTFTRI( &lapack_option< TransR >::value, &lapack_option<
             UpLo >::value, &lapack_option< Diag >::value, &n, a, &info );

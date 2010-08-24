@@ -55,7 +55,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pprfs( const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t pprfs( const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const float* ap, const float* afp,
         const float* b, const fortran_int_t ldb, float* x,
         const fortran_int_t ldx, float* ferr, float* berr, float* work,
@@ -72,7 +72,7 @@ inline std::ptrdiff_t pprfs( const UpLo uplo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pprfs( const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t pprfs( const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const double* ap, const double* afp,
         const double* b, const fortran_int_t ldb, double* x,
         const fortran_int_t ldx, double* ferr, double* berr, double* work,
@@ -89,7 +89,7 @@ inline std::ptrdiff_t pprfs( const UpLo uplo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pprfs( const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t pprfs( const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<float>* ap,
         const std::complex<float>* afp, const std::complex<float>* b,
         const fortran_int_t ldb, std::complex<float>* x,
@@ -107,7 +107,7 @@ inline std::ptrdiff_t pprfs( const UpLo uplo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pprfs( const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t pprfs( const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<double>* ap,
         const std::complex<double>* afp, const std::complex<double>* b,
         const fortran_int_t ldb, std::complex<double>* x,

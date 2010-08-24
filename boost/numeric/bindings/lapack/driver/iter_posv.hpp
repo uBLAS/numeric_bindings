@@ -55,7 +55,7 @@ namespace detail {
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t iter_posv( const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t iter_posv( const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, double* a, const fortran_int_t lda,
         const double* b, const fortran_int_t ldb, double* x,
         const fortran_int_t ldx, double* work, float* swork,
@@ -72,7 +72,7 @@ inline std::ptrdiff_t iter_posv( const UpLo uplo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t iter_posv( const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t iter_posv( const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, std::complex<double>* a,
         const fortran_int_t lda, const std::complex<double>* b,
         const fortran_int_t ldb, std::complex<double>* x,

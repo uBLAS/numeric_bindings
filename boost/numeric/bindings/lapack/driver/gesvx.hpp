@@ -56,7 +56,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gesvx( const char fact, const Trans trans,
+inline std::ptrdiff_t gesvx( const char fact, const Trans,
         const fortran_int_t n, const fortran_int_t nrhs, float* a,
         const fortran_int_t lda, float* af, const fortran_int_t ldaf,
         fortran_int_t* ipiv, char& equed, float* r, float* c, float* b,
@@ -76,7 +76,7 @@ inline std::ptrdiff_t gesvx( const char fact, const Trans trans,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gesvx( const char fact, const Trans trans,
+inline std::ptrdiff_t gesvx( const char fact, const Trans,
         const fortran_int_t n, const fortran_int_t nrhs, double* a,
         const fortran_int_t lda, double* af, const fortran_int_t ldaf,
         fortran_int_t* ipiv, char& equed, double* r, double* c, double* b,
@@ -96,7 +96,7 @@ inline std::ptrdiff_t gesvx( const char fact, const Trans trans,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gesvx( const char fact, const Trans trans,
+inline std::ptrdiff_t gesvx( const char fact, const Trans,
         const fortran_int_t n, const fortran_int_t nrhs,
         std::complex<float>* a, const fortran_int_t lda,
         std::complex<float>* af, const fortran_int_t ldaf,
@@ -117,7 +117,7 @@ inline std::ptrdiff_t gesvx( const char fact, const Trans trans,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gesvx( const char fact, const Trans trans,
+inline std::ptrdiff_t gesvx( const char fact, const Trans,
         const fortran_int_t n, const fortran_int_t nrhs,
         std::complex<double>* a, const fortran_int_t lda,
         std::complex<double>* af, const fortran_int_t ldaf,

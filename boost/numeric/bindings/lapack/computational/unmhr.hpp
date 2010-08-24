@@ -57,8 +57,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t unmhr( const Side side, const Trans trans,
-        const fortran_int_t m, const fortran_int_t n, const fortran_int_t ilo,
+inline std::ptrdiff_t unmhr( const Side, const Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ilo,
         const fortran_int_t ihi, const float* a, const fortran_int_t lda,
         const float* tau, float* c, const fortran_int_t ldc, float* work,
         const fortran_int_t lwork ) {
@@ -75,8 +75,8 @@ inline std::ptrdiff_t unmhr( const Side side, const Trans trans,
 // * double value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t unmhr( const Side side, const Trans trans,
-        const fortran_int_t m, const fortran_int_t n, const fortran_int_t ilo,
+inline std::ptrdiff_t unmhr( const Side, const Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ilo,
         const fortran_int_t ihi, const double* a, const fortran_int_t lda,
         const double* tau, double* c, const fortran_int_t ldc, double* work,
         const fortran_int_t lwork ) {
@@ -93,8 +93,8 @@ inline std::ptrdiff_t unmhr( const Side side, const Trans trans,
 // * complex<float> value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t unmhr( const Side side, const Trans trans,
-        const fortran_int_t m, const fortran_int_t n, const fortran_int_t ilo,
+inline std::ptrdiff_t unmhr( const Side, const Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ilo,
         const fortran_int_t ihi, const std::complex<float>* a,
         const fortran_int_t lda, const std::complex<float>* tau,
         std::complex<float>* c, const fortran_int_t ldc,
@@ -112,8 +112,8 @@ inline std::ptrdiff_t unmhr( const Side side, const Trans trans,
 // * complex<double> value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t unmhr( const Side side, const Trans trans,
-        const fortran_int_t m, const fortran_int_t n, const fortran_int_t ilo,
+inline std::ptrdiff_t unmhr( const Side, const Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ilo,
         const fortran_int_t ihi, const std::complex<double>* a,
         const fortran_int_t lda, const std::complex<double>* tau,
         std::complex<double>* c, const fortran_int_t ldc,
@@ -236,8 +236,8 @@ struct unmhr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }
@@ -345,8 +345,8 @@ struct unmhr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }

@@ -54,12 +54,12 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
-        const char initv, fortran_bool_t* select, const fortran_int_t n,
-        const float* h, const fortran_int_t ldh, float* wr, const float* wi,
-        float* vl, const fortran_int_t ldvl, float* vr,
-        const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
-        float* work, fortran_int_t* ifaill, fortran_int_t* ifailr ) {
+inline std::ptrdiff_t hsein( const Side, const char eigsrc, const char initv,
+        fortran_bool_t* select, const fortran_int_t n, const float* h,
+        const fortran_int_t ldh, float* wr, const float* wi, float* vl,
+        const fortran_int_t ldvl, float* vr, const fortran_int_t ldvr,
+        const fortran_int_t mm, fortran_int_t& m, float* work,
+        fortran_int_t* ifaill, fortran_int_t* ifailr ) {
     fortran_int_t info(0);
     LAPACK_SHSEIN( &lapack_option< Side >::value, &eigsrc, &initv, select, &n,
             h, &ldh, wr, wi, vl, &ldvl, vr, &ldvr, &mm, &m, work, ifaill,
@@ -73,12 +73,12 @@ inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
 // * double value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
-        const char initv, fortran_bool_t* select, const fortran_int_t n,
-        const double* h, const fortran_int_t ldh, double* wr,
-        const double* wi, double* vl, const fortran_int_t ldvl, double* vr,
-        const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
-        double* work, fortran_int_t* ifaill, fortran_int_t* ifailr ) {
+inline std::ptrdiff_t hsein( const Side, const char eigsrc, const char initv,
+        fortran_bool_t* select, const fortran_int_t n, const double* h,
+        const fortran_int_t ldh, double* wr, const double* wi, double* vl,
+        const fortran_int_t ldvl, double* vr, const fortran_int_t ldvr,
+        const fortran_int_t mm, fortran_int_t& m, double* work,
+        fortran_int_t* ifaill, fortran_int_t* ifailr ) {
     fortran_int_t info(0);
     LAPACK_DHSEIN( &lapack_option< Side >::value, &eigsrc, &initv, select, &n,
             h, &ldh, wr, wi, vl, &ldvl, vr, &ldvr, &mm, &m, work, ifaill,
@@ -92,8 +92,8 @@ inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
 // * complex<float> value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
-        const char initv, const fortran_bool_t* select, const fortran_int_t n,
+inline std::ptrdiff_t hsein( const Side, const char eigsrc, const char initv,
+        const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<float>* h, const fortran_int_t ldh,
         std::complex<float>* w, std::complex<float>* vl,
         const fortran_int_t ldvl, std::complex<float>* vr,
@@ -113,8 +113,8 @@ inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
 // * complex<double> value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t hsein( const Side side, const char eigsrc,
-        const char initv, const fortran_bool_t* select, const fortran_int_t n,
+inline std::ptrdiff_t hsein( const Side, const char eigsrc, const char initv,
+        const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<double>* h, const fortran_int_t ldh,
         std::complex<double>* w, std::complex<double>* vl,
         const fortran_int_t ldvl, std::complex<double>* vr,

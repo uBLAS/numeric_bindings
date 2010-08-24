@@ -53,7 +53,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbtrd( const char vect, const UpLo uplo,
+inline std::ptrdiff_t sbtrd( const char vect, const UpLo,
         const fortran_int_t n, const fortran_int_t kd, float* ab,
         const fortran_int_t ldab, float* d, float* e, float* q,
         const fortran_int_t ldq, float* work ) {
@@ -69,7 +69,7 @@ inline std::ptrdiff_t sbtrd( const char vect, const UpLo uplo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbtrd( const char vect, const UpLo uplo,
+inline std::ptrdiff_t sbtrd( const char vect, const UpLo,
         const fortran_int_t n, const fortran_int_t kd, double* ab,
         const fortran_int_t ldab, double* d, double* e, double* q,
         const fortran_int_t ldq, double* work ) {

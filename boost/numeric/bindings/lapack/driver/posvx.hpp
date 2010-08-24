@@ -55,7 +55,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t posvx( const char fact, const UpLo uplo,
+inline std::ptrdiff_t posvx( const char fact, const UpLo,
         const fortran_int_t n, const fortran_int_t nrhs, float* a,
         const fortran_int_t lda, float* af, const fortran_int_t ldaf,
         char& equed, float* s, float* b, const fortran_int_t ldb, float* x,
@@ -74,7 +74,7 @@ inline std::ptrdiff_t posvx( const char fact, const UpLo uplo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t posvx( const char fact, const UpLo uplo,
+inline std::ptrdiff_t posvx( const char fact, const UpLo,
         const fortran_int_t n, const fortran_int_t nrhs, double* a,
         const fortran_int_t lda, double* af, const fortran_int_t ldaf,
         char& equed, double* s, double* b, const fortran_int_t ldb, double* x,
@@ -93,7 +93,7 @@ inline std::ptrdiff_t posvx( const char fact, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t posvx( const char fact, const UpLo uplo,
+inline std::ptrdiff_t posvx( const char fact, const UpLo,
         const fortran_int_t n, const fortran_int_t nrhs,
         std::complex<float>* a, const fortran_int_t lda,
         std::complex<float>* af, const fortran_int_t ldaf, char& equed,
@@ -113,7 +113,7 @@ inline std::ptrdiff_t posvx( const char fact, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t posvx( const char fact, const UpLo uplo,
+inline std::ptrdiff_t posvx( const char fact, const UpLo,
         const fortran_int_t n, const fortran_int_t nrhs,
         std::complex<double>* a, const fortran_int_t lda,
         std::complex<double>* af, const fortran_int_t ldaf, char& equed,

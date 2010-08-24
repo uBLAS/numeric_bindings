@@ -54,7 +54,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t tgevc( const Side side, const char howmny,
+inline std::ptrdiff_t tgevc( const Side, const char howmny,
         const fortran_bool_t* select, const fortran_int_t n, const float* s,
         const fortran_int_t lds, const float* p, const fortran_int_t ldp,
         float* vl, const fortran_int_t ldvl, float* vr,
@@ -72,7 +72,7 @@ inline std::ptrdiff_t tgevc( const Side side, const char howmny,
 // * double value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t tgevc( const Side side, const char howmny,
+inline std::ptrdiff_t tgevc( const Side, const char howmny,
         const fortran_bool_t* select, const fortran_int_t n, const double* s,
         const fortran_int_t lds, const double* p, const fortran_int_t ldp,
         double* vl, const fortran_int_t ldvl, double* vr,
@@ -90,7 +90,7 @@ inline std::ptrdiff_t tgevc( const Side side, const char howmny,
 // * complex<float> value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t tgevc( const Side side, const char howmny,
+inline std::ptrdiff_t tgevc( const Side, const char howmny,
         const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<float>* s, const fortran_int_t lds,
         const std::complex<float>* p, const fortran_int_t ldp,
@@ -110,7 +110,7 @@ inline std::ptrdiff_t tgevc( const Side side, const char howmny,
 // * complex<double> value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t tgevc( const Side side, const char howmny,
+inline std::ptrdiff_t tgevc( const Side, const char howmny,
         const fortran_bool_t* select, const fortran_int_t n,
         const std::complex<double>* s, const fortran_int_t lds,
         const std::complex<double>* p, const fortran_int_t ldp,

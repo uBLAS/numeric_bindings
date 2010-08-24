@@ -57,9 +57,9 @@ namespace detail {
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz,
-        const UpLo uplo, const fortran_int_t n, float* a,
-        const fortran_int_t lda, float* b, const fortran_int_t ldb, float* w,
-        float* work, const fortran_int_t lwork, fortran_int_t* iwork,
+        const UpLo, const fortran_int_t n, float* a, const fortran_int_t lda,
+        float* b, const fortran_int_t ldb, float* w, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
         const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSYGVD( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
@@ -74,10 +74,10 @@ inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz,
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz,
-        const UpLo uplo, const fortran_int_t n, double* a,
-        const fortran_int_t lda, double* b, const fortran_int_t ldb,
-        double* w, double* work, const fortran_int_t lwork,
-        fortran_int_t* iwork, const fortran_int_t liwork ) {
+        const UpLo, const fortran_int_t n, double* a, const fortran_int_t lda,
+        double* b, const fortran_int_t ldb, double* w, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSYGVD( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, iwork, &liwork, &info );
@@ -91,7 +91,7 @@ inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz,
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz,
-        const UpLo uplo, const fortran_int_t n, std::complex<float>* a,
+        const UpLo, const fortran_int_t n, std::complex<float>* a,
         const fortran_int_t lda, std::complex<float>* b,
         const fortran_int_t ldb, float* w, std::complex<float>* work,
         const fortran_int_t lwork, float* rwork, const fortran_int_t lrwork,
@@ -109,7 +109,7 @@ inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz,
 //
 template< typename UpLo >
 inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz,
-        const UpLo uplo, const fortran_int_t n, std::complex<double>* a,
+        const UpLo, const fortran_int_t n, std::complex<double>* a,
         const fortran_int_t lda, std::complex<double>* b,
         const fortran_int_t ldb, double* w, std::complex<double>* work,
         const fortran_int_t lwork, double* rwork, const fortran_int_t lrwork,

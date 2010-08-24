@@ -59,8 +59,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo, typename Trans, typename Diag >
-inline std::ptrdiff_t tbrfs( const UpLo uplo, const Trans trans,
-        const Diag diag, const fortran_int_t n, const fortran_int_t kd,
+inline std::ptrdiff_t tbrfs( const UpLo, const Trans, const Diag,
+        const fortran_int_t n, const fortran_int_t kd,
         const fortran_int_t nrhs, const float* ab, const fortran_int_t ldab,
         const float* b, const fortran_int_t ldb, const float* x,
         const fortran_int_t ldx, float* ferr, float* berr, float* work,
@@ -78,8 +78,8 @@ inline std::ptrdiff_t tbrfs( const UpLo uplo, const Trans trans,
 // * double value-type.
 //
 template< typename UpLo, typename Trans, typename Diag >
-inline std::ptrdiff_t tbrfs( const UpLo uplo, const Trans trans,
-        const Diag diag, const fortran_int_t n, const fortran_int_t kd,
+inline std::ptrdiff_t tbrfs( const UpLo, const Trans, const Diag,
+        const fortran_int_t n, const fortran_int_t kd,
         const fortran_int_t nrhs, const double* ab, const fortran_int_t ldab,
         const double* b, const fortran_int_t ldb, const double* x,
         const fortran_int_t ldx, double* ferr, double* berr, double* work,
@@ -97,8 +97,8 @@ inline std::ptrdiff_t tbrfs( const UpLo uplo, const Trans trans,
 // * complex<float> value-type.
 //
 template< typename UpLo, typename Trans, typename Diag >
-inline std::ptrdiff_t tbrfs( const UpLo uplo, const Trans trans,
-        const Diag diag, const fortran_int_t n, const fortran_int_t kd,
+inline std::ptrdiff_t tbrfs( const UpLo, const Trans, const Diag,
+        const fortran_int_t n, const fortran_int_t kd,
         const fortran_int_t nrhs, const std::complex<float>* ab,
         const fortran_int_t ldab, const std::complex<float>* b,
         const fortran_int_t ldb, const std::complex<float>* x,
@@ -117,8 +117,8 @@ inline std::ptrdiff_t tbrfs( const UpLo uplo, const Trans trans,
 // * complex<double> value-type.
 //
 template< typename UpLo, typename Trans, typename Diag >
-inline std::ptrdiff_t tbrfs( const UpLo uplo, const Trans trans,
-        const Diag diag, const fortran_int_t n, const fortran_int_t kd,
+inline std::ptrdiff_t tbrfs( const UpLo, const Trans, const Diag,
+        const fortran_int_t n, const fortran_int_t kd,
         const fortran_int_t nrhs, const std::complex<double>* ab,
         const fortran_int_t ldab, const std::complex<double>* b,
         const fortran_int_t ldb, const std::complex<double>* x,

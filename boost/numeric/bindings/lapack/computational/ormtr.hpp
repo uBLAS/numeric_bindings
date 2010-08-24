@@ -55,9 +55,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side, typename UpLo, typename Trans >
-inline std::ptrdiff_t ormtr( const Side side, const UpLo uplo,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
-        const float* a, const fortran_int_t lda, const float* tau, float* c,
+inline std::ptrdiff_t ormtr( const Side, const UpLo, const Trans,
+        const fortran_int_t m, const fortran_int_t n, const float* a,
+        const fortran_int_t lda, const float* tau, float* c,
         const fortran_int_t ldc, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SORMTR( &lapack_option< Side >::value, &lapack_option<
@@ -72,11 +72,10 @@ inline std::ptrdiff_t ormtr( const Side side, const UpLo uplo,
 // * double value-type.
 //
 template< typename Side, typename UpLo, typename Trans >
-inline std::ptrdiff_t ormtr( const Side side, const UpLo uplo,
-        const Trans trans, const fortran_int_t m, const fortran_int_t n,
-        const double* a, const fortran_int_t lda, const double* tau,
-        double* c, const fortran_int_t ldc, double* work,
-        const fortran_int_t lwork ) {
+inline std::ptrdiff_t ormtr( const Side, const UpLo, const Trans,
+        const fortran_int_t m, const fortran_int_t n, const double* a,
+        const fortran_int_t lda, const double* tau, double* c,
+        const fortran_int_t ldc, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DORMTR( &lapack_option< Side >::value, &lapack_option<
             UpLo >::value, &lapack_option< Trans >::value, &m, &n, a, &lda,
@@ -189,8 +188,8 @@ struct ormtr_impl {
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }

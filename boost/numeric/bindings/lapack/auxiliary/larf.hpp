@@ -55,7 +55,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
+inline std::ptrdiff_t larf( const Side, const fortran_int_t m,
         const fortran_int_t n, const float* v, const fortran_int_t incv,
         const float tau, float* c, const fortran_int_t ldc, float* work ) {
     fortran_int_t info(0);
@@ -70,7 +70,7 @@ inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
 // * double value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
+inline std::ptrdiff_t larf( const Side, const fortran_int_t m,
         const fortran_int_t n, const double* v, const fortran_int_t incv,
         const double tau, double* c, const fortran_int_t ldc, double* work ) {
     fortran_int_t info(0);
@@ -85,7 +85,7 @@ inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
 // * complex<float> value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
+inline std::ptrdiff_t larf( const Side, const fortran_int_t m,
         const fortran_int_t n, const std::complex<float>* v,
         const fortran_int_t incv, const std::complex<float> tau,
         std::complex<float>* c, const fortran_int_t ldc,
@@ -102,7 +102,7 @@ inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
 // * complex<double> value-type.
 //
 template< typename Side >
-inline std::ptrdiff_t larf( const Side side, const fortran_int_t m,
+inline std::ptrdiff_t larf( const Side, const fortran_int_t m,
         const fortran_int_t n, const std::complex<double>* v,
         const fortran_int_t incv, const std::complex<double> tau,
         std::complex<double>* c, const fortran_int_t ldc,
@@ -197,8 +197,8 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }
@@ -279,8 +279,8 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }

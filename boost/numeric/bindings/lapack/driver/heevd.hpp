@@ -56,7 +56,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heevd( const char jobz, const UpLo uplo,
+inline std::ptrdiff_t heevd( const char jobz, const UpLo,
         const fortran_int_t n, float* a, const fortran_int_t lda, float* w,
         float* work, const fortran_int_t lwork, fortran_int_t* iwork,
         const fortran_int_t liwork ) {
@@ -72,7 +72,7 @@ inline std::ptrdiff_t heevd( const char jobz, const UpLo uplo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heevd( const char jobz, const UpLo uplo,
+inline std::ptrdiff_t heevd( const char jobz, const UpLo,
         const fortran_int_t n, double* a, const fortran_int_t lda, double* w,
         double* work, const fortran_int_t lwork, fortran_int_t* iwork,
         const fortran_int_t liwork ) {
@@ -88,7 +88,7 @@ inline std::ptrdiff_t heevd( const char jobz, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heevd( const char jobz, const UpLo uplo,
+inline std::ptrdiff_t heevd( const char jobz, const UpLo,
         const fortran_int_t n, std::complex<float>* a,
         const fortran_int_t lda, float* w, std::complex<float>* work,
         const fortran_int_t lwork, float* rwork, const fortran_int_t lrwork,
@@ -105,7 +105,7 @@ inline std::ptrdiff_t heevd( const char jobz, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heevd( const char jobz, const UpLo uplo,
+inline std::ptrdiff_t heevd( const char jobz, const UpLo,
         const fortran_int_t n, std::complex<double>* a,
         const fortran_int_t lda, double* w, std::complex<double>* work,
         const fortran_int_t lwork, double* rwork, const fortran_int_t lrwork,

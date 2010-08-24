@@ -57,7 +57,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
+inline std::ptrdiff_t hbgvd( const char jobz, const UpLo,
         const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
         float* ab, const fortran_int_t ldab, float* bb,
         const fortran_int_t ldbb, float* w, float* z, const fortran_int_t ldz,
@@ -76,7 +76,7 @@ inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
+inline std::ptrdiff_t hbgvd( const char jobz, const UpLo,
         const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
         double* ab, const fortran_int_t ldab, double* bb,
         const fortran_int_t ldbb, double* w, double* z,
@@ -95,7 +95,7 @@ inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
+inline std::ptrdiff_t hbgvd( const char jobz, const UpLo,
         const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
         std::complex<float>* ab, const fortran_int_t ldab,
         std::complex<float>* bb, const fortran_int_t ldbb, float* w,
@@ -116,7 +116,7 @@ inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvd( const char jobz, const UpLo uplo,
+inline std::ptrdiff_t hbgvd( const char jobz, const UpLo,
         const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
         std::complex<double>* ab, const fortran_int_t ldab,
         std::complex<double>* bb, const fortran_int_t ldbb, double* w,

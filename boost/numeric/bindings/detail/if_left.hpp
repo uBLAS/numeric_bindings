@@ -18,9 +18,10 @@ namespace detail {
 
 template< typename Side, typename Left, typename Right >
 struct if_left_impl {
+
     typedef Right result_type;
 
-    static result_type invoke( Left left, Right right ) {
+    static result_type invoke( Left, Right right ) {
         return right;
     }
 
@@ -31,7 +32,7 @@ struct if_left_impl< tag::left, Left, Right > {
 
     typedef Left result_type;
 
-    static result_type invoke( Left left, Right right ) {
+    static result_type invoke( Left left, Right ) {
         return left;
     }
 
@@ -40,7 +41,7 @@ struct if_left_impl< tag::left, Left, Right > {
 // by-value 
 template< typename Side, typename Left, typename Right >
 typename if_left_impl< Side, const Left, const Right >::result_type 
-if_left( const Side side, const Left left, const Right right ) {
+if_left( const Side, const Left left, const Right right ) {
     return if_left_impl< Side, const Left, const Right >::invoke( left, right );
 }
 

@@ -53,7 +53,7 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lanhb( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lanhb( const char norm, const UpLo,
         const fortran_int_t n, const fortran_int_t k,
         const std::complex<float>* ab, const fortran_int_t ldab,
         float* work ) {
@@ -69,7 +69,7 @@ inline std::ptrdiff_t lanhb( const char norm, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lanhb( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lanhb( const char norm, const UpLo,
         const fortran_int_t n, const fortran_int_t k,
         const std::complex<double>* ab, const fortran_int_t ldab,
         double* work ) {

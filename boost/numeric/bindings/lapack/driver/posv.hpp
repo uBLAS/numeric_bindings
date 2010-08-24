@@ -60,8 +60,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t posv( Order, const UpLo uplo, const int n,
-        const int nrhs, float* a, const int lda, float* b, const int ldb ) {
+inline std::ptrdiff_t posv( Order, const UpLo, const int n, const int nrhs,
+        float* a, const int lda, float* b, const int ldb ) {
     return clapack_sposv( clapack_option< Order >::value, clapack_option<
             UpLo >::value, n, nrhs, a, lda, b, ldb );
 }
@@ -72,8 +72,8 @@ inline std::ptrdiff_t posv( Order, const UpLo uplo, const int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t posv( Order, const UpLo uplo, const int n,
-        const int nrhs, double* a, const int lda, double* b, const int ldb ) {
+inline std::ptrdiff_t posv( Order, const UpLo, const int n, const int nrhs,
+        double* a, const int lda, double* b, const int ldb ) {
     return clapack_dposv( clapack_option< Order >::value, clapack_option<
             UpLo >::value, n, nrhs, a, lda, b, ldb );
 }
@@ -84,9 +84,9 @@ inline std::ptrdiff_t posv( Order, const UpLo uplo, const int n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t posv( Order, const UpLo uplo, const int n,
-        const int nrhs, std::complex<float>* a, const int lda,
-        std::complex<float>* b, const int ldb ) {
+inline std::ptrdiff_t posv( Order, const UpLo, const int n, const int nrhs,
+        std::complex<float>* a, const int lda, std::complex<float>* b,
+        const int ldb ) {
     return clapack_cposv( clapack_option< Order >::value, clapack_option<
             UpLo >::value, n, nrhs, a, lda, b, ldb );
 }
@@ -97,9 +97,9 @@ inline std::ptrdiff_t posv( Order, const UpLo uplo, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t posv( Order, const UpLo uplo, const int n,
-        const int nrhs, std::complex<double>* a, const int lda,
-        std::complex<double>* b, const int ldb ) {
+inline std::ptrdiff_t posv( Order, const UpLo, const int n, const int nrhs,
+        std::complex<double>* a, const int lda, std::complex<double>* b,
+        const int ldb ) {
     return clapack_zposv( clapack_option< Order >::value, clapack_option<
             UpLo >::value, n, nrhs, a, lda, b, ldb );
 }
@@ -111,7 +111,7 @@ inline std::ptrdiff_t posv( Order, const UpLo uplo, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t posv( Order, const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t posv( Order, const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, float* a, const fortran_int_t lda, float* b,
         const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -127,7 +127,7 @@ inline std::ptrdiff_t posv( Order, const UpLo uplo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t posv( Order, const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t posv( Order, const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, double* a, const fortran_int_t lda,
         double* b, const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -143,7 +143,7 @@ inline std::ptrdiff_t posv( Order, const UpLo uplo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t posv( Order, const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t posv( Order, const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, std::complex<float>* a,
         const fortran_int_t lda, std::complex<float>* b,
         const fortran_int_t ldb ) {
@@ -160,7 +160,7 @@ inline std::ptrdiff_t posv( Order, const UpLo uplo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline std::ptrdiff_t posv( Order, const UpLo uplo, const fortran_int_t n,
+inline std::ptrdiff_t posv( Order, const UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, std::complex<double>* a,
         const fortran_int_t lda, std::complex<double>* b,
         const fortran_int_t ldb ) {

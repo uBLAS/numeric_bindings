@@ -51,7 +51,7 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lansp( const char norm, const UpLo,
         const fortran_int_t n, const float* ap, float* work ) {
     fortran_int_t info(0);
     LAPACK_SLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
@@ -64,7 +64,7 @@ inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lansp( const char norm, const UpLo,
         const fortran_int_t n, const double* ap, double* work ) {
     fortran_int_t info(0);
     LAPACK_DLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
@@ -77,7 +77,7 @@ inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lansp( const char norm, const UpLo,
         const fortran_int_t n, const std::complex<float>* ap, float* work ) {
     fortran_int_t info(0);
     LAPACK_CLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
@@ -90,7 +90,7 @@ inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, const UpLo uplo,
+inline std::ptrdiff_t lansp( const char norm, const UpLo,
         const fortran_int_t n, const std::complex<double>* ap, double* work ) {
     fortran_int_t info(0);
     LAPACK_ZLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );

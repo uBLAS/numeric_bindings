@@ -56,13 +56,13 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heevr( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, float* a,
-        const fortran_int_t lda, const float vl, const float vu,
-        const fortran_int_t il, const fortran_int_t iu, const float abstol,
-        fortran_int_t& m, float* w, float* z, const fortran_int_t ldz,
-        fortran_int_t* isuppz, float* work, const fortran_int_t lwork,
-        fortran_int_t* iwork, const fortran_int_t liwork ) {
+inline std::ptrdiff_t heevr( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, float* a, const fortran_int_t lda,
+        const float vl, const float vu, const fortran_int_t il,
+        const fortran_int_t iu, const float abstol, fortran_int_t& m,
+        float* w, float* z, const fortran_int_t ldz, fortran_int_t* isuppz,
+        float* work, const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSYEVR( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
             &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, isuppz, work, &lwork,
@@ -76,13 +76,13 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heevr( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, double* a,
-        const fortran_int_t lda, const double vl, const double vu,
-        const fortran_int_t il, const fortran_int_t iu, const double abstol,
-        fortran_int_t& m, double* w, double* z, const fortran_int_t ldz,
-        fortran_int_t* isuppz, double* work, const fortran_int_t lwork,
-        fortran_int_t* iwork, const fortran_int_t liwork ) {
+inline std::ptrdiff_t heevr( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, double* a, const fortran_int_t lda,
+        const double vl, const double vu, const fortran_int_t il,
+        const fortran_int_t iu, const double abstol, fortran_int_t& m,
+        double* w, double* z, const fortran_int_t ldz, fortran_int_t* isuppz,
+        double* work, const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSYEVR( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
             &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, isuppz, work, &lwork,
@@ -96,8 +96,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heevr( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, std::complex<float>* a,
+inline std::ptrdiff_t heevr( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, std::complex<float>* a,
         const fortran_int_t lda, const float vl, const float vu,
         const fortran_int_t il, const fortran_int_t iu, const float abstol,
         fortran_int_t& m, float* w, std::complex<float>* z,
@@ -118,8 +118,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t heevr( const char jobz, const char range,
-        const UpLo uplo, const fortran_int_t n, std::complex<double>* a,
+inline std::ptrdiff_t heevr( const char jobz, const char range, const UpLo,
+        const fortran_int_t n, std::complex<double>* a,
         const fortran_int_t lda, const double vl, const double vu,
         const fortran_int_t il, const fortran_int_t iu, const double abstol,
         fortran_int_t& m, double* w, std::complex<double>* z,

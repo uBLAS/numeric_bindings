@@ -54,8 +54,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t ormhr( const Side side, const Trans trans,
-        const fortran_int_t m, const fortran_int_t n, const fortran_int_t ilo,
+inline std::ptrdiff_t ormhr( const Side, const Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ilo,
         const fortran_int_t ihi, const float* a, const fortran_int_t lda,
         const float* tau, float* c, const fortran_int_t ldc, float* work,
         const fortran_int_t lwork ) {
@@ -72,8 +72,8 @@ inline std::ptrdiff_t ormhr( const Side side, const Trans trans,
 // * double value-type.
 //
 template< typename Side, typename Trans >
-inline std::ptrdiff_t ormhr( const Side side, const Trans trans,
-        const fortran_int_t m, const fortran_int_t n, const fortran_int_t ilo,
+inline std::ptrdiff_t ormhr( const Side, const Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ilo,
         const fortran_int_t ihi, const double* a, const fortran_int_t lda,
         const double* tau, double* c, const fortran_int_t ldc, double* work,
         const fortran_int_t lwork ) {
@@ -189,8 +189,8 @@ struct ormhr_impl {
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side side,
-            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }

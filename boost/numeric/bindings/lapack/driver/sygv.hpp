@@ -54,9 +54,9 @@ namespace detail {
 //
 template< typename UpLo >
 inline std::ptrdiff_t sygv( const fortran_int_t itype, const char jobz,
-        const UpLo uplo, const fortran_int_t n, float* a,
-        const fortran_int_t lda, float* b, const fortran_int_t ldb, float* w,
-        float* work, const fortran_int_t lwork ) {
+        const UpLo, const fortran_int_t n, float* a, const fortran_int_t lda,
+        float* b, const fortran_int_t ldb, float* w, float* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SSYGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, &info );
@@ -70,9 +70,9 @@ inline std::ptrdiff_t sygv( const fortran_int_t itype, const char jobz,
 //
 template< typename UpLo >
 inline std::ptrdiff_t sygv( const fortran_int_t itype, const char jobz,
-        const UpLo uplo, const fortran_int_t n, double* a,
-        const fortran_int_t lda, double* b, const fortran_int_t ldb,
-        double* w, double* work, const fortran_int_t lwork ) {
+        const UpLo, const fortran_int_t n, double* a, const fortran_int_t lda,
+        double* b, const fortran_int_t ldb, double* w, double* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DSYGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, &info );

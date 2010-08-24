@@ -194,8 +194,8 @@ struct larfx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
-            const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side side,
+            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
         std::ptrdiff_t order = bindings::detail::if_left( side, n, m );
         if ( order < 11)
             return 1;
@@ -278,8 +278,8 @@ struct larfx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
-            const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side side,
+            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
         std::ptrdiff_t order = bindings::detail::if_left( side, n, m );
         if ( order < 11)
             return 1;

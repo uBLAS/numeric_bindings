@@ -124,12 +124,7 @@ def template_tag_type( name, properties ):
 def level0_type( name, properties ):
     result = cpp_type( name, properties )
     if template_tag_type( name, properties ) != None:
-        #
-        # To prevent warnings about unused paramers, just write
-        # ..., const Side, ..., i.e., without the lowercased name. Used to be 
-        # result = 'const ' + template_parameter[ name ] + ' ' + name.lower()
-        #
-        result = 'const ' + template_parameter[ name ]
+        result = 'const ' + template_parameter[ name ] + ' ' + name.lower()
     if name == 'INFO':
         result = None
     return result

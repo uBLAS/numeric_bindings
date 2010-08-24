@@ -189,8 +189,8 @@ struct ormhr_impl {
     // workspace-array work.
     //
     template< typename Side >
-    static std::ptrdiff_t min_size_work( const Side, const std::ptrdiff_t m,
-            const std::ptrdiff_t n ) {
+    static std::ptrdiff_t min_size_work( const Side side,
+            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >( 1, bindings::detail::if_left( side,
                 n, m ) );
     }

@@ -135,11 +135,20 @@ def write_functions( info_map, group, template_map, base_dir ):
         clapack_arg_list = []
         typename_list = []
         level0_static_asserts = []
+        check_for_unused = []
 
         for arg in info_map[ subroutine ][ 'arguments' ]:
             print "Subroutine ", subroutine, " arg ", arg
             if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] != None:
                 arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
+            #
+            # Find potential arguments that may cause warnings because they are not used, and
+            # store these in check_for_unused
+            #
+            if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] != None and \
+               info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] != None:
+                keyword = info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ].split( ' ')[-1]
+                check_for_unused += [ keyword ]
             if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_lapack_header' ] != None:
                 lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_lapack_header' ] ]
             if have_clapack and info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_clapack_header' ] != None:
@@ -176,7 +185,14 @@ def write_functions( info_map, group, template_map, base_dir ):
         else:
             clapack_routine = '// NOT FOUND'
         sub_template = sub_template.replace( "$CLAPACK_ROUTINE", clapack_routine )
-
+        
+        #
+        # Count potentially unused arguments. If the count is 1; it is only present in the 
+        # parameter list. In that case, the argument may be removed from the code
+        # 
+        for parameter in check_for_unused:
+            if sub_template.count( parameter ) == 1:
+                sub_template = sub_template.replace( ' ' + parameter, '' )
 
         # Finalize this sub_overload
         sub_overloads += bindings.proper_indent( sub_template )

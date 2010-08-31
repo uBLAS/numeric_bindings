@@ -189,7 +189,7 @@ struct trsen_impl {
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const char job, const std::ptrdiff_t n,
-            std::ptrdiff_t& m ) {
+            fortran_int_t& m ) {
         if ( job == 'N' )
             return 1;
         else if ( job == 'E' )

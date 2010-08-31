@@ -313,11 +313,13 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t ijob,
-            const std::ptrdiff_t n, std::ptrdiff_t& m ) {
+            const std::ptrdiff_t n, fortran_int_t& m ) {
         if ( ijob == 1 || ijob == 2 || ijob == 4 )
             return std::max< std::ptrdiff_t >(4*n+16, 2*m*(n-m));
-        else // if ( ijob == 3 || ijob == 5 )
+        else if ( ijob == 3 || ijob == 5 )
             return std::max< std::ptrdiff_t >(4*n+16, 4*m*(n-m));
+        else // ijob == 0
+            return std::max< std::ptrdiff_t >(1, 4*n+16);
     }
 
     //
@@ -325,11 +327,13 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // workspace-array iwork.
     //
     static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t ijob,
-            const std::ptrdiff_t n, std::ptrdiff_t& m ) {
+            const std::ptrdiff_t n, fortran_int_t& m ) {
         if ( ijob == 1 || ijob == 2 || ijob == 4 )
             return std::max< std::ptrdiff_t >(1, n+6);
-        else // if ( ijob == 3 || ijob == 5 )
+        else if ( ijob == 3 || ijob == 5 )
             return std::max< std::ptrdiff_t >(2*m*(n-m), n+6);
+        else // ijob == 0
+            return 1;
     }
 };
 
@@ -488,11 +492,13 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // workspace-array work.
     //
     static std::ptrdiff_t min_size_work( const std::ptrdiff_t ijob,
-            const std::ptrdiff_t n, std::ptrdiff_t& m ) {
+            const std::ptrdiff_t n, fortran_int_t& m ) {
         if ( ijob == 1 || ijob == 2 || ijob == 4 )
             return std::max< std::ptrdiff_t >(1, 2*m*(n-m));
-        else // if ( ijob == 3 || ijob == 5 )
+        else if ( ijob == 3 || ijob == 5 )
             return std::max< std::ptrdiff_t >(1, 4*m*(n-m));
+        else // ijob == 0
+            return 1;
     }
 
     //
@@ -500,11 +506,13 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // workspace-array iwork.
     //
     static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t ijob,
-            const std::ptrdiff_t n, std::ptrdiff_t& m ) {
+            const std::ptrdiff_t n, fortran_int_t& m ) {
         if ( ijob == 1 || ijob == 2 || ijob == 4 )
             return std::max< std::ptrdiff_t >(1, n+2);
-        else // if ( ijob == 3 || ijob == 5 )
+        else if ( ijob == 3 || ijob == 5 )
             return std::max< std::ptrdiff_t >(2*m*(n-m), n+2);
+        else // ijob == 0
+            return 1;
     }
 };
 

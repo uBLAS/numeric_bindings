@@ -619,8 +619,13 @@ def min_workspace_arg_type( name, properties, arg_map ):
     type_result = []
     for arg in properties[ 'assert_size_args' ]:
       if arg_map.has_key( arg ):
-        cpp_type_code = level0_type( arg, arg_map[ arg ] ).replace( library_integer_type,
-            "$INTEGER_TYPE" )
+        #
+        # replace the library integer type, unless it's a reference to a
+        # library int type. Can only replaced if we're dealing with by-value.
+        # 
+        cpp_type_code = level0_type( arg, arg_map[ arg ] )
+        if '&' not in cpp_type_code:
+            cpp_type_code = cpp_type_code.replace( library_integer_type, "$INTEGER_TYPE" )
         #cpp_type_code = cpp_type( arg, arg_map[ arg ] ).replace( library_integer_type,
             #"$INTEGER_TYPE" )
         code_result += [ cpp_type_code ]

@@ -248,19 +248,24 @@ def write_include_hierarchy( global_info_map, routines, template_map, dest_path 
     else:
       # problem type = general_eigen, etc.
       # problem properties = the mapped stuff
+      group_keys = []
       for problem_type, problem_properties in level_properties.iteritems():
         # the key routines_by_value_type usually has 4 routines for a group of routines
         if problem_properties.has_key( 'routines_by_value_type' ):
-            group_keys = problem_properties[ 'routines_by_value_type' ].keys()
-            group_keys.sort()
+            group_keys.extend( problem_properties[ 'routines_by_value_type' ].keys() )
+      group_keys.sort()
 
-            for r in group_keys:
-                if template_map[ 'PARSERMODE' ] == 'LAPACK':
-                    content += '#include <boost/numeric/bindings/' + parsermode + '/' + level + \
-                        '/' + r.lower() + '.hpp>\n'
-                if template_map[ 'PARSERMODE' ] == 'LAPACK_DOC':
-                    content += '[include ' + level + \
-                        '/' + r.lower() + '.qbk]\n'
+      prev_key = ""
+      for r in group_keys:
+          if r == prev_key:
+              continue
+          prev_key = r
+          if template_map[ 'PARSERMODE' ] == 'LAPACK':
+              content += '#include <boost/numeric/bindings/' + parsermode + '/' + level + \
+                  '/' + r.lower() + '.hpp>\n'
+          if template_map[ 'PARSERMODE' ] == 'LAPACK_DOC':
+              content += '[include ' + level + \
+                  '/' + r.lower() + '.qbk]\n'
 
     result = template_map[ parsermode + '_include_hierarchy' ]
     result = result.replace( "$CONTENT", content )

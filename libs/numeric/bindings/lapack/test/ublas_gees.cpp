@@ -15,6 +15,7 @@
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/lapack/driver/gees.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/vector_view.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/type_traits/is_complex.hpp>
 #include <boost/mpl/if.hpp>
@@ -35,13 +36,13 @@ struct apply_real {
         external_fp select, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         MatrixVS& vs, Workspace work ) {
     typedef typename bindings::value_type< MatrixA >::type value_type;
-    bindings::detail::array<value_type> wr(bindings::size(w));
-    bindings::detail::array<value_type> wi(bindings::size(w));
-    fortran_int_t info = lapack::gees( jobvs, sort, select, a, sdim, wr, wi, vs, work );
-    traits::detail::interlace(bindings::begin_value(wr),
-                              bindings::begin_value(wr)+bindings::size(w),
-                              bindings::begin_value(wi),
-                              bindings::begin_value(w));
+    fortran_int_t info = lapack::gees( jobvs, sort, select, a, sdim,
+      bindings::vector_view(reinterpret_cast<value_type*>(
+        &*bindings::begin_value(w)), bindings::size(w)),
+      bindings::vector_view(reinterpret_cast<value_type*>(
+        &*bindings::begin_value(w))+bindings::size(w), bindings::size(w)),
+      vs, work );
+    traits::detail::interlace(bindings::begin_value(w), bindings::size(w));
     return info;
   }
 };

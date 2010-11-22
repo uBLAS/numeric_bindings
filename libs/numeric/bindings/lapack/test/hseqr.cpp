@@ -9,6 +9,7 @@
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/vector_view.hpp>
 #include <boost/numeric/bindings/lapack/computational/hseqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/trevc.hpp>
 
@@ -19,7 +20,7 @@ using std::complex;
 
 namespace ublas =  boost::numeric::ublas;
 namespace lapack =  boost::numeric::bindings::lapack;
-namespace traits =  boost::numeric::bindings::traits;
+namespace bindings =  boost::numeric::bindings;
 namespace tag =  boost::numeric::bindings::tag;
 
 void hseqr(int);
@@ -43,22 +44,30 @@ void hseqr(int n){
     cout << "\nUpper Hessenberg matrix H:\n" << H << endl;
 
     ublas::vector<complex<double> > values(n);
-    ublas::vector<double> values_r(n);
-    ublas::vector<double> values_i(n);
     ublas::matrix<double, ublas::column_major> Z(n,n);
 
     cout << "\nHSEQR for only eigenvalues." << endl;
     ublas::matrix<double, ublas::column_major> Z_dummy(1,1);
-    lapack::hseqr('E', 'N', 1, n, H, values_r, values_i, Z_dummy);
-    traits::detail::interlace(values_r.begin(), values_r.end(), values_i.begin(), values.begin());
+    lapack::hseqr('E', 'N', 1, n, H,
+        bindings::vector_view(reinterpret_cast<double*>(
+            &*bindings::begin_value(values)), bindings::size(values)),
+        bindings::vector_view(reinterpret_cast<double*>(
+            &*bindings::begin_value(values))+bindings::size(values), bindings::size(values)),
+        Z_dummy);
+    bindings::traits::detail::interlace(bindings::begin_value(values), bindings::size(values));
     cout << "\nH:\n" << H << endl;
     cout << "\nvalues: " << values << endl;
 
     cout << "\nHSEQR for eigenvalues and Schur vectors." << endl;
     Hessenberg(H);
     cout << "H:\n" << H << endl;
-    lapack::hseqr('S', 'I', 1, n, H, values_r, values_i, Z);
-    traits::detail::interlace(values_r.begin(), values_r.end(), values_i.begin(), values.begin());
+    lapack::hseqr('S', 'I', 1, n, H,
+        bindings::vector_view(reinterpret_cast<double*>(
+            &*bindings::begin_value(values)), bindings::size(values)),
+        bindings::vector_view(reinterpret_cast<double*>(
+            &*bindings::begin_value(values))+bindings::size(values), bindings::size(values)),
+        Z);
+    bindings::traits::detail::interlace(bindings::begin_value(values), bindings::size(values));
     cout << "\nH: " << H << endl;
     cout << "\nvalues: " << values << endl;
     cout << "\nZ: " << Z << endl;

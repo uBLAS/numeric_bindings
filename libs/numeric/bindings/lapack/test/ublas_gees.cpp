@@ -16,6 +16,7 @@
 #include <boost/numeric/bindings/lapack/driver/gees.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/vector_view.hpp>
+#include <boost/numeric/bindings/detail/complex_utils.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/type_traits/is_complex.hpp>
 #include <boost/mpl/if.hpp>
@@ -26,7 +27,6 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
-namespace traits = boost::numeric::bindings::traits;
 namespace bindings = boost::numeric::bindings;
 
 struct apply_real {
@@ -35,14 +35,10 @@ struct apply_real {
   static inline std::ptrdiff_t gees( const char jobvs, const char sort,
         external_fp select, MatrixA& a, fortran_int_t& sdim, VectorW& w,
         MatrixVS& vs, Workspace work ) {
-    typedef typename bindings::value_type< MatrixA >::type value_type;
     fortran_int_t info = lapack::gees( jobvs, sort, select, a, sdim,
-      bindings::vector_view(reinterpret_cast<value_type*>(
-        &*bindings::begin_value(w)), bindings::size(w)),
-      bindings::vector_view(reinterpret_cast<value_type*>(
-        &*bindings::begin_value(w))+bindings::size(w), bindings::size(w)),
+      bindings::detail::real_part_view(w), bindings::detail::imag_part_view(w),
       vs, work );
-    traits::detail::interlace(bindings::begin_value(w), bindings::size(w));
+    bindings::detail::interlace(w);
     return info;
   }
 };

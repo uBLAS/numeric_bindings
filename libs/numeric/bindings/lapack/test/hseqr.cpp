@@ -8,7 +8,7 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
-#include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/detail/complex_utils.hpp>
 #include <boost/numeric/bindings/vector_view.hpp>
 #include <boost/numeric/bindings/lapack/computational/hseqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/trevc.hpp>
@@ -49,12 +49,10 @@ void hseqr(int n){
     cout << "\nHSEQR for only eigenvalues." << endl;
     ublas::matrix<double, ublas::column_major> Z_dummy(1,1);
     lapack::hseqr('E', 'N', 1, n, H,
-        bindings::vector_view(reinterpret_cast<double*>(
-            &*bindings::begin_value(values)), bindings::size(values)),
-        bindings::vector_view(reinterpret_cast<double*>(
-            &*bindings::begin_value(values))+bindings::size(values), bindings::size(values)),
+        bindings::detail::real_part_view(values),
+        bindings::detail::imag_part_view(values),
         Z_dummy);
-    bindings::traits::detail::interlace(bindings::begin_value(values), bindings::size(values));
+    bindings::detail::interlace(values);
     cout << "\nH:\n" << H << endl;
     cout << "\nvalues: " << values << endl;
 
@@ -62,12 +60,10 @@ void hseqr(int n){
     Hessenberg(H);
     cout << "H:\n" << H << endl;
     lapack::hseqr('S', 'I', 1, n, H,
-        bindings::vector_view(reinterpret_cast<double*>(
-            &*bindings::begin_value(values)), bindings::size(values)),
-        bindings::vector_view(reinterpret_cast<double*>(
-            &*bindings::begin_value(values))+bindings::size(values), bindings::size(values)),
+        bindings::detail::real_part_view(values),
+        bindings::detail::imag_part_view(values),
         Z);
-    bindings::traits::detail::interlace(bindings::begin_value(values), bindings::size(values));
+    bindings::detail::interlace(values);
     cout << "\nH: " << H << endl;
     cout << "\nvalues: " << values << endl;
     cout << "\nZ: " << Z << endl;

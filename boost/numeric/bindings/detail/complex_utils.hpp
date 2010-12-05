@@ -123,6 +123,8 @@ interlace (VectorW& w) {
   inshuffle(reinterpret_cast<real_type*> (pw)+1, n-1);
 }
 
+} // namespace detail
+
 namespace result_of {
 
 template< typename VectorW >
@@ -142,6 +144,8 @@ struct imag_part_view {
 };
 
 } // namespace result_of
+
+namespace detail {
 
 // Creates a real vector_view to the first half of the complex array,
 // which is intended to be filled by the real part

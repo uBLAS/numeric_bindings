@@ -8,7 +8,7 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
-#include <boost/numeric/bindings/detail/complex_utils.hpp>
+//#include <boost/numeric/bindings/detail/complex_utils.hpp>
 #include <boost/numeric/bindings/vector_view.hpp>
 #include <boost/numeric/bindings/lapack/computational/hseqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/trevc.hpp>
@@ -48,22 +48,28 @@ void hseqr(int n){
 
     cout << "\nHSEQR for only eigenvalues." << endl;
     ublas::matrix<double, ublas::column_major> Z_dummy(1,1);
+    lapack::hseqr('E', 'N', 1, n, H, values, Z_dummy);
+    /*
     lapack::hseqr('E', 'N', 1, n, H,
         bindings::detail::real_part_view(values),
         bindings::detail::imag_part_view(values),
         Z_dummy);
     bindings::detail::interlace(values);
+    */
     cout << "\nH:\n" << H << endl;
     cout << "\nvalues: " << values << endl;
 
     cout << "\nHSEQR for eigenvalues and Schur vectors." << endl;
     Hessenberg(H);
     cout << "H:\n" << H << endl;
+    lapack::hseqr('S', 'I', 1, n, H, values, Z);
+    /*
     lapack::hseqr('S', 'I', 1, n, H,
         bindings::detail::real_part_view(values),
         bindings::detail::imag_part_view(values),
         Z);
     bindings::detail::interlace(values);
+    */
     cout << "\nH: " << H << endl;
     cout << "\nvalues: " << values << endl;
     cout << "\nZ: " << Z << endl;

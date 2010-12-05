@@ -8,7 +8,8 @@
 
 #include <iostream>
 #include <vector>
-#include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/detail/complex_utils.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 
 int test_inshuffle(std::size_t n) {
   std::vector<std::size_t> data(2*n);
@@ -16,7 +17,7 @@ int test_inshuffle(std::size_t n) {
     data[i] = 2*i+1;
     data[i+n] = 2*i;
   }
-  boost::numeric::bindings::traits::detail::inshuffle(&data[0],n);
+  boost::numeric::bindings::detail::inshuffle(&data[0],n);
   for (std::size_t i = 1; i < 2*n; ++i)
     if (data[i-1]+1 != data[i]) {
       std::cout << "Test inshuffle for n=" << n << std::endl;
@@ -33,7 +34,7 @@ int test_interlace(std::size_t n) {
   std::vector<std::complex<double> > data(n);
   for (std::size_t i = 0; i < n; ++i)
     data[i] = std::complex<double>(2*i,2*i+1);
-  boost::numeric::bindings::traits::detail::interlace(&data[0],n);
+  boost::numeric::bindings::detail::interlace(data);
   for (std::size_t i = 0; i < n; ++i)
     if (data[i].real() != i || data[i].imag() != i+n) {
       std::cout << "Test interlace for n=" << n << std::endl;

@@ -1,8 +1,22 @@
 $TEMPLATE[gesvd.real.min_size_work.args]
-M,N
+JOBU,JOBVT,M,N
 $TEMPLATE[gesvd.real.min_size_work]
-$INTEGER_TYPE minmn = std::min< $INTEGER_TYPE >( m, n );
-return std::max< $INTEGER_TYPE >( 1, std::max< $INTEGER_TYPE >( 3*minmn+std::max< $INTEGER_TYPE >(m,n), 5*minmn ) );
+//
+// Contributed by Marco Guazzone
+//
+if ( m >= n ) {
+    if ( jobu == 'N' ) {
+        return 5*n;
+    } else {
+	return std::max< $INTEGER_TYPE >(3*n+m,5*n);
+    }
+} else {
+    if (jobvt == 'N') {
+        return 5*m;
+    } else {
+	return std::max< $INTEGER_TYPE >(3*m+n,5*m);
+    }
+}
 $TEMPLATE[gesvd.complex.extra_variables]
 MINMN
 $TEMPLATE[gesvd.complex.extra_opt_variables]

@@ -167,7 +167,7 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 std::ptrdiff_t >(bindings::size_row(a),
                 bindings::size_column(a)) );
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
-                min_size_work( bindings::size_row(a),
+                min_size_work( jobu, jobvt, bindings::size_row(a),
                 bindings::size_column(a) ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
@@ -205,8 +205,8 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixA& a, VectorS& s, MatrixU& u, MatrixVT& vt,
             minimal_workspace ) {
         namespace bindings = ::boost::numeric::bindings;
-        bindings::detail::array< real_type > tmp_work( min_size_work(
-                bindings::size_row(a), bindings::size_column(a) ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( jobu,
+                jobvt, bindings::size_row(a), bindings::size_column(a) ) );
         return invoke( jobu, jobvt, a, s, u, vt, workspace( tmp_work ) );
     }
 
@@ -239,12 +239,24 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
-            const std::ptrdiff_t n ) {
-        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( m, n );
-        return std::max< std::ptrdiff_t >( 1, std::max<
-                std::ptrdiff_t >( 3*minmn+std::max< std::ptrdiff_t >(m,n),
-                5*minmn ) );
+    static std::ptrdiff_t min_size_work( const char jobu, const char jobvt,
+            const std::ptrdiff_t m, const std::ptrdiff_t n ) {
+        //
+        // Contributed by Marco Guazzone
+        //
+        if ( m >= n ) {
+            if ( jobu == 'N' ) {
+                return 5*n;
+            } else {
+        	return std::max< std::ptrdiff_t >(3*n+m,5*n);
+            }
+        } else {
+            if (jobvt == 'N') {
+                return 5*m;
+            } else {
+        	return std::max< std::ptrdiff_t >(3*m+n,5*m);
+            }
+        }
     }
 };
 

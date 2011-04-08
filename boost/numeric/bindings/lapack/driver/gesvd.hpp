@@ -245,17 +245,19 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         // Contributed by Marco Guazzone
         // Also see http://tinyurl.com/5rbpdc5
         //
-        if ( m >= n ) {
+        if ( m == 0 || n == 0 ) {
+            return 1;
+        } else if ( m >= n ) {
             if ( jobu == 'N' ) {
                 return 5*n;
             } else {
-        	return std::max< std::ptrdiff_t >(3*n+m,5*n);
+                return std::max< std::ptrdiff_t >(3*n+m,5*n);
             }
         } else {
             if ( jobvt == 'N' ) {
                 return 5*m;
             } else {
-        	return std::max< std::ptrdiff_t >(3*m+n,5*m);
+                return std::max< std::ptrdiff_t >(3*m+n,5*m);
             }
         }
     }
@@ -304,7 +306,7 @@ struct gesvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_rwork( minmn ));
         BOOST_ASSERT( bindings::size(work.select(value_type())) >=
-                min_size_work( bindings::size_row(a),
+                min_size_work( jobu, jobvt, bindings::size_row(a),
                 bindings::size_column(a), minmn ));
         BOOST_ASSERT( bindings::size_column(a) >= 0 );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
@@ -345,8 +347,9 @@ struct gesvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
-        bindings::detail::array< value_type > tmp_work( min_size_work(
-                bindings::size_row(a), bindings::size_column(a), minmn ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work( jobu,
+                jobvt, bindings::size_row(a), bindings::size_column(a),
+                minmn ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 minmn ) );
         return invoke( jobu, jobvt, a, s, u, vt, workspace( tmp_work,
@@ -387,10 +390,28 @@ struct gesvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
-            const std::ptrdiff_t n, const std::ptrdiff_t minmn ) {
-        return std::max< std::ptrdiff_t >( 1, 2*minmn+std::max<
-                std::ptrdiff_t >(m,n) );
+    static std::ptrdiff_t min_size_work( const char jobu, const char jobvt,
+            const std::ptrdiff_t m, const std::ptrdiff_t n,
+            const std::ptrdiff_t minmn ) {
+        //
+        // Contributed by Marco Guazzone
+        // Also see http://tinyurl.com/5rbpdc5
+        //
+        if ( minmn == 0 ) {
+            return 1;
+        } else if ( m >= n ) {
+            if ( jobu == 'N' ) {
+                return 3*n;
+            } else {
+                return 2*n+m;
+            }
+        } else {
+            if ( jobvt == 'N' ) {
+                return 3*m;
+            } else {
+                return 2*m+n;
+            }
+        }
     }
 
     //

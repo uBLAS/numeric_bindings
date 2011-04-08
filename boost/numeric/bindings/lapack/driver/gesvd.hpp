@@ -243,6 +243,7 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const std::ptrdiff_t m, const std::ptrdiff_t n ) {
         //
         // Contributed by Marco Guazzone
+        // Also see http://tinyurl.com/5rbpdc5
         //
         if ( m >= n ) {
             if ( jobu == 'N' ) {
@@ -251,7 +252,7 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         	return std::max< std::ptrdiff_t >(3*n+m,5*n);
             }
         } else {
-            if (jobvt == 'N') {
+            if ( jobvt == 'N' ) {
                 return 5*m;
             } else {
         	return std::max< std::ptrdiff_t >(3*m+n,5*m);

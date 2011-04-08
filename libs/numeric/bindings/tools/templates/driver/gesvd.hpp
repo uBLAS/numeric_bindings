@@ -3,6 +3,7 @@ JOBU,JOBVT,M,N
 $TEMPLATE[gesvd.real.min_size_work]
 //
 // Contributed by Marco Guazzone
+// Also see http://tinyurl.com/5rbpdc5
 //
 if ( m >= n ) {
     if ( jobu == 'N' ) {
@@ -11,7 +12,7 @@ if ( m >= n ) {
 	return std::max< $INTEGER_TYPE >(3*n+m,5*n);
     }
 } else {
-    if (jobvt == 'N') {
+    if ( jobvt == 'N' ) {
         return 5*m;
     } else {
 	return std::max< $INTEGER_TYPE >(3*m+n,5*m);

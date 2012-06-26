@@ -34,6 +34,7 @@ struct adaptor< ::boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
         mpl::pair< tag::entity, tag::matrix >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
+        mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::linear_array >,
         mpl::pair< tag::data_order, data_order >,
         mpl::pair< tag::stride_type<1>,

@@ -85,8 +85,11 @@ lib acml_lib : : <name>$(ACML_LIB) <search>$(ACML_PATH)
 #lib msvc_acml_fortran_lib : : <name>$(ACML_FORTRAN_DLL) <search>$(ACML_DLL_PATH) <toolset>msvc:<link>shared
 #             : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
 alias msvc_acml_fortran_lib ;
-lib msvc_acml_lib : : <name>$(ACML_DLL) <search>$(ACML_DLL_PATH) <toolset>msvc:<link>shared <use>msvc_acml_fortran_lib
-             : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS <library>msvc_acml_fortran_lib ;
+lib msvc_acml_lib : : <name>$(ACML_DLL) <search>$(ACML_DLL_PATH)
+                      <toolset>msvc:<link>shared <use>msvc_acml_fortran_lib
+             : : <define>BIND_FORTRAN_UPPERCASE
+                 <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS
+                 <library>msvc_acml_fortran_lib ;
 
 lib mkl_core_lib : : <name>mkl_core <search>$(MKL_PATH)
                  : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;

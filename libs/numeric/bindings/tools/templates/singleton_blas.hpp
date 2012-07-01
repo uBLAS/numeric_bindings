@@ -49,5 +49,5 @@ $CONTENT
 #endif
 
 $TEMPLATE[blas_names.h_function]
-#define BLAS_$SUBROUTINE FORTRAN_ID( $subroutine )
+#define BLAS_$SUBROUTINE FORTRAN_ID2( $subroutine, $SUBROUTINE )
 $TEMPLATE[end]

@@ -10,7 +10,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_DETAIL_CONFIG_FORTRAN_HPP
 #define BOOST_NUMERIC_BINDINGS_DETAIL_CONFIG_FORTRAN_HPP
 
-#if defined(BIND_FORTRAN_LOWERCASE_UNDERSCORE) || defined(BIND_FORTRAN_LOWERCASE)
+#if defined(BIND_FORTRAN_LOWERCASE_UNDERSCORE) || defined(BIND_FORTRAN_LOWERCASE) || defined(BIND_FORTRAN_UPPERCASE_UNDERSCORE) || defined(BIND_FORTRAN_UPPERCASE)
 // Allow manual override of the defaults, e.g. if you want to use a fortran
 // lib compiled with gcc from MSVC
 #else
@@ -30,8 +30,14 @@
 // the current convention
 #if defined(BIND_FORTRAN_LOWERCASE_UNDERSCORE)
 #define FORTRAN_ID( id ) id##_
+#define FORTRAN_ID2( id, ID2 ) id##_
 #elif defined(BIND_FORTRAN_LOWERCASE)
 #define FORTRAN_ID( id ) id
+#define FORTRAN_ID2( id, ID2 ) id
+#elif defined(BIND_FORTRAN_UPPERCASE_UNDERSCORE)
+#define FORTRAN_ID2( id, ID2 ) ID2##_
+#elif defined(BIND_FORTRAN_UPPERCASE)
+#define FORTRAN_ID2( id, ID2 ) ID2
 #else
 #error do not know how to bind to fortran calling convention
 #endif

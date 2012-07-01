@@ -482,6 +482,7 @@ hgeqz( const char job, const char compq, const char compz,
             MatrixH >::type >::invoke( job, compq, compz, ilo, h, t, alphar,
             alphai, beta, q, z, optimal_workspace() );
 }
+
 //
 // Overloaded function for hgeqz. Its overload differs for
 // * User-defined workspace

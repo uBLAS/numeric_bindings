@@ -418,6 +418,7 @@ geev( const char jobvl, const char jobvr, MatrixA& a, VectorWR& wr,
             MatrixA >::type >::invoke( jobvl, jobvr, a, wr, wi, vl, vr,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for geev. Its overload differs for
 // * User-defined workspace

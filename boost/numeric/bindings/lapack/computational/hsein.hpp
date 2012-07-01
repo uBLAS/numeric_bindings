@@ -454,6 +454,7 @@ hsein( const Side side, const char eigsrc, const char initv,
             MatrixH >::type >::invoke( side, eigsrc, initv, select, h, wr, wi,
             vl, vr, mm, m, ifaill, ifailr, optimal_workspace() );
 }
+
 //
 // Overloaded function for hsein. Its overload differs for
 // * User-defined workspace

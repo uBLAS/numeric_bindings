@@ -326,6 +326,7 @@ larfx( const Side side, const VectorV& v,
     return larfx_impl< typename bindings::value_type<
             VectorV >::type >::invoke( side, v, tau, c, optimal_workspace() );
 }
+
 //
 // Overloaded function for larfx. Its overload differs for
 // * User-defined workspace

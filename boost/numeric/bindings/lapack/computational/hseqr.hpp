@@ -381,6 +381,7 @@ hseqr( const char job, const char compz, const fortran_int_t ilo,
             MatrixH >::type >::invoke( job, compz, ilo, ihi, h, wr, wi, z,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for hseqr. Its overload differs for
 // * User-defined workspace
@@ -413,6 +414,7 @@ hseqr( const char job, const char compz, const fortran_int_t ilo,
             MatrixH >::type >::invoke( job, compz, ilo, ihi, h, w, z,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for hseqr. Its overload differs for
 // * User-defined workspace

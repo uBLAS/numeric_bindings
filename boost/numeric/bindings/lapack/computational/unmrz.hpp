@@ -394,6 +394,7 @@ unmrz( const Side side, const MatrixA& a, const VectorTAU& tau,
     return unmrz_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
 }
+
 //
 // Overloaded function for unmrz. Its overload differs for
 // * User-defined workspace

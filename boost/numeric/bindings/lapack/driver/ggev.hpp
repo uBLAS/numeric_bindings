@@ -468,6 +468,7 @@ ggev( const char jobvl, const char jobvr, MatrixA& a, MatrixB& b,
             MatrixA >::type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
             beta, vl, vr, optimal_workspace() );
 }
+
 //
 // Overloaded function for ggev. Its overload differs for
 // * User-defined workspace

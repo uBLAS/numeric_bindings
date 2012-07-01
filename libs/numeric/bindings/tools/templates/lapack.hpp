@@ -42,8 +42,7 @@ $LEVEL1
 // prototypes which are very similar.
 //
 
-$LEVEL2
-} // namespace lapack
+$LEVEL2} // namespace lapack
 } // namespace bindings
 } // namespace numeric
 } // namespace boost
@@ -228,6 +227,7 @@ inline typename boost::disable_if< detail::is_workspace< $LAST_TYPENAME >, $INTE
 $groupname( $LEVEL2 ) {
     return $groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
 }
+
 $TEMPLATE[setup_min_workspace]
         $NAMESPACEdetail::array< $WORKSPACE_TYPE > tmp_$WORKSPACE_FUNC( min_size_$WORKSPACE_FUNC( $CALL_MIN_SIZE ) );
 $TEMPLATE[setup_opt_workspace]
@@ -271,4 +271,5 @@ template< $TYPES >
 inline $INTEGER_TYPE $groupname( $LEVEL2 ) {
     return $groupname_impl< typename $NAMESPACEvalue_type< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
 }
+
 $TEMPLATE[end]

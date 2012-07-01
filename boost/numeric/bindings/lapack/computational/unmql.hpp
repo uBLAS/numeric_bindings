@@ -386,6 +386,7 @@ unmql( const Side side, MatrixA& a, const VectorTAU& tau, MatrixC& c ) {
     return unmql_impl< typename bindings::value_type<
             MatrixA >::type >::invoke( side, a, tau, c, optimal_workspace() );
 }
+
 //
 // Overloaded function for unmql. Its overload differs for
 // * User-defined workspace

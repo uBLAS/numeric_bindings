@@ -210,6 +210,7 @@ inline std::ptrdiff_t pttrs( const VectorD& d, const VectorE& e,
     return pttrs_impl< typename bindings::value_type<
             VectorE >::type >::invoke( d, e, b );
 }
+
 //
 // Overloaded function for pttrs. Its overload differs for
 //

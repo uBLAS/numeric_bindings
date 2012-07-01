@@ -331,6 +331,7 @@ larz( const Side side, const fortran_int_t l, const VectorV& v,
             VectorV >::type >::invoke( side, l, v, tau, c,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for larz. Its overload differs for
 // * User-defined workspace

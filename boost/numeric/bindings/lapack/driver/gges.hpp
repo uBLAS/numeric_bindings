@@ -536,6 +536,7 @@ gges( const char jobvsl, const char jobvsr, const char sort,
             MatrixA >::type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
             sdim, alphar, alphai, beta, vsl, vsr, optimal_workspace() );
 }
+
 //
 // Overloaded function for gges. Its overload differs for
 // * User-defined workspace

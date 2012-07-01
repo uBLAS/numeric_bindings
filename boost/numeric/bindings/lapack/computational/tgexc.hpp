@@ -357,6 +357,7 @@ tgexc( const fortran_bool_t wantq, const fortran_bool_t wantz,
             MatrixA >::type >::invoke( wantq, wantz, a, b, q, z, ifst, ilst,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for tgexc. Its overload differs for
 //

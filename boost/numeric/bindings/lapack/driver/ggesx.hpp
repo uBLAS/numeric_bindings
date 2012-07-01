@@ -635,6 +635,7 @@ ggesx( const char jobvsl, const char jobvsr, const char sort,
             b, sdim, alphar, alphai, beta, vsl, vsr, rconde, rcondv,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for ggesx. Its overload differs for
 // * User-defined workspace

@@ -435,6 +435,7 @@ ptrfs( const VectorD& d, const VectorE& e, const VectorDF& df,
             VectorE >::type >::invoke( d, e, df, ef, b, x, ferr, berr,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for ptrfs. Its overload differs for
 // * User-defined workspace

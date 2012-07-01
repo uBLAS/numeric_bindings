@@ -570,6 +570,7 @@ tgsen( const fortran_int_t ijob, const fortran_bool_t wantq,
             MatrixA >::type >::invoke( ijob, wantq, wantz, select, a, b,
             alphar, alphai, beta, q, z, m, pl, pr, dif, optimal_workspace() );
 }
+
 //
 // Overloaded function for tgsen. Its overload differs for
 // * User-defined workspace

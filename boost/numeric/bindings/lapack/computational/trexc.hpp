@@ -278,6 +278,7 @@ trexc( const char compq, MatrixT& t, MatrixQ& q, fortran_int_t& ifst,
             MatrixT >::type >::invoke( compq, t, q, ifst, ilst,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for trexc. Its overload differs for
 //

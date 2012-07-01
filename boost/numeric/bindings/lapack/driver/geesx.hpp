@@ -491,6 +491,7 @@ geesx( const char jobvs, const char sort, external_fp select,
             MatrixA >::type >::invoke( jobvs, sort, select, sense, a, sdim,
             wr, wi, vs, rconde, rcondv, optimal_workspace() );
 }
+
 //
 // Overloaded function for geesx. Its overload differs for
 // * User-defined workspace

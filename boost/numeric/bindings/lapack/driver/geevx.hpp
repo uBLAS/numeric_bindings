@@ -548,6 +548,7 @@ geevx( const char balanc, const char jobvl, const char jobvr,
             vl, vr, ilo, ihi, scale, abnrm, rconde, rcondv,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for geevx. Its overload differs for
 // * User-defined workspace

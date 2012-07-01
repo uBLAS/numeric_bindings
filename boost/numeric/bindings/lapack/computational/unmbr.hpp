@@ -392,6 +392,7 @@ unmbr( const char vect, const Side side, const MatrixA& a,
             MatrixA >::type >::invoke( vect, side, a, tau, c,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for unmbr. Its overload differs for
 // * User-defined workspace

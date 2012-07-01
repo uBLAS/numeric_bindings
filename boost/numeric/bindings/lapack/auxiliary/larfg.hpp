@@ -175,6 +175,7 @@ inline std::ptrdiff_t larfg( const fortran_int_t n,
     return larfg_impl< typename bindings::value_type<
             VectorX >::type >::invoke( n, alpha, x, tau );
 }
+
 //
 // Overloaded function for larfg. Its overload differs for
 //

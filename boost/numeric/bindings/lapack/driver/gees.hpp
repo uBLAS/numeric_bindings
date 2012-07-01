@@ -437,6 +437,7 @@ gees( const char jobvs, const char sort, external_fp select, MatrixA& a,
             MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, wr, wi,
             vs, optimal_workspace() );
 }
+
 //
 // Overloaded function for gees. Its overload differs for
 // * User-defined workspace
@@ -469,6 +470,7 @@ gees( const char jobvs, const char sort, external_fp select, MatrixA& a,
             MatrixA >::type >::invoke( jobvs, sort, select, a, sdim, w, vs,
             optimal_workspace() );
 }
+
 //
 // Overloaded function for gees. Its overload differs for
 // * VectorW

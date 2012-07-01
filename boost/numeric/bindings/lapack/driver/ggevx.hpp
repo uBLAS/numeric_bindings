@@ -699,6 +699,7 @@ ggevx( const char balanc, const char jobvl, const char jobvr,
             alphar, alphai, beta, vl, vr, ilo, ihi, lscale, rscale, abnrm,
             bbnrm, rconde, rcondv, optimal_workspace() );
 }
+
 //
 // Overloaded function for ggevx. Its overload differs for
 // * User-defined workspace

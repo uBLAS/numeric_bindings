@@ -117,11 +117,22 @@ def write_functions( info_map, group, template_map, base_dir ):
         cblas_arg_list = []
         cublas_arg_list = []
         level0_static_asserts = []
+        check_for_unused = []
 
         for arg in info_map[ subroutine ][ 'arguments' ]:
             print "Subroutine ", subroutine, " arg ", arg
             arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
             blas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_blas_header' ] ]
+
+            #
+            # Find potential arguments that may cause warnings because they are not used, and
+            # store these in check_for_unused
+            #
+            if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] != None and \
+               info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] != None:
+                keyword = info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ].split( ' ')[-1]
+                check_for_unused += [ keyword ]
+            
             if 'call_cblas_header' in info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ]:
                 cblas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cblas_header' ] ]
             else:
@@ -131,6 +142,7 @@ def write_functions( info_map, group, template_map, base_dir ):
                 typename_list +=  [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] ]
 
         if "has_cblas_order_arg" in info_map[ subroutine ]:
+            check_for_unused.append( 'order' )
             if info_map[ subroutine ][ "has_cblas_order_arg" ] == True:
                 arg_list.insert( 0, "const Order order" )
                 cblas_arg_list.insert( 0, "cblas_option< Order >::value" )
@@ -168,6 +180,15 @@ def write_functions( info_map, group, template_map, base_dir ):
         else:
             cublas_routine = '// NOT FOUND'
 
+        #
+        # Count potentially unused arguments. If the count is 1; it is only present in the 
+        # parameter list. In that case, the argument may be removed from the code
+        # 
+        print "Check for unused:" , check_for_unused
+        for parameter in check_for_unused:
+            if sub_template.count( parameter ) == 1:
+                sub_template = sub_template.replace( ' ' + parameter, '' )
+            
         sub_template = sub_template.replace( "$CALL_CUBLAS_HEADER", ", ".join( cublas_arg_list ) )
         sub_template = sub_template.replace( "$CUBLAS_ROUTINE", cublas_routine )
 
@@ -523,9 +544,9 @@ def read_templates( template_file ):
     result[ split_templates[ index*2 ] ] = split_templates[ index*2 + 1 ]
   return result
 
-lapack_src_path = './blas-1.2/src'
-cblas_h_path = './blas-1.2/cblas/src/cblas.h'
-cublas_h_path = './cublas.h'
+lapack_src_path = './blas-1.2.20110419/src'
+cblas_h_path = './blas-1.2.20110419/cblas/src/cblas.h'
+cublas_h_path = '/usr/include/cublas.h'
 template_src_path = './templates'
 bindings_impl_target_path = '../../../../boost/numeric/bindings/blas/'
 test_target_path = '../test/blas/'

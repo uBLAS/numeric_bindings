@@ -59,6 +59,8 @@ def parse_file( filename, info_map, template_map ):
                 # E.g., BLAS DPARAM equals CUBLAS SPARAM
                 elif 'S' + arg[1:] in arguments and arg == 'DPARAM':
                         cublas_arg = 'S' + arg[1:]
+                elif 'C' + arg in arguments:
+                        cublas_arg = 'C' + arg
                 elif arg in alias_map:
                     if alias_map[ arg ] in arguments:
                         cublas_arg = alias_map[ arg ]
@@ -78,6 +80,9 @@ def parse_file( filename, info_map, template_map ):
                     info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cublas_header" ] = call_cublas_header
 
                 else:
+                    print "Could not match cublas argument '" + cublas_arg + "' to known arguments."
+                    print arg, arguments
+                    
                     exit(0)
 
 

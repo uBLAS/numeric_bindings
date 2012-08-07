@@ -64,10 +64,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( const Order order, const UpLo uplo, const int n,
-        const int k, const float alpha, const float* a, const int lda,
-        const float* x, const int incx, const float beta, float* y,
-        const int incy ) {
+inline void sbmv( const Order, const UpLo, const int n, const int k,
+        const float alpha, const float* a, const int lda, const float* x,
+        const int incx, const float beta, float* y, const int incy ) {
     cblas_ssbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -78,10 +77,9 @@ inline void sbmv( const Order order, const UpLo uplo, const int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( const Order order, const UpLo uplo, const int n,
-        const int k, const double alpha, const double* a, const int lda,
-        const double* x, const int incx, const double beta, double* y,
-        const int incy ) {
+inline void sbmv( const Order, const UpLo, const int n, const int k,
+        const double alpha, const double* a, const int lda, const double* x,
+        const int incx, const double beta, double* y, const int incy ) {
     cblas_dsbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -93,10 +91,9 @@ inline void sbmv( const Order order, const UpLo uplo, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( const Order order, const UpLo uplo, const int n,
-        const int k, const float alpha, const float* a, const int lda,
-        const float* x, const int incx, const float beta, float* y,
-        const int incy ) {
+inline void sbmv( const Order, const UpLo, const int n, const int k,
+        const float alpha, const float* a, const int lda, const float* x,
+        const int incx, const float beta, float* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSsbmv( blas_option< UpLo >::value, n, k, alpha, a, lda, x, incx,
             beta, y, incy );
@@ -108,12 +105,12 @@ inline void sbmv( const Order order, const UpLo uplo, const int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( const Order order, const UpLo uplo, const int n,
-        const int k, const double alpha, const double* a, const int lda,
-        const double* x, const int incx, const double beta, double* y,
-        const int incy ) {
+inline void sbmv( const Order, const UpLo, const int n, const int k,
+        const double alpha, const double* a, const int lda, const double* x,
+        const int incx, const double beta, double* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    // NOT FOUND();
+    cublasDsbmv( blas_option< UpLo >::value, n, k, alpha, a, lda, x, incx,
+            beta, y, incy );
 }
 
 #else
@@ -123,7 +120,7 @@ inline void sbmv( const Order order, const UpLo uplo, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void sbmv( const Order, const UpLo, const fortran_int_t n,
         const fortran_int_t k, const float alpha, const float* a,
         const fortran_int_t lda, const float* x, const fortran_int_t incx,
         const float beta, float* y, const fortran_int_t incy ) {
@@ -138,7 +135,7 @@ inline void sbmv( const Order order, const UpLo uplo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void sbmv( const Order, const UpLo, const fortran_int_t n,
         const fortran_int_t k, const double alpha, const double* a,
         const fortran_int_t lda, const double* x, const fortran_int_t incx,
         const double beta, double* y, const fortran_int_t incy ) {

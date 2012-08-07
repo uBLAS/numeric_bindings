@@ -119,7 +119,7 @@ inline void rotg( double& a, double& b, double& c, double& s ) {
 //
 inline void rotg( std::complex<float>& a, std::complex<float>& b, float& c,
         std::complex<float>& s ) {
-    // NOT FOUND();
+    cublasCrotg( &a, b, &c, &s );
 }
 
 //
@@ -129,7 +129,7 @@ inline void rotg( std::complex<float>& a, std::complex<float>& b, float& c,
 //
 inline void rotg( std::complex<double>& a, std::complex<double>& b, double& c,
         std::complex<double>& s ) {
-    // NOT FOUND();
+    cublasZrotg( &a, b, &c, &s );
 }
 
 #else

@@ -149,7 +149,7 @@ inline void scal( const int n, const float a, std::complex<float>* x,
 //
 inline void scal( const int n, const double a, std::complex<double>* x,
         const int incx ) {
-    // NOT FOUND();
+    cublasZdscal( n, a, x, incx );
 }
 
 //

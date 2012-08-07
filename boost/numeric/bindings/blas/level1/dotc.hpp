@@ -97,7 +97,7 @@ inline std::complex<float> dotc( const int n, const std::complex<float>* x,
 //
 inline std::complex<double> dotc( const int n, const std::complex<double>* x,
         const int incx, const std::complex<double>* y, const int incy ) {
-    return // NOT FOUND();
+    return cublasZdotc( n, x, incx, y, incy );
 }
 
 #else

@@ -137,7 +137,7 @@ inline void rot( const int n, std::complex<float>* x, const int incx,
 inline void rot( const int n, std::complex<double>* x, const int incx,
         std::complex<double>* y, const int incy, const double c,
         const double s ) {
-    // NOT FOUND();
+    cublasZdrot( n, x, incx, y, incy, c, s );
 }
 
 #else

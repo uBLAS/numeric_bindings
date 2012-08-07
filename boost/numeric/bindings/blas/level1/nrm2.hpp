@@ -129,7 +129,7 @@ inline float nrm2( const int n, const std::complex<float>* x,
 //
 inline double nrm2( const int n, const std::complex<double>* x,
         const int incx ) {
-    return // NOT FOUND();
+    return cublasDznrm2( n, x, incx );
 }
 
 #else

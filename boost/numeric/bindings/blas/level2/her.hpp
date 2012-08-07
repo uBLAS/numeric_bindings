@@ -63,9 +63,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const int n,
-        const float alpha, const float* x, const int incx, float* a,
-        const int lda ) {
+inline void her( const Order, const UpLo, const int n, const float alpha,
+        const float* x, const int incx, float* a, const int lda ) {
     cblas_ssyr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
 }
@@ -76,9 +75,8 @@ inline void her( const Order order, const UpLo uplo, const int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const int n,
-        const double alpha, const double* x, const int incx, double* a,
-        const int lda ) {
+inline void her( const Order, const UpLo, const int n, const double alpha,
+        const double* x, const int incx, double* a, const int lda ) {
     cblas_dsyr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
 }
@@ -89,9 +87,9 @@ inline void her( const Order order, const UpLo uplo, const int n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const int n,
-        const float alpha, const std::complex<float>* x, const int incx,
-        std::complex<float>* a, const int lda ) {
+inline void her( const Order, const UpLo, const int n, const float alpha,
+        const std::complex<float>* x, const int incx, std::complex<float>* a,
+        const int lda ) {
     cblas_cher( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
 }
@@ -102,8 +100,8 @@ inline void her( const Order order, const UpLo uplo, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const int n,
-        const double alpha, const std::complex<double>* x, const int incx,
+inline void her( const Order, const UpLo, const int n, const double alpha,
+        const std::complex<double>* x, const int incx,
         std::complex<double>* a, const int lda ) {
     cblas_zher( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
@@ -116,9 +114,8 @@ inline void her( const Order order, const UpLo uplo, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const int n,
-        const float alpha, const float* x, const int incx, float* a,
-        const int lda ) {
+inline void her( const Order, const UpLo, const int n, const float alpha,
+        const float* x, const int incx, float* a, const int lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSsyr( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
 }
@@ -129,9 +126,8 @@ inline void her( const Order order, const UpLo uplo, const int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const int n,
-        const double alpha, const double* x, const int incx, double* a,
-        const int lda ) {
+inline void her( const Order, const UpLo, const int n, const double alpha,
+        const double* x, const int incx, double* a, const int lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDsyr( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
 }
@@ -142,9 +138,9 @@ inline void her( const Order order, const UpLo uplo, const int n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const int n,
-        const float alpha, const std::complex<float>* x, const int incx,
-        std::complex<float>* a, const int lda ) {
+inline void her( const Order, const UpLo, const int n, const float alpha,
+        const std::complex<float>* x, const int incx, std::complex<float>* a,
+        const int lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasCher( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
 }
@@ -155,11 +151,11 @@ inline void her( const Order order, const UpLo uplo, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const int n,
-        const double alpha, const std::complex<double>* x, const int incx,
+inline void her( const Order, const UpLo, const int n, const double alpha,
+        const std::complex<double>* x, const int incx,
         std::complex<double>* a, const int lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    // NOT FOUND();
+    cublasZher( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
 }
 
 #else
@@ -169,7 +165,7 @@ inline void her( const Order order, const UpLo uplo, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void her( const Order, const UpLo, const fortran_int_t n,
         const float alpha, const float* x, const fortran_int_t incx, float* a,
         const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -182,7 +178,7 @@ inline void her( const Order order, const UpLo uplo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void her( const Order, const UpLo, const fortran_int_t n,
         const double alpha, const double* x, const fortran_int_t incx,
         double* a, const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -195,7 +191,7 @@ inline void her( const Order order, const UpLo uplo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void her( const Order, const UpLo, const fortran_int_t n,
         const float alpha, const std::complex<float>* x,
         const fortran_int_t incx, std::complex<float>* a,
         const fortran_int_t lda ) {
@@ -209,7 +205,7 @@ inline void her( const Order order, const UpLo uplo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void her( const Order, const UpLo, const fortran_int_t n,
         const double alpha, const std::complex<double>* x,
         const fortran_int_t incx, std::complex<double>* a,
         const fortran_int_t lda ) {

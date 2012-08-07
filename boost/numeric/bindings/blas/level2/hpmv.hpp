@@ -63,9 +63,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const int n,
-        const float alpha, const float* ap, const float* x, const int incx,
-        const float beta, float* y, const int incy ) {
+inline void hpmv( const Order, const UpLo, const int n, const float alpha,
+        const float* ap, const float* x, const int incx, const float beta,
+        float* y, const int incy ) {
     cblas_sspmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, ap, x, incx, beta, y, incy );
 }
@@ -76,9 +76,9 @@ inline void hpmv( const Order order, const UpLo uplo, const int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const int n,
-        const double alpha, const double* ap, const double* x, const int incx,
-        const double beta, double* y, const int incy ) {
+inline void hpmv( const Order, const UpLo, const int n, const double alpha,
+        const double* ap, const double* x, const int incx, const double beta,
+        double* y, const int incy ) {
     cblas_dspmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, ap, x, incx, beta, y, incy );
 }
@@ -89,7 +89,7 @@ inline void hpmv( const Order order, const UpLo uplo, const int n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const int n,
+inline void hpmv( const Order, const UpLo, const int n,
         const std::complex<float> alpha, const std::complex<float>* ap,
         const std::complex<float>* x, const int incx,
         const std::complex<float> beta, std::complex<float>* y,
@@ -104,7 +104,7 @@ inline void hpmv( const Order order, const UpLo uplo, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const int n,
+inline void hpmv( const Order, const UpLo, const int n,
         const std::complex<double> alpha, const std::complex<double>* ap,
         const std::complex<double>* x, const int incx,
         const std::complex<double> beta, std::complex<double>* y,
@@ -120,9 +120,9 @@ inline void hpmv( const Order order, const UpLo uplo, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const int n,
-        const float alpha, const float* ap, const float* x, const int incx,
-        const float beta, float* y, const int incy ) {
+inline void hpmv( const Order, const UpLo, const int n, const float alpha,
+        const float* ap, const float* x, const int incx, const float beta,
+        float* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSspmv( blas_option< UpLo >::value, n, alpha, ap, x, incx, beta, y,
             incy );
@@ -134,11 +134,12 @@ inline void hpmv( const Order order, const UpLo uplo, const int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const int n,
-        const double alpha, const double* ap, const double* x, const int incx,
-        const double beta, double* y, const int incy ) {
+inline void hpmv( const Order, const UpLo, const int n, const double alpha,
+        const double* ap, const double* x, const int incx, const double beta,
+        double* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    // NOT FOUND();
+    cublasDspmv( blas_option< UpLo >::value, n, alpha, ap, x, incx, beta, y,
+            incy );
 }
 
 //
@@ -147,7 +148,7 @@ inline void hpmv( const Order order, const UpLo uplo, const int n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const int n,
+inline void hpmv( const Order, const UpLo, const int n,
         const std::complex<float> alpha, const std::complex<float>* ap,
         const std::complex<float>* x, const int incx,
         const std::complex<float> beta, std::complex<float>* y,
@@ -163,13 +164,14 @@ inline void hpmv( const Order order, const UpLo uplo, const int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const int n,
+inline void hpmv( const Order, const UpLo, const int n,
         const std::complex<double> alpha, const std::complex<double>* ap,
         const std::complex<double>* x, const int incx,
         const std::complex<double> beta, std::complex<double>* y,
         const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    // NOT FOUND();
+    cublasZhpmv( blas_option< UpLo >::value, n, alpha, ap, x, incx, beta, y,
+            incy );
 }
 
 #else
@@ -179,7 +181,7 @@ inline void hpmv( const Order order, const UpLo uplo, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void hpmv( const Order, const UpLo, const fortran_int_t n,
         const float alpha, const float* ap, const float* x,
         const fortran_int_t incx, const float beta, float* y,
         const fortran_int_t incy ) {
@@ -194,7 +196,7 @@ inline void hpmv( const Order order, const UpLo uplo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void hpmv( const Order, const UpLo, const fortran_int_t n,
         const double alpha, const double* ap, const double* x,
         const fortran_int_t incx, const double beta, double* y,
         const fortran_int_t incy ) {
@@ -209,7 +211,7 @@ inline void hpmv( const Order order, const UpLo uplo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void hpmv( const Order, const UpLo, const fortran_int_t n,
         const std::complex<float> alpha, const std::complex<float>* ap,
         const std::complex<float>* x, const fortran_int_t incx,
         const std::complex<float> beta, std::complex<float>* y,
@@ -225,7 +227,7 @@ inline void hpmv( const Order order, const UpLo uplo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void hpmv( const Order, const UpLo, const fortran_int_t n,
         const std::complex<double> alpha, const std::complex<double>* ap,
         const std::complex<double>* x, const fortran_int_t incx,
         const std::complex<double> beta, std::complex<double>* y,

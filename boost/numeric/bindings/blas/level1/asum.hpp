@@ -129,7 +129,7 @@ inline float asum( const int n, const std::complex<float>* x,
 //
 inline double asum( const int n, const std::complex<double>* x,
         const int incx ) {
-    return // NOT FOUND();
+    return cublasDzasum( n, x, incx );
 }
 
 #else

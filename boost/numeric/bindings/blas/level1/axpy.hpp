@@ -137,7 +137,7 @@ inline void axpy( const int n, const std::complex<float> a,
 inline void axpy( const int n, const std::complex<double> a,
         const std::complex<double>* x, const int incx,
         std::complex<double>* y, const int incy ) {
-    // NOT FOUND();
+    cublasZaxpy( n, a, x, incx, y, incy );
 }
 
 #else

@@ -133,7 +133,7 @@ inline void swap( const int n, std::complex<float>* x, const int incx,
 //
 inline void swap( const int n, std::complex<double>* x, const int incx,
         std::complex<double>* y, const int incy ) {
-    // NOT FOUND();
+    cublasZswap( n, x, incx, y, incy );
 }
 
 #else

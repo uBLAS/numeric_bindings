@@ -133,7 +133,7 @@ inline void copy( const int n, const std::complex<float>* x, const int incx,
 //
 inline void copy( const int n, const std::complex<double>* x, const int incx,
         std::complex<double>* y, const int incy ) {
-    // NOT FOUND();
+    cublasZcopy( n, x, incx, y, incy );
 }
 
 #else

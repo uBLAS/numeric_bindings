@@ -63,10 +63,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const int m, const int n, const float alpha, const float* a,
-        const int lda, const float* b, const int ldb, const float beta,
-        float* c, const int ldc ) {
+inline void hemm( const Order, const Side, const UpLo, const int m,
+        const int n, const float alpha, const float* a, const int lda,
+        const float* b, const int ldb, const float beta, float* c,
+        const int ldc ) {
     cblas_ssymm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, m, n, alpha, a, lda, b, ldb, beta, c,
             ldc );
@@ -78,10 +78,10 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * double value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const int m, const int n, const double alpha, const double* a,
-        const int lda, const double* b, const int ldb, const double beta,
-        double* c, const int ldc ) {
+inline void hemm( const Order, const Side, const UpLo, const int m,
+        const int n, const double alpha, const double* a, const int lda,
+        const double* b, const int ldb, const double beta, double* c,
+        const int ldc ) {
     cblas_dsymm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, m, n, alpha, a, lda, b, ldb, beta, c,
             ldc );
@@ -93,8 +93,8 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const int m, const int n, const std::complex<float> alpha,
+inline void hemm( const Order, const Side, const UpLo, const int m,
+        const int n, const std::complex<float> alpha,
         const std::complex<float>* a, const int lda,
         const std::complex<float>* b, const int ldb,
         const std::complex<float> beta, std::complex<float>* c,
@@ -110,8 +110,8 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const int m, const int n, const std::complex<double> alpha,
+inline void hemm( const Order, const Side, const UpLo, const int m,
+        const int n, const std::complex<double> alpha,
         const std::complex<double>* a, const int lda,
         const std::complex<double>* b, const int ldb,
         const std::complex<double> beta, std::complex<double>* c,
@@ -128,10 +128,10 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * float value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const int m, const int n, const float alpha, const float* a,
-        const int lda, const float* b, const int ldb, const float beta,
-        float* c, const int ldc ) {
+inline void hemm( const Order, const Side, const UpLo, const int m,
+        const int n, const float alpha, const float* a, const int lda,
+        const float* b, const int ldb, const float beta, float* c,
+        const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSsymm( blas_option< Side >::value, blas_option< UpLo >::value, m, n,
             alpha, a, lda, b, ldb, beta, c, ldc );
@@ -143,10 +143,10 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * double value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const int m, const int n, const double alpha, const double* a,
-        const int lda, const double* b, const int ldb, const double beta,
-        double* c, const int ldc ) {
+inline void hemm( const Order, const Side, const UpLo, const int m,
+        const int n, const double alpha, const double* a, const int lda,
+        const double* b, const int ldb, const double beta, double* c,
+        const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDsymm( blas_option< Side >::value, blas_option< UpLo >::value, m, n,
             alpha, a, lda, b, ldb, beta, c, ldc );
@@ -158,8 +158,8 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const int m, const int n, const std::complex<float> alpha,
+inline void hemm( const Order, const Side, const UpLo, const int m,
+        const int n, const std::complex<float> alpha,
         const std::complex<float>* a, const int lda,
         const std::complex<float>* b, const int ldb,
         const std::complex<float> beta, std::complex<float>* c,
@@ -175,14 +175,15 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const int m, const int n, const std::complex<double> alpha,
+inline void hemm( const Order, const Side, const UpLo, const int m,
+        const int n, const std::complex<double> alpha,
         const std::complex<double>* a, const int lda,
         const std::complex<double>* b, const int ldb,
         const std::complex<double> beta, std::complex<double>* c,
         const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    // NOT FOUND();
+    cublasZhemm( blas_option< Side >::value, blas_option< UpLo >::value, m, n,
+            alpha, a, lda, b, ldb, beta, c, ldc );
 }
 
 #else
@@ -192,11 +193,10 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * float value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const fortran_int_t m, const fortran_int_t n, const float alpha,
-        const float* a, const fortran_int_t lda, const float* b,
-        const fortran_int_t ldb, const float beta, float* c,
-        const fortran_int_t ldc ) {
+inline void hemm( const Order, const Side, const UpLo, const fortran_int_t m,
+        const fortran_int_t n, const float alpha, const float* a,
+        const fortran_int_t lda, const float* b, const fortran_int_t ldb,
+        const float beta, float* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SSYMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
             &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -208,11 +208,10 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * double value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const fortran_int_t m, const fortran_int_t n, const double alpha,
-        const double* a, const fortran_int_t lda, const double* b,
-        const fortran_int_t ldb, const double beta, double* c,
-        const fortran_int_t ldc ) {
+inline void hemm( const Order, const Side, const UpLo, const fortran_int_t m,
+        const fortran_int_t n, const double alpha, const double* a,
+        const fortran_int_t lda, const double* b, const fortran_int_t ldb,
+        const double beta, double* c, const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DSYMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
             &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -224,12 +223,12 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * complex<float> value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const fortran_int_t m, const fortran_int_t n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const fortran_int_t lda, const std::complex<float>* b,
-        const fortran_int_t ldb, const std::complex<float> beta,
-        std::complex<float>* c, const fortran_int_t ldc ) {
+inline void hemm( const Order, const Side, const UpLo, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<float> alpha,
+        const std::complex<float>* a, const fortran_int_t lda,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        const std::complex<float> beta, std::complex<float>* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHEMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
             &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -241,12 +240,12 @@ inline void hemm( const Order order, const Side side, const UpLo uplo,
 // * complex<double> value-type.
 //
 template< typename Order, typename Side, typename UpLo >
-inline void hemm( const Order order, const Side side, const UpLo uplo,
-        const fortran_int_t m, const fortran_int_t n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const fortran_int_t lda, const std::complex<double>* b,
-        const fortran_int_t ldb, const std::complex<double> beta,
-        std::complex<double>* c, const fortran_int_t ldc ) {
+inline void hemm( const Order, const Side, const UpLo, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<double> alpha,
+        const std::complex<double>* a, const fortran_int_t lda,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        const std::complex<double> beta, std::complex<double>* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHEMM( &blas_option< Side >::value, &blas_option< UpLo >::value, &m,
             &n, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );

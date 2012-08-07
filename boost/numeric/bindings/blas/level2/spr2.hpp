@@ -63,9 +63,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr2( const Order order, const UpLo uplo, const int n,
-        const float alpha, const float* x, const int incx, const float* y,
-        const int incy, float* ap ) {
+inline void spr2( const Order, const UpLo, const int n, const float alpha,
+        const float* x, const int incx, const float* y, const int incy,
+        float* ap ) {
     cblas_sspr2( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, y, incy, ap );
 }
@@ -76,9 +76,9 @@ inline void spr2( const Order order, const UpLo uplo, const int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr2( const Order order, const UpLo uplo, const int n,
-        const double alpha, const double* x, const int incx, const double* y,
-        const int incy, double* ap ) {
+inline void spr2( const Order, const UpLo, const int n, const double alpha,
+        const double* x, const int incx, const double* y, const int incy,
+        double* ap ) {
     cblas_dspr2( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, y, incy, ap );
 }
@@ -90,9 +90,9 @@ inline void spr2( const Order order, const UpLo uplo, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr2( const Order order, const UpLo uplo, const int n,
-        const float alpha, const float* x, const int incx, const float* y,
-        const int incy, float* ap ) {
+inline void spr2( const Order, const UpLo, const int n, const float alpha,
+        const float* x, const int incx, const float* y, const int incy,
+        float* ap ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSspr2( blas_option< UpLo >::value, n, alpha, x, incx, y, incy, ap );
 }
@@ -103,11 +103,11 @@ inline void spr2( const Order order, const UpLo uplo, const int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr2( const Order order, const UpLo uplo, const int n,
-        const double alpha, const double* x, const int incx, const double* y,
-        const int incy, double* ap ) {
+inline void spr2( const Order, const UpLo, const int n, const double alpha,
+        const double* x, const int incx, const double* y, const int incy,
+        double* ap ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
-    // NOT FOUND();
+    cublasDspr2( blas_option< UpLo >::value, n, alpha, x, incx, y, incy, ap );
 }
 
 #else
@@ -117,7 +117,7 @@ inline void spr2( const Order order, const UpLo uplo, const int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr2( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void spr2( const Order, const UpLo, const fortran_int_t n,
         const float alpha, const float* x, const fortran_int_t incx,
         const float* y, const fortran_int_t incy, float* ap ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
@@ -131,7 +131,7 @@ inline void spr2( const Order order, const UpLo uplo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr2( const Order order, const UpLo uplo, const fortran_int_t n,
+inline void spr2( const Order, const UpLo, const fortran_int_t n,
         const double alpha, const double* x, const fortran_int_t incx,
         const double* y, const fortran_int_t incy, double* ap ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );

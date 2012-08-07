@@ -131,7 +131,7 @@ inline std::ptrdiff_t iamax( const int n, const std::complex<float>* x,
 //
 inline std::ptrdiff_t iamax( const int n, const std::complex<double>* x,
         const int incx ) {
-    return // NOT FOUND();
+    return cublasIzamax( n, x, incx );
 }
 
 #else

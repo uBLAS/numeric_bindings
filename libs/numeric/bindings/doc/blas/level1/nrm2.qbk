@@ -30,7 +30,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SNRM2][cblas_snrm2][cublasSnrm2] ]
 [  [`double`][DNRM2][cblas_dnrm2][cublasDnrm2] ]
 [  [`complex<float>`][SCNRM2][cblas_scnrm2][cublasScnrm2] ]
-[  [`complex<double>`][DZNRM2][cblas_dznrm2][Unavailable] ]
+[  [`complex<double>`][DZNRM2][cblas_dznrm2][cublasDznrm2] ]
 
 ]
 

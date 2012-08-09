@@ -28,7 +28,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of dotc.
 [  [ Value type of VectorX ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`complex<float>`][CDOTC][cblas_cdotc_sub][cublasCdotc] ]
-[  [`complex<double>`][ZDOTC][cblas_zdotc_sub][Unavailable] ]
+[  [`complex<double>`][ZDOTC][cblas_zdotc_sub][cublasZdotc] ]
 
 ]
 

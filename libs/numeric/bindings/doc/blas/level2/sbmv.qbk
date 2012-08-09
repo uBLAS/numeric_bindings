@@ -34,7 +34,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of sbmv.
 [  [ Value type of MatrixA ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SSBMV][cblas_ssbmv][cublasSsbmv] ]
-[  [`double`][DSBMV][cblas_dsbmv][Unavailable] ]
+[  [`double`][DSBMV][cblas_dsbmv][cublasDsbmv] ]
 
 ]
 

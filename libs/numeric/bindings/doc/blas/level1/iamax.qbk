@@ -30,7 +30,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][ISAMAX][cblas_isamax][cublasIsamax] ]
 [  [`double`][IDAMAX][cblas_idamax][cublasIdamax] ]
 [  [`complex<float>`][ICAMAX][cblas_icamax][cublasIcamax] ]
-[  [`complex<double>`][IZAMAX][cblas_izamax][Unavailable] ]
+[  [`complex<double>`][IZAMAX][cblas_izamax][cublasIzamax] ]
 
 ]
 

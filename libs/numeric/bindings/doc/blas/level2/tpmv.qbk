@@ -19,7 +19,7 @@ tpmv( const MatrixAP& ap, VectorX& x );
 interface to BLAS routines STPMV, DTPMV, CTPMV, and ZTPMV. 
 `tpmv` performs one of the matrix-vector operations
 
-x := A*x, or x := A'*x, or x := conjg( A' )*x,
+x := A*x, or x := A**T*x, or x := A**H*x,
 
 where x is an n element vector and A is an n by n unit, or non-unit,
 upper or lower triangular matrix, supplied in packed form.
@@ -33,9 +33,9 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of tpmv.
 [  [ Value type of MatrixAP ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][STPMV][cblas_stpmv][cublasStpmv] ]
-[  [`double`][DTPMV][cblas_dtpmv][Unavailable] ]
+[  [`double`][DTPMV][cblas_dtpmv][cublasDtpmv] ]
 [  [`complex<float>`][CTPMV][cblas_ctpmv][cublasCtpmv] ]
-[  [`complex<double>`][ZTPMV][cblas_ztpmv][Unavailable] ]
+[  [`complex<double>`][ZTPMV][cblas_ztpmv][cublasZtpmv] ]
 
 ]
 

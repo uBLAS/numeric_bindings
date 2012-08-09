@@ -30,7 +30,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SASUM][cblas_sasum][cublasSasum] ]
 [  [`double`][DASUM][cblas_dasum][cublasDasum] ]
 [  [`complex<float>`][SCASUM][cblas_scasum][cublasScasum] ]
-[  [`complex<double>`][DZASUM][cblas_dzasum][Unavailable] ]
+[  [`complex<double>`][DZASUM][cblas_dzasum][cublasDzasum] ]
 
 ]
 

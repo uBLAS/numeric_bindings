@@ -19,7 +19,7 @@ tpsv( const MatrixAP& ap, VectorX& x );
 interface to BLAS routines STPSV, DTPSV, CTPSV, and ZTPSV. 
 `tpsv` solves one of the systems of equations
 
-A*x = b, or A'*x = b, or conjg( A' )*x = b,
+A*x = b, or A**T*x = b, or A**H*x = b,
 
 where b and x are n element vectors and A is an n by n unit, or
 non-unit, upper or lower triangular matrix, supplied in packed form.
@@ -36,9 +36,9 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of tpsv.
 [  [ Value type of MatrixAP ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][STPSV][cblas_stpsv][cublasStpsv] ]
-[  [`double`][DTPSV][cblas_dtpsv][Unavailable] ]
+[  [`double`][DTPSV][cblas_dtpsv][cublasDtpsv] ]
 [  [`complex<float>`][CTPSV][cblas_ctpsv][cublasCtpsv] ]
-[  [`complex<double>`][ZTPSV][cblas_ztpsv][Unavailable] ]
+[  [`complex<double>`][ZTPSV][cblas_ztpsv][cublasZtpsv] ]
 
 ]
 

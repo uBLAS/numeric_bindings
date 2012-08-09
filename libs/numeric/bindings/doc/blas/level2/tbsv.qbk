@@ -19,7 +19,7 @@ tbsv( const int_t k, const MatrixA& a, VectorX& x );
 interface to BLAS routines STBSV, DTBSV, CTBSV, and ZTBSV. 
 `tbsv` solves one of the systems of equations
 
-A*x = b, or A'*x = b, or conjg( A' )*x = b,
+A*x = b, or A**T*x = b, or A**H*x = b,
 
 where b and x are n element vectors and A is an n by n unit, or
 non-unit, upper or lower triangular band matrix, with ( k + 1 )
@@ -37,9 +37,9 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of tbsv.
 [  [ Value type of MatrixA ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][STBSV][cblas_stbsv][cublasStbsv] ]
-[  [`double`][DTBSV][cblas_dtbsv][Unavailable] ]
+[  [`double`][DTBSV][cblas_dtbsv][cublasDtbsv] ]
 [  [`complex<float>`][CTBSV][cblas_ctbsv][cublasCtbsv] ]
-[  [`complex<double>`][ZTBSV][cblas_ztbsv][Unavailable] ]
+[  [`complex<double>`][ZTBSV][cblas_ztbsv][cublasZtbsv] ]
 
 ]
 

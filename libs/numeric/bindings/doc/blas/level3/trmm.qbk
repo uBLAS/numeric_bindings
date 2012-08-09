@@ -29,7 +29,7 @@ B := alpha*op( A )*B, or B := alpha*B*op( A )
 where alpha is a scalar, B is an m by n matrix, A is a unit, or
 non-unit, upper or lower triangular matrix and op( A ) is one of
 
-op( A ) = A or op( A ) = A' or op( A ) = conjg( A' ).
+op( A ) = A or op( A ) = A**T or op( A ) = A**H.
 
 The selection of the BLAS routine is done during compile-time, 
 and is determined by the type of values contained in type `MatrixA`.
@@ -42,7 +42,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][STRMM][cblas_strmm][cublasStrmm] ]
 [  [`double`][DTRMM][cblas_dtrmm][cublasDtrmm] ]
 [  [`complex<float>`][CTRMM][cblas_ctrmm][cublasCtrmm] ]
-[  [`complex<double>`][ZTRMM][cblas_ztrmm][Unavailable] ]
+[  [`complex<double>`][ZTRMM][cblas_ztrmm][cublasZtrmm] ]
 
 ]
 

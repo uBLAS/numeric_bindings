@@ -45,7 +45,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SSYMM][cblas_ssymm][cublasSsymm] ]
 [  [`double`][DSYMM][cblas_dsymm][cublasDsymm] ]
 [  [`complex<float>`][CHEMM][cblas_chemm][cublasChemm] ]
-[  [`complex<double>`][ZHEMM][cblas_zhemm][Unavailable] ]
+[  [`complex<double>`][ZHEMM][cblas_zhemm][cublasZhemm] ]
 
 ]
 

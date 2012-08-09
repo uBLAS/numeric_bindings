@@ -39,9 +39,9 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of hemv.
 [  [ Value type of MatrixA ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SSYMV][cblas_ssymv][cublasSsymv] ]
-[  [`double`][DSYMV][cblas_dsymv][Unavailable] ]
+[  [`double`][DSYMV][cblas_dsymv][cublasDsymv] ]
 [  [`complex<float>`][CHEMV][cblas_chemv][cublasChemv] ]
-[  [`complex<double>`][ZHEMV][cblas_zhemv][Unavailable] ]
+[  [`complex<double>`][ZHEMV][cblas_zhemv][cublasZhemv] ]
 
 ]
 

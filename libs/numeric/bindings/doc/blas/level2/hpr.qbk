@@ -19,7 +19,7 @@ hpr( const Scalar >, const VectorX& x, MatrixAP& ap );
 interface to BLAS routines SSPR, DSPR, CHPR, and ZHPR. 
 `hpr` performs the hermitian rank 1 operation
 
-A := alpha*x*conjg( x' ) + A,
+A := alpha*x*x**H + A,
 
 where alpha is a real scalar, x is an n element vector and A is an
 n by n hermitian matrix, supplied in packed form.
@@ -33,9 +33,9 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of hpr.
 [  [ Value type of VectorX ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SSPR][cblas_sspr][cublasSspr] ]
-[  [`double`][DSPR][cblas_dspr][Unavailable] ]
+[  [`double`][DSPR][cblas_dspr][cublasDspr] ]
 [  [`complex<float>`][CHPR][cblas_chpr][cublasChpr] ]
-[  [`complex<double>`][ZHPR][cblas_zhpr][Unavailable] ]
+[  [`complex<double>`][ZHPR][cblas_zhpr][cublasZhpr] ]
 
 ]
 

@@ -24,11 +24,11 @@ syrk( const Scalar alpha, const MatrixA& a, const Scalar beta,
 interface to BLAS routines SSYRK, DSYRK, CSYRK, and ZSYRK. 
 `syrk` performs one of the symmetric rank k operations
 
-C := alpha*A*A' + beta*C,
+C := alpha*A*A**T + beta*C,
 
 or
 
-C := alpha*A'*A + beta*C,
+C := alpha*A**T*A + beta*C,
 
 where alpha and beta are scalars, C is an n by n symmetric matrix
 and A is an n by k matrix in the first case and a k by n matrix

@@ -32,7 +32,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SROT][cblas_srot][cublasSrot] ]
 [  [`double`][DROT][cblas_drot][cublasDrot] ]
 [  [`complex<float>`][CSROT][Unavailable][cublasCsrot] ]
-[  [`complex<double>`][ZDROT][Unavailable][Unavailable] ]
+[  [`complex<double>`][ZDROT][Unavailable][cublasZdrot] ]
 
 ]
 

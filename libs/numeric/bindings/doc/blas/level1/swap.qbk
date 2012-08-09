@@ -30,7 +30,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SSWAP][cblas_sswap][cublasSswap] ]
 [  [`double`][DSWAP][cblas_dswap][cublasDswap] ]
 [  [`complex<float>`][CSWAP][cblas_cswap][cublasCswap] ]
-[  [`complex<double>`][ZSWAP][cblas_zswap][Unavailable] ]
+[  [`complex<double>`][ZSWAP][cblas_zswap][cublasZswap] ]
 
 ]
 

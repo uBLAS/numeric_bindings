@@ -19,7 +19,7 @@ spr( const Scalar >, const VectorX& x, MatrixAP& ap );
 interface to BLAS routines SSPR and DSPR. 
 `spr` performs the symmetric rank 1 operation
 
-A := alpha*x*x' + A,
+A := alpha*x*x**T + A,
 
 where alpha is a real scalar, x is an n element vector and A is an
 n by n symmetric matrix, supplied in packed form.
@@ -33,7 +33,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of spr.
 [  [ Value type of VectorX ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SSPR][cblas_sspr][cublasSspr] ]
-[  [`double`][DSPR][cblas_dspr][Unavailable] ]
+[  [`double`][DSPR][cblas_dspr][cublasDspr] ]
 
 ]
 

@@ -19,7 +19,7 @@ her( const Scalar >, const VectorX& x, MatrixA& a );
 interface to BLAS routines SSYR, DSYR, CHER, and ZHER. 
 `her` performs the hermitian rank 1 operation
 
-A := alpha*x*conjg( x' ) + A,
+A := alpha*x*x**H + A,
 
 where alpha is a real scalar, x is an n element vector and A is an
 n by n hermitian matrix.
@@ -35,7 +35,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SSYR][cblas_ssyr][cublasSsyr] ]
 [  [`double`][DSYR][cblas_dsyr][cublasDsyr] ]
 [  [`complex<float>`][CHER][cblas_cher][cublasCher] ]
-[  [`complex<double>`][ZHER][cblas_zher][Unavailable] ]
+[  [`complex<double>`][ZHER][cblas_zher][cublasZher] ]
 
 ]
 

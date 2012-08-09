@@ -34,7 +34,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SAXPY][cblas_saxpy][cublasSaxpy] ]
 [  [`double`][DAXPY][cblas_daxpy][cublasDaxpy] ]
 [  [`complex<float>`][CAXPY][cblas_caxpy][cublasCaxpy] ]
-[  [`complex<double>`][ZAXPY][cblas_zaxpy][Unavailable] ]
+[  [`complex<double>`][ZAXPY][cblas_zaxpy][cublasZaxpy] ]
 
 ]
 

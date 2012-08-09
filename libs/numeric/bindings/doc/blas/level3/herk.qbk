@@ -19,11 +19,11 @@ herk( const Scalar >, const MatrixA& a, const Scalar >, MatrixC& c );
 interface to BLAS routines SSYRK, DSYRK, CHERK, and ZHERK. 
 `herk` performs one of the hermitian rank k operations
 
-C := alpha*A*conjg( A' ) + beta*C,
+C := alpha*A*A**H + beta*C,
 
 or
 
-C := alpha*conjg( A' )*A + beta*C,
+C := alpha*A**H*A + beta*C,
 
 where alpha and beta are real scalars, C is an n by n hermitian
 matrix and A is an n by k matrix in the first case and a k by n
@@ -40,7 +40,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SSYRK][cblas_ssyrk][cublasSsyrk] ]
 [  [`double`][DSYRK][cblas_dsyrk][cublasDsyrk] ]
 [  [`complex<float>`][CHERK][cblas_cherk][cublasCherk] ]
-[  [`complex<double>`][ZHERK][cblas_zherk][Unavailable] ]
+[  [`complex<double>`][ZHERK][cblas_zherk][cublasZherk] ]
 
 ]
 

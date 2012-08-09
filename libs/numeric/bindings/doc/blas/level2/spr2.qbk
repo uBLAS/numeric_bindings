@@ -19,7 +19,7 @@ spr2( const Scalar >, const VectorX& x, const VectorY& y, MatrixAP& ap );
 interface to BLAS routines SSPR2 and DSPR2. 
 `spr2` performs the symmetric rank 2 operation
 
-A := alpha*x*y' + alpha*y*x' + A,
+A := alpha*x*y**T + alpha*y*x**T + A,
 
 where alpha is a scalar, x and y are n element vectors and A is an
 n by n symmetric matrix, supplied in packed form.
@@ -33,7 +33,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of spr2.
 [  [ Value type of VectorX ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SSPR2][cblas_sspr2][cublasSspr2] ]
-[  [`double`][DSPR2][cblas_dspr2][Unavailable] ]
+[  [`double`][DSPR2][cblas_dspr2][cublasDspr2] ]
 
 ]
 

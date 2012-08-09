@@ -19,7 +19,7 @@ tbmv( const int_t k, const MatrixA& a, VectorX& x );
 interface to BLAS routines STBMV, DTBMV, CTBMV, and ZTBMV. 
 `tbmv` performs one of the matrix-vector operations
 
-x := A*x, or x := A'*x, or x := conjg( A' )*x,
+x := A*x, or x := A**T*x, or x := A**H*x,
 
 where x is an n element vector and A is an n by n unit, or non-unit,
 upper or lower triangular band matrix, with ( k + 1 ) diagonals.
@@ -33,9 +33,9 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of tbmv.
 [  [ Value type of MatrixA ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][STBMV][cblas_stbmv][cublasStbmv] ]
-[  [`double`][DTBMV][cblas_dtbmv][Unavailable] ]
+[  [`double`][DTBMV][cblas_dtbmv][cublasDtbmv] ]
 [  [`complex<float>`][CTBMV][cblas_ctbmv][cublasCtbmv] ]
-[  [`complex<double>`][ZTBMV][cblas_ztbmv][Unavailable] ]
+[  [`complex<double>`][ZTBMV][cblas_ztbmv][cublasZtbmv] ]
 
 ]
 

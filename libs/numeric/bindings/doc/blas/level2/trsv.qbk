@@ -19,7 +19,7 @@ trsv( const MatrixA& a, VectorX& x );
 interface to BLAS routines STRSV, DTRSV, CTRSV, and ZTRSV. 
 `trsv` solves one of the systems of equations
 
-A*x = b, or A'*x = b, or conjg( A' )*x = b,
+A*x = b, or A**T*x = b, or A**H*x = b,
 
 where b and x are n element vectors and A is an n by n unit, or
 non-unit, upper or lower triangular matrix.
@@ -38,7 +38,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][STRSV][cblas_strsv][cublasStrsv] ]
 [  [`double`][DTRSV][cblas_dtrsv][cublasDtrsv] ]
 [  [`complex<float>`][CTRSV][cblas_ctrsv][cublasCtrsv] ]
-[  [`complex<double>`][ZTRSV][cblas_ztrsv][Unavailable] ]
+[  [`complex<double>`][ZTRSV][cblas_ztrsv][cublasZtrsv] ]
 
 ]
 

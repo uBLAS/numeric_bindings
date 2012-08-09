@@ -25,11 +25,11 @@ her2k( const Scalar alpha, const MatrixA& a, const MatrixB& b,
 interface to BLAS routines SSYR2K, DSYR2K, CHER2K, and ZHER2K. 
 `her2k` performs one of the hermitian rank 2k operations
 
-C := alpha*A*conjg( B' ) + conjg( alpha )*B*conjg( A' ) + beta*C,
+C := alpha*A*B**H + conjg( alpha )*B*A**H + beta*C,
 
 or
 
-C := alpha*conjg( A' )*B + conjg( alpha )*conjg( B' )*A + beta*C,
+C := alpha*A**H*B + conjg( alpha )*B**H*A + beta*C,
 
 where alpha and beta are scalars with beta real, C is an n by n
 hermitian matrix and A and B are n by k matrices in the first case
@@ -46,7 +46,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SSYR2K][cblas_ssyr2k][cublasSsyr2k] ]
 [  [`double`][DSYR2K][cblas_dsyr2k][cublasDsyr2k] ]
 [  [`complex<float>`][CHER2K][cblas_cher2k][cublasCher2k] ]
-[  [`complex<double>`][ZHER2K][cblas_zher2k][Unavailable] ]
+[  [`complex<double>`][ZHER2K][cblas_zher2k][cublasZher2k] ]
 
 ]
 

@@ -33,8 +33,8 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [ Value type of $FIRST_TYPENAME ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SROTG][cblas_srotg][cublasSrotg] ]
 [  [`double`][DROTG][cblas_drotg][cublasDrotg] ]
-[  [`complex<float>`][CROTG][Unavailable][Unavailable] ]
-[  [`complex<double>`][ZROTG][Unavailable][Unavailable] ]
+[  [`complex<float>`][CROTG][Unavailable][cublasCrotg] ]
+[  [`complex<double>`][ZROTG][Unavailable][cublasZrotg] ]
 
 ]
 

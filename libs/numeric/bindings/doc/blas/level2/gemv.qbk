@@ -25,9 +25,9 @@ gemv( const Scalar alpha, const MatrixA& a, const VectorX& x,
 interface to BLAS routines SGEMV, DGEMV, CGEMV, and ZGEMV. 
 `gemv` performs one of the matrix-vector operations
 
-y := alpha*A*x + beta*y, or y := alpha*A'*x + beta*y, or
+y := alpha*A*x + beta*y, or y := alpha*A**T*x + beta*y, or
 
-y := alpha*conjg( A' )*x + beta*y,
+y := alpha*A**H*x + beta*y,
 
 where alpha and beta are scalars, x and y are vectors and A is an
 m by n matrix.

@@ -24,7 +24,7 @@ hpr2( const Scalar alpha, const VectorX& x, const VectorY& y,
 interface to BLAS routines SSPR2, DSPR2, CHPR2, and ZHPR2. 
 `hpr2` performs the hermitian rank 2 operation
 
-A := alpha*x*conjg( y' ) + conjg( alpha )*y*conjg( x' ) + A,
+A := alpha*x*y**H + conjg( alpha )*y*x**H + A,
 
 where alpha is a scalar, x and y are n element vectors and A is an
 n by n hermitian matrix, supplied in packed form.
@@ -38,9 +38,9 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of hpr2.
 [  [ Value type of VectorX ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SSPR2][cblas_sspr2][cublasSspr2] ]
-[  [`double`][DSPR2][cblas_dspr2][Unavailable] ]
+[  [`double`][DSPR2][cblas_dspr2][cublasDspr2] ]
 [  [`complex<float>`][CHPR2][cblas_chpr2][cublasChpr2] ]
-[  [`complex<double>`][ZHPR2][cblas_zhpr2][Unavailable] ]
+[  [`complex<double>`][ZHPR2][cblas_zhpr2][cublasZhpr2] ]
 
 ]
 

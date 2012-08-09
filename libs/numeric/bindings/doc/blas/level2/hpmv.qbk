@@ -39,9 +39,9 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of hpmv.
 [  [ Value type of MatrixAP ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SSPMV][cblas_sspmv][cublasSspmv] ]
-[  [`double`][DSPMV][cblas_dspmv][Unavailable] ]
+[  [`double`][DSPMV][cblas_dspmv][cublasDspmv] ]
 [  [`complex<float>`][CHPMV][cblas_chpmv][cublasChpmv] ]
-[  [`complex<double>`][ZHPMV][cblas_zhpmv][Unavailable] ]
+[  [`complex<double>`][ZHPMV][cblas_zhpmv][cublasZhpmv] ]
 
 ]
 

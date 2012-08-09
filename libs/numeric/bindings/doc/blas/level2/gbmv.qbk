@@ -25,9 +25,9 @@ gbmv( const Scalar alpha, const MatrixA& a, const VectorX& x,
 interface to BLAS routines SGBMV, DGBMV, CGBMV, and ZGBMV. 
 `gbmv` performs one of the matrix-vector operations
 
-y := alpha*A*x + beta*y, or y := alpha*A'*x + beta*y, or
+y := alpha*A*x + beta*y, or y := alpha*A**T*x + beta*y, or
 
-y := alpha*conjg( A' )*x + beta*y,
+y := alpha*A**H*x + beta*y,
 
 where alpha and beta are scalars, x and y are vectors and A is an
 m by n band matrix, with kl sub-diagonals and ku super-diagonals.
@@ -41,9 +41,9 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of gbmv.
 [  [ Value type of MatrixA ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SGBMV][cblas_sgbmv][cublasSgbmv] ]
-[  [`double`][DGBMV][cblas_dgbmv][Unavailable] ]
+[  [`double`][DGBMV][cblas_dgbmv][cublasDgbmv] ]
 [  [`complex<float>`][CGBMV][cblas_cgbmv][cublasCgbmv] ]
-[  [`complex<double>`][ZGBMV][cblas_zgbmv][Unavailable] ]
+[  [`complex<double>`][ZGBMV][cblas_zgbmv][cublasZgbmv] ]
 
 ]
 

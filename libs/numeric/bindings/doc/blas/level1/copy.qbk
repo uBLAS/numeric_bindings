@@ -30,7 +30,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SCOPY][cblas_scopy][cublasScopy] ]
 [  [`double`][DCOPY][cblas_dcopy][cublasDcopy] ]
 [  [`complex<float>`][CCOPY][cblas_ccopy][cublasCcopy] ]
-[  [`complex<double>`][ZCOPY][cblas_zcopy][Unavailable] ]
+[  [`complex<double>`][ZCOPY][cblas_zcopy][cublasZcopy] ]
 
 ]
 

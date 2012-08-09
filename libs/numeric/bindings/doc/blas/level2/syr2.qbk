@@ -19,7 +19,7 @@ syr2( const Scalar >, const VectorX& x, const VectorY& y, MatrixA& a );
 interface to BLAS routines SSYR2 and DSYR2. 
 `syr2` performs the symmetric rank 2 operation
 
-A := alpha*x*y' + alpha*y*x' + A,
+A := alpha*x*y**T + alpha*y*x**T + A,
 
 where alpha is a scalar, x and y are n element vectors and A is an n
 by n symmetric matrix.
@@ -33,7 +33,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [table Dispatching of syr2.
 [  [ Value type of VectorX ] [BLAS routine] [CBLAS routine] [CUBLAS routine] ]
 [  [`float`][SSYR2][cblas_ssyr2][cublasSsyr2] ]
-[  [`double`][DSYR2][cblas_dsyr2][Unavailable] ]
+[  [`double`][DSYR2][cblas_dsyr2][cublasDsyr2] ]
 
 ]
 

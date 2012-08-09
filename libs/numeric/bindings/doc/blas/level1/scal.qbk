@@ -34,7 +34,7 @@ Table X below illustrates to which specific routine this dispatching will take p
 [  [`float`][SSCAL][cblas_sscal][cublasSscal] ]
 [  [`double`][DSCAL][cblas_dscal][cublasDscal] ]
 [  [`combined float and complex<float>`][CSSCAL][cblas_csscal][cublasCsscal] ]
-[  [`combined double and complex<double>`][ZDSCAL][cblas_zdscal][Unavailable] ]
+[  [`combined double and complex<double>`][ZDSCAL][cblas_zdscal][cublasZdscal] ]
 [  [`complex<float>`][CSCAL][cblas_cscal][cublasCscal] ]
 [  [`complex<double>`][ZSCAL][cblas_zscal][cublasZscal] ]
 

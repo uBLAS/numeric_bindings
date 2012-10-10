@@ -66,19 +66,19 @@ struct adaptor< trans_wrapper<T, Conj>, Id, Enable > {
         // Conjugate transform (if passed by template argument)
         Conj,
 
-        // If T has a linear array:
-        // stride1 <-> stride2
-        typename mpl::if_< has_linear_array< T >,
+        // If T has a linear array, or has a band array
+        // flip strides, stride1 <-> stride2
+        typename mpl::if_< mpl::or_< has_linear_array< T >, has_band_array< T > >,
             mpl::pair< tag::stride_type<1>, typename result_of::stride2< T >::type >,
             mpl::void_
         >::type,
-        typename mpl::if_< has_linear_array< T >,
+        typename mpl::if_< mpl::or_< has_linear_array< T >, has_band_array< T > >,
             mpl::pair< tag::stride_type<2>, typename result_of::stride1< T >::type >,
             mpl::void_
         >::type,
 
         // If T has a band array
-        // bandwidth1 <-> bandwidth2
+        // flip bandwidths, bandwidth1 <-> bandwidth2
         typename mpl::if_< has_band_array< T >,
             mpl::pair< tag::bandwidth_type<1>, typename result_of::bandwidth2< T >::type >,
             mpl::void_

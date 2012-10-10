@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/blas/detail/default_order.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
+#include <boost/numeric/bindings/has_band_array.hpp>
+#include <boost/numeric/bindings/has_linear_array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -264,6 +266,8 @@ struct tbmv_impl {
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::has_band_array< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );

@@ -336,6 +336,32 @@ def write_functions( info_map, group, template_map, base_dir ):
                     has_comment = True
                 level1_static_assert_list += [ assert_line ]
 
+      #
+      # Vectors should have linear arrays
+      #
+      if 'vector' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ]:
+          for vector_id in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ][ 'vector' ]:
+              info_map_item = info_map[ subroutine ][ 'argument_map' ][ vector_id ]
+              if 'ref_stride' in info_map_item and info_map_item[ 'code' ][ 'level_1_type' ] != None:
+                  assert_line = 'BOOST_STATIC_ASSERT( ($NAMESPACEhas_linear_array< ' + info_map_item[ 'code' ][ 'level_1_static_assert' ] + \
+                    ' >::value) );'
+                  level1_static_assert_list += [ assert_line ]
+                  includes += [ "#include <boost/numeric/bindings/has_linear_array.hpp>" ]
+                  
+      #
+      # Matrices should adhere to their storage scheme
+      #
+      if 'matrix' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ]:
+          for matrix_id in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ][ 'matrix' ]:
+              info_map_item = info_map[ subroutine ][ 'argument_map' ][ matrix_id ]
+              if 'banded' in info_map_item and info_map_item[ 'banded' ] == True and \
+                        info_map_item[ 'code' ][ 'level_1_type' ] != None:
+                  assert_line = 'BOOST_STATIC_ASSERT( ($NAMESPACEhas_band_array< ' + info_map_item[ 'code' ][ 'level_1_static_assert' ] + \
+                    ' >::value) );'
+                  level1_static_assert_list += [ assert_line ]
+                  includes += [ "#include <boost/numeric/bindings/has_band_array.hpp>" ]
+      
+                
       # Make sure the mutable stuff is mutable
       if 'output' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ]:
         for arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'output' ]:

@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/has_linear_array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -256,6 +257,7 @@ struct scal_impl {
     template< typename ScalarA, typename VectorX >
     static result_type invoke( const ScalarA a, VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         detail::scal( bindings::size(x), a, bindings::begin_value(x),
                 bindings::stride(x) );

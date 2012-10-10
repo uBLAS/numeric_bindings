@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
+#include <boost/numeric/bindings/has_linear_array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -163,6 +164,7 @@ struct syr_impl {
                 typename bindings::value_type< VectorX >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );

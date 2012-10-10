@@ -17,6 +17,7 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
+#include <boost/numeric/bindings/has_linear_array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -177,6 +178,8 @@ struct spmv_impl {
                 typename bindings::value_type< MatrixAP >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorY >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         detail::spmv( order(), uplo(), bindings::size_column(ap), alpha,
                 bindings::begin_value(ap), bindings::begin_value(x),

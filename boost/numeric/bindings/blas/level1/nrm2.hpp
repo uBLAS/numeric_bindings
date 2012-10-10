@@ -16,6 +16,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/has_linear_array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -196,6 +197,7 @@ struct nrm2_impl {
     template< typename VectorX >
     static result_type invoke( const VectorX& x ) {
         namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorX >::value) );
         return detail::nrm2( bindings::size(x),
                 bindings::begin_value(x), bindings::stride(x) );
     }

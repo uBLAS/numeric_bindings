@@ -19,24 +19,26 @@ namespace numeric {
 namespace bindings {
 
 template< typename T >
-struct addressing_index_minor:
-    mpl::if_<
+struct addressing_index_minor {
+    typedef typename mpl::if_<
         is_column_major< T >,
         tag::addressing_index<1>,
         tag::addressing_index<
             mpl::max< tag::matrix, rank< T > >::type::value
         >
-    >::type {};
+    >::type type;
+};
 
 template< typename T >
-struct addressing_index_major:
-    mpl::if_<
+struct addressing_index_major {
+    typedef typename mpl::if_<
         is_column_major< T >,
         tag::addressing_index<
             mpl::max< tag::matrix, rank< T > >::type::value
         >,
         tag::addressing_index<1>
-    >::type {};
+    >::type type;
+};
 
 
 template< typename AddressingIndex, typename TransTag >

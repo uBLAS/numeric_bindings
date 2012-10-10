@@ -149,7 +149,7 @@ struct bandwidth_upper_op {
 } // namespace result_of
 
 template< typename T, typename Tag >
-inline typename result_of::bandwidth_upper_op< const T, Tag >::type
+inline typename result_of::bandwidth_lower_op< const T, Tag >::type
 bandwidth_lower_op( const T& t, Tag ) {
     return bindings::bandwidth( t, typename addressing_index_trans< tag::addressing_index<1>, Tag >::type() );
 }

@@ -18,8 +18,10 @@
 #include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/rank.hpp>
 #include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/tag.hpp>
 #include <boost/numeric/bindings/value_type.hpp>
+#include <boost/numeric/bindings/has_band_array.hpp>
 #include <boost/numeric/bindings/has_linear_array.hpp>
 #include <boost/ref.hpp>
 
@@ -75,6 +77,17 @@ struct adaptor< trans_wrapper<T, Conj>, Id, Enable > {
             mpl::void_
         >::type,
 
+        // If T has a band array
+        // bandwidth1 <-> bandwidth2
+        typename mpl::if_< has_band_array< T >,
+            mpl::pair< tag::bandwidth_type<1>, typename result_of::bandwidth2< T >::type >,
+            mpl::void_
+        >::type,
+        typename mpl::if_< has_band_array< T >,
+            mpl::pair< tag::bandwidth_type<2>, typename result_of::bandwidth1< T >::type >,
+            mpl::void_
+        >::type,
+
         // If a data_side tag is present:
         // upper <-> lower
         typename mpl::if_<
@@ -118,6 +131,16 @@ struct adaptor< trans_wrapper<T, Conj>, Id, Enable > {
 
     static typename result_of::stride1< T >::type stride2( const Id& id ) {
         return bindings::stride1( id.get() );
+    }
+
+    // Banded matrix transpose
+    // Flip bandwidth1/bandwidth2
+    static typename result_of::bandwidth2< T >::type bandwidth1( const Id& id ) {
+        return bindings::bandwidth2( id.get() );
+    }
+
+    static typename result_of::bandwidth1< T >::type bandwidth2( const Id& id ) {
+        return bindings::bandwidth1( id.get() );
     }
 
 };

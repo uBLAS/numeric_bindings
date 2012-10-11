@@ -178,6 +178,7 @@ struct gerc_impl {
                 typename bindings::value_type< VectorX >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 MatrixA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::has_linear_array< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorY >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );

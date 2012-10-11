@@ -19,6 +19,7 @@
 #include <boost/numeric/bindings/blas/detail/default_order.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/has_linear_array.hpp>
+#include <boost/numeric/bindings/has_triangular_array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -257,6 +258,8 @@ struct tpmv_impl {
                 typename bindings::value_type< MatrixAP >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::has_triangular_array<
+                MatrixAP >::value) );
         BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         detail::tpmv( order(), uplo(), trans(), diag(),

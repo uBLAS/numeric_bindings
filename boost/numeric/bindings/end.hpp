@@ -40,7 +40,7 @@ struct end_impl< T, tag::addressing_index<N> > {
     > result_type;
 
     static result_type invoke( T& t ) {
-        return result_type( end_value( t ), stride(t, tag_type() ) );
+        return result_type( adaptor_access<T>::end_value( t ), stride(t, tag_type() ) );
     }
 };
 

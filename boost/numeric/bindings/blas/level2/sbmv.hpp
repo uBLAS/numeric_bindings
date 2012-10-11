@@ -180,9 +180,9 @@ struct sbmv_impl {
                 typename bindings::value_type< MatrixA >::type >::type,
                 typename remove_const< typename bindings::value_type<
                 VectorY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (bindings::has_band_array< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorX >::value) );
         BOOST_STATIC_ASSERT( (bindings::has_linear_array< VectorY >::value) );
-        BOOST_STATIC_ASSERT( (bindings::has_band_array< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
         BOOST_ASSERT( bindings::size_minor(a) == 1 ||
                 bindings::stride_minor(a) == 1 );

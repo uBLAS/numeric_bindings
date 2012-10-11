@@ -46,7 +46,7 @@ struct begin_impl<T, tag::addressing_index<Dimension> > {
     > result_type;
 
     static result_type invoke( T& t ) {
-        return result_type( begin_value( t ), stride(t, tag_type() ) );
+        return result_type( adaptor_access<T>::begin_value( t ), bindings::stride(t, tag_type() ) );
     }
 };
 

@@ -225,8 +225,8 @@ struct adaptor< ublas::matrix_vector_slice< T >, Id, Enable > {
     }
 
     static typename result_of::end_value< adapted_type >::type end_value( Id& id ) {
-        return bindings::begin_value( id.data() ) + 
-               offset( id.data(), id.start1() + id.size1(), id.start2() + id.size2() );
+        return bindings::begin_value( id.data() ) +
+               offset( id.data(), id.start1() + id.size(), id.start2() + id.size() );
     }
 
     static std::ptrdiff_t stride1( const Id& id ) {

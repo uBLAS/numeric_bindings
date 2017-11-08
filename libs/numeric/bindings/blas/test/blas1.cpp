@@ -173,7 +173,7 @@ struct TwoVectorOperations< float, V>
      using namespace boost::numeric::bindings::blas ;
      real_type safety_factor (1.5);
 
-     copy_vector(w);
+     this->copy_vector(w);
 
      // Test blas routines
      value_type prod = dot( this->v_, w );
@@ -212,7 +212,7 @@ struct TwoVectorOperations< double, V>
   int operator()(W& w) const {
      using namespace boost::numeric::bindings::blas ;
 
-     copy_vector( w );
+     this->copy_vector( w );
 
      // Test blas routines
      value_type prod = dot( this->v_, w );
@@ -224,7 +224,7 @@ struct TwoVectorOperations< double, V>
         if ( std::abs(w[i] - (this->v2_ref_(i) + value_type(2.0)*this->v1_ref_(i)))
           > std::numeric_limits< real_type >::epsilon() * std::abs(w[i])) return 255 ;
 
-     copy_vector( w ) ;
+     this->copy_vector( w ) ;
      scal( value_type(-1.0), w ) ;
      ::boost::numeric::bindings::blas::copy( this->v_, w ) ;
      for (size_t i=0; i<this->size(); ++i) {
@@ -254,7 +254,7 @@ struct TwoVectorOperations< std::complex<float>, V>
      using namespace boost::numeric::bindings::blas ;
      real_type safety_factor (1.5);
 
-     copy_vector( w );
+     this->copy_vector( w );
 
      // Test blas routines
      value_type prod = dotc( this->v_, w );
@@ -299,7 +299,7 @@ struct TwoVectorOperations< std::complex<double>, V>
      using namespace boost::numeric::bindings::blas ;
      real_type safety_factor (1.5);
 
-     copy_vector( w );
+     this->copy_vector( w );
 
      // Test blas routines
      value_type prod = dotc( this->v_, w );

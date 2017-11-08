@@ -1,0 +1,13 @@
+# Editor temporaries
+*~
+*.bak
+*.kate-swp
+*.autosave
+
+# Python compiled objects
+*.pyc
+
+# Build products
+bin.v2/
+
+
